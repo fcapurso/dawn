@@ -9,7 +9,6 @@ if (!customElements.get('product-form')) {
     }
 
     onSubmitHandler(evt) {
-      console.log('filippo');
       evt.preventDefault();
       const submitButton = this.querySelector('[type="submit"]');
       if (submitButton.classList.contains('loading')) return; 
