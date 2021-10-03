@@ -231,7 +231,7 @@
                               value="{{ value | escape }}"
                               form="product-form-{{ section.id }}"
                               {% if option.selected_value == value %}checked{% endif %}
-                              {% if option_disabled %}class="disabled"{% endif %}
+                              {% if option_disabled %}class="disabled" disabled{% endif %}
                         >
                         <label for="{{ section.id }}-{{ option.name }}-{{ forloop.index0 }}">
                           {{ value }}
