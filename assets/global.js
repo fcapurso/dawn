@@ -570,6 +570,7 @@ class VariantSelects extends HTMLElement {
   }
 
   onVariantChange() {
+    console.log('filippo');
     this.updateOptions();
     this.updateMasterId();
     this.toggleAddButton(true, '', false);
