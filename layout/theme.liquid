@@ -171,9 +171,5 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
   {% if content_for_header contains 'product_label' %}{% include 'bss-product-label-js' %}{% endif %}
-
-  {% if template contains 'product' %}
-    {% render 'linked-options' %}
-  {% endif %}
   </body>
 </html>
