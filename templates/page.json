@@ -2,7 +2,8 @@
   "sections": {
     "main": {
       "type": "main-page",
-      "settings": {}
+      "settings": {
+      }
     }
   },
   "order": [

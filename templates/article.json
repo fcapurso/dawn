@@ -24,7 +24,8 @@
         },
         "content": {
           "type": "content",
-          "settings": {}
+          "settings": {
+          }
         }
       },
       "block_order": [
@@ -33,7 +34,8 @@
         "share",
         "content"
       ],
-      "settings": {}
+      "settings": {
+      }
     }
   },
   "order": [

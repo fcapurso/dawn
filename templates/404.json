@@ -2,7 +2,8 @@
   "sections": {
     "main": {
       "type": "main-404",
-      "settings": {}
+      "settings": {
+      }
     }
   },
   "order": [
