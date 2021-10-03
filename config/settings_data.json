@@ -1,5 +1,77 @@
 {
-  "current": "Default",
+  "current": {
+    "colors_solid_button_labels": "#207567",
+    "colors_accent_1": "#b4d6c1",
+    "colors_accent_2": "#6baf92",
+    "colors_text": "#207567",
+    "colors_outline_button_labels": "#6baf92",
+    "colors_background_1": "#fafafa",
+    "colors_background_2": "rgba(0,0,0,0)",
+    "type_header_font": "alegreya_sans_n4",
+    "type_body_font": "josefin_slab_n4",
+    "social_facebook_link": "https://www.facebook.com/Zogezeept-100103998093403/",
+    "social_instagram_link": "https://instagram.com/zogezeept",
+    "favicon": "shopify://shop_images/LogoAloneRound.png",
+    "currency_code_enabled": true,
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "blocks": {
+          "announcement-bar-0": {
+            "type": "announcement",
+            "settings": {
+              "text": "Verzending binnen België 4,95, naar Nederland 5,95",
+              "color_scheme": "background-1",
+              "link": "shopify://policies/shipping-policy"
+            }
+          }
+        },
+        "block_order": ["announcement-bar-0"],
+        "settings": {}
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "color_scheme": "background-1",
+          "logo_width": 100,
+          "logo_position": "middle-left",
+          "menu": "main-menu",
+          "show_line_separator": true,
+          "enable_sticky_header": true
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "footer-0": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Quick links",
+              "menu": "footer"
+            }
+          },
+          "footer-1": {
+            "type": "text",
+            "settings": {
+              "heading": "Neem contact met ons op",
+              "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel/B&B/koffiebar/...? Andere zaken die op je hart liggen?</p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!</a></p>"
+            }
+          }
+        },
+        "block_order": ["footer-0", "footer-1"],
+        "settings": {
+          "color_scheme": "background-1",
+          "newsletter_enable": true,
+          "newsletter_heading": "Blijf op de hoogte",
+          "show_social": true,
+          "enable_country_selector": false,
+          "enable_language_selector": true,
+          "payment_enable": true
+        }
+      }
+    },
+    "content_for_index": []
+  },
   "presets": {
     "Default": {
       "colors_solid_button_labels": "#FFFFFF",
@@ -22,9 +94,8 @@
               }
             }
           },
-          "block_order": [
-            "announcement-bar-0"
-          ]
+          "block_order": ["announcement-bar-0"],
+          "settings": {}
         }
       }
     },
@@ -41,21 +112,20 @@
       "sections": {
         "footer": {
           "type": "footer",
-          "settings": {
-            "color_scheme": "accent-1"
-          },
           "blocks": {
             "menu": {
-              "type": "link_list"
+              "type": "link_list",
+              "settings": {}
             },
             "text": {
-              "type": "text"
+              "type": "text",
+              "settings": {}
             }
           },
-          "block_order": [
-            "menu",
-            "text"
-          ]
+          "block_order": ["menu", "text"],
+          "settings": {
+            "color_scheme": "accent-1"
+          }
         }
       }
     }

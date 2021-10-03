@@ -351,7 +351,8 @@ h5,
 .h3,
 .h4,
 .h5 {
-  font-family: var(--font-heading-family);
+  font-family: 'Special Elite', cursive;
+  /*font-family: var(--font-heading-family);*/
   font-style: var(--font-heading-style);
   font-weight: var(--font-heading-weight);
   letter-spacing: 0.06rem;
@@ -407,7 +408,8 @@ h3,
 
 h4,
 .h4 {
-  font-family: var(--font-heading-family);
+  font-family: 'Special Elite', cursive;
+  /*font-family: var(--font-heading-family);*/
   font-style: var(--font-heading-style);
   font-size: 1.5rem;
 }
@@ -1390,6 +1392,7 @@ details[open] > .share-button__fallback {
 }
 
 .select__select {
+  /*font-family: 'Special Elite', cursive;*/
   font-family: var(--font-body-family);
   font-style: var(--font-body-style);
   font-weight: var(--font-body-weight);
@@ -1538,6 +1541,7 @@ details[open] > .share-button__fallback {
 /* Text area */
 
 .text-area {
+  /*font-family: 'Special Elite', cursive;*/
   font-family: var(--font-body-family);
   font-style: var(--font-body-style);
   font-weight: var(--font-body-weight);
