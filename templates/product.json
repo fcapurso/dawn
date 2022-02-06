@@ -92,12 +92,9 @@
       "type": "product-recommendations",
       "settings": {
         "heading": "Ook leuk voor jou?",
-        "image_ratio": "adapt",
-        "show_secondary_image": false,
-        "add_image_padding": false,
-        "show_image_outline": true,
-        "show_vendor": false,
-        "show_rating": false
+        "image_ratio": "square",
+        "show_secondary_image": true,
+        "padding_bottom": 28
       }
     }
   },
