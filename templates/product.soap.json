@@ -41,7 +41,7 @@
             "show_dynamic_checkout": false
           }
         },
-        "1c6a508a-2efd-4a7e-8895-7426a62831e2": {
+        "product_info": {
           "type": "custom_liquid",
           "settings": {
             "custom_liquid": "<h4>Over {{product.title}}<\/h4>"
@@ -51,7 +51,7 @@
           "type": "description",
           "settings": {}
         },
-        "d9d57531-8fb3-4f19-aff8-dcc79e880a0b": {
+        "advice_for_use": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Gebruik",
@@ -60,7 +60,7 @@
             "icon": "heart"
           }
         },
-        "50d02c70-b33d-4d7c-9d98-d473933a7953": {
+        "ingredients": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Wat zit er allemaal in?",
@@ -69,7 +69,7 @@
             "icon": "leaf"
           }
         },
-        "afa09ba8-757b-43a3-ae27-f7a4cf57df29": {
+        "good_to_know": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "",
@@ -78,7 +78,7 @@
             "icon": "star"
           }
         },
-        "1c2e2771-24f3-41de-b2d9-31660e17fccf": {
+        "shipping_policy": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Verzendkosten",
@@ -102,12 +102,12 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
-        "1c6a508a-2efd-4a7e-8895-7426a62831e2",
+        "product_info",
         "description",
-        "d9d57531-8fb3-4f19-aff8-dcc79e880a0b",
-        "50d02c70-b33d-4d7c-9d98-d473933a7953",
-        "afa09ba8-757b-43a3-ae27-f7a4cf57df29",
-        "1c2e2771-24f3-41de-b2d9-31660e17fccf",
+        "advice_for_use",
+        "ingredients",
+        "good_to_know",
+        "shipping_policy",
         "share"
       ],
       "settings": {
@@ -115,22 +115,9 @@
         "hide_variants": false,
         "enable_video_looping": false
       }
-    },
-    "product-recommendations": {
-      "type": "product-recommendations",
-      "settings": {
-        "heading": "Ook leuk voor jou?",
-        "image_ratio": "adapt",
-        "show_secondary_image": false,
-        "add_image_padding": false,
-        "show_image_outline": true,
-        "show_vendor": false,
-        "show_rating": false
-      }
     }
   },
   "order": [
-    "main",
-    "product-recommendations"
+    "main"
   ]
 }

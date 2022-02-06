@@ -41,7 +41,7 @@
             "show_dynamic_checkout": false
           }
         },
-        "0e3b24ec-23ea-43ca-8544-8618d2891efd": {
+        "product_info": {
           "type": "custom_liquid",
           "settings": {
             "custom_liquid": "<h4>Over {{product.title}}<\/h4>"
@@ -51,7 +51,7 @@
           "type": "description",
           "settings": {}
         },
-        "collapsible-row-0": {
+        "shipping_policy": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Verzendkosten",
@@ -76,9 +76,9 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
-        "0e3b24ec-23ea-43ca-8544-8618d2891efd",
+        "product_info",
         "description",
-        "collapsible-row-0",
+        "shipping_policy",
         "share"
       ],
       "settings": {
@@ -87,24 +87,9 @@
         "enable_video_looping": false,
         "padding_bottom": 12
       }
-    },
-    "product-recommendations": {
-      "type": "product-recommendations",
-      "settings": {
-        "heading": "Ook leuk voor jou?",
-        "image_ratio": "adapt",
-        "show_secondary_image": false,
-        "show_image_outline": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "padding_bottom": 28
-      }
     }
   },
   "order": [
-    "main",
-    "image-with-text",
-    "multicolumn",
-    "product-recommendations"
+    "main"
   ]
 }
