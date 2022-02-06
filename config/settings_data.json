@@ -29,7 +29,8 @@
         "block_order": [
           "announcement-bar-0"
         ],
-        "settings": {}
+        "settings": {
+        }
       },
       "header": {
         "type": "header",
@@ -75,7 +76,9 @@
         }
       }
     },
-    "content_for_index": []
+    "content_for_index": [
+
+    ]
   },
   "presets": {
     "Default": {
@@ -92,7 +95,9 @@
           },
           "block_order": [
             "announcement-bar-0"
-          ]
+          ],
+          "settings": {
+          }
         },
         "header": {
           "type": "header",
@@ -104,7 +109,9 @@
           "type": "footer",
           "blocks": {
             "footer-0": {
-              "type": "link_list"
+              "type": "link_list",
+              "settings": {
+              }
             },
             "footer-1": {
               "type": "link_list",
@@ -127,15 +134,18 @@
           "settings": {
             "show_social": true,
             "enable_country_selector": false,
-            "enable_language_selector": false,
-            "margin_top": 48
+            "enable_language_selector": false
           }
         },
         "main-password-header": {
-          "type": "main-password-header"
+          "type": "main-password-header",
+          "settings": {
+          }
         },
         "main-password-footer": {
-          "type": "main-password-footer"
+          "type": "main-password-footer",
+          "settings": {
+          }
         }
       }
     }

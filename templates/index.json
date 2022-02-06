@@ -22,13 +22,11 @@
         "text"
       ],
       "settings": {
-        "image_overlay_opacity": 10,
-        "image_height": "large",
-        "desktop_content_position": "center",
-        "show_text_box": false,
-        "stack_images_on_mobile": true,
-        "color_scheme": "background-1",
         "image": "shopify:\/\/shop_images\/Zogezeept-359-Edit_ce87f719-1f22-4bcc-8901-3e6f8761893e.jpg",
+        "show_text_box": false,
+        "image_overlay_opacity": 10,
+        "color_scheme": "background-1",
+        "stack_images_on_mobile": true,
         "show_text_below": false
       }
     },
@@ -55,9 +53,7 @@
       ],
       "settings": {
         "color_scheme": "background-1",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 0
+        "full_width": true
       }
     },
     "featured_collection": {
@@ -73,8 +69,7 @@
         "add_image_padding": false,
         "show_image_outline": true,
         "show_vendor": false,
-        "show_rating": false,
-        "padding_top": 28
+        "show_rating": false
       }
     },
     "multicolumn": {
