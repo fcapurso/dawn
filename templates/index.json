@@ -61,11 +61,11 @@
     "featured_products": {
       "type": "featured-collection",
       "settings": {
-        "title": "Onze zepen",
-        "collection": "alle-zeep",
+        "title": "In de kijker",
+        "collection": "spotlight",
         "products_to_show": 4,
-        "show_view_all": true,
-        "swipe_on_mobile": false,
+        "show_view_all": false,
+        "swipe_on_mobile": true,
         "image_ratio": "square",
         "show_secondary_image": true,
         "add_image_padding": false,

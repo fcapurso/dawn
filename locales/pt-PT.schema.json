@@ -33,18 +33,6 @@
         },
         "colors_background_2": {
           "label": "Fundo 2"
-        },
-        "gradient_accent_1": {
-          "label": "Gradiente de destaque 1"
-        },
-        "gradient_accent_2": {
-          "label": "Gradiente de destaque 2"
-        },
-        "gradient_background_1": {
-          "label": "Gradiente de plano de fundo 1"
-        },
-        "gradient_background_2": {
-          "label": "Gradiente de plano de fundo 2"
         }
       }
     },
@@ -117,6 +105,21 @@
     "social-media": {
       "name": "Redes sociais",
       "settings": {
+        "share_facebook": {
+          "label": "Partilhar no Facebook"
+        },
+        "share_twitter": {
+          "label": "Twittar no Twitter"
+        },
+        "share_pinterest": {
+          "label": "Marcar com um pin no Pinterest"
+        },
+        "header__1": {
+          "content": "Opções de partilha nas redes sociais"
+        },
+        "header__2": {
+          "content": "Contas de redes sociais"
+        },
         "social_twitter_link": {
           "label": "Twitter",
           "info": "https://twitter.com/shopify"
@@ -374,7 +377,8 @@
         }
       },
       "presets": {
-        "name": "Colagem"
+        "name": "Colagem",
+        "category": "Imagem"
       }
     },
     "collection-list": {
@@ -435,13 +439,15 @@
         }
       },
       "presets": {
-        "name": "Lista de coleções"
+        "name": "Lista de coleções",
+        "category": "Coleção"
       }
     },
     "contact-form": {
       "name": "Formulário de contacto",
       "presets": {
-        "name": "Formulário de contacto"
+        "name": "Formulário de contacto",
+        "category": "Interação com comprador"
       }
     },
     "custom-liquid": {
@@ -453,7 +459,8 @@
         }
       },
       "presets": {
-        "name": "Liquid personalizado"
+        "name": "Liquid personalizado",
+        "category": "Texto"
       }
     },
     "featured-blog": {
@@ -485,8 +492,28 @@
           "label": "Mostrar autor"
         }
       },
+      "blocks": {
+        "title": {
+          "settings": {
+            "show_date": {
+              "label": "Mostrar data"
+            },
+            "show_author": {
+              "label": "Mostrar autor"
+            }
+          },
+          "name": "Título"
+        },
+        "summary": {
+          "name": "Resumo"
+        },
+        "link": {
+          "name": "Ligação"
+        }
+      },
       "presets": {
-        "name": "Publicações no blogue"
+        "name": "Publicações no blogue",
+        "category": "Blogue"
       }
     },
     "featured-collection": {
@@ -540,7 +567,8 @@
         }
       },
       "presets": {
-        "name": "Coleção em destaque"
+        "name": "Coleção em destaque",
+        "category": "Coleção"
       }
     },
     "footer": {
@@ -797,7 +825,8 @@
         }
       },
       "presets": {
-        "name": "Faixa de imagem"
+        "name": "Faixa de imagem",
+        "category": "Imagem"
       }
     },
     "image-with-text": {
@@ -878,7 +907,8 @@
         }
       },
       "presets": {
-        "name": "Imagem com texto"
+        "name": "Imagem com texto",
+        "category": "Imagem"
       }
     },
     "main-article": {
@@ -892,15 +922,12 @@
                 "label": "Adaptar à imagem"
               },
               "options__2": {
-                "label": "Pequeno"
+                "label": "Média"
               },
               "options__3": {
-                "label": "Médio"
-              },
-              "info": "Para obter os melhores resultados, utilize uma imagem com uma proporção de 16:9. [Saber mais](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)",
-              "options__4": {
                 "label": "Grande"
-              }
+              },
+              "info": "Para obter os melhores resultados, utilize uma imagem com uma proporção de 16:9. [Saber mais](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
             }
           },
           "name": "Imagem em destaque"
@@ -918,6 +945,9 @@
         },
         "content": {
           "name": "Conteúdo"
+        },
+        "social_sharing": {
+          "name": "Botões de partilha nas redes sociais"
         },
         "share": {
           "name": "Partilhar",
@@ -953,31 +983,25 @@
         },
         "show_author": {
           "label": "Mostrar autor"
+        }
+      },
+      "blocks": {
+        "title": {
+          "settings": {
+            "show_date": {
+              "label": "Mostrar data"
+            },
+            "show_author": {
+              "label": "Mostrar autor"
+            }
+          },
+          "name": "Título"
         },
-        "layout": {
-          "label": "Esquema em ecrãs grandes",
-          "options__1": {
-            "label": "Grelha"
-          },
-          "options__2": {
-            "label": "Colagem"
-          }
+        "summary": {
+          "name": "Resumo"
         },
-        "image_height": {
-          "label": "Altura da imagem em destaque",
-          "options__1": {
-            "label": "Adaptar à imagem"
-          },
-          "options__2": {
-            "label": "Pequeno"
-          },
-          "options__3": {
-            "label": "Médio"
-          },
-          "options__4": {
-            "label": "Grande"
-          },
-          "info": "Para obter os melhores resultados, utilize uma imagem com uma proporção de 2:3. [Saber mais](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
+        "link": {
+          "name": "Ligação"
         }
       }
     },
@@ -1050,6 +1074,9 @@
         "header__1": {
           "content": "Filtragem e ordenação"
         },
+        "header__2": {
+          "content": "Filtragem e ordenação"
+        },
         "enable_tags": {
           "label": "Ativar filtragem",
           "info": "[Personalizar filtros](/admin/menus)"
@@ -1066,6 +1093,9 @@
         },
         "show_image_outline": {
           "label": "Mostrar borda da imagem"
+        },
+        "enable_sort": {
+          "label": "Ativar ordenação"
         },
         "collapse_on_larger_devices": {
           "label": "Fechar em ecrãs largos"
@@ -1243,6 +1273,10 @@
         },
         "share": {
           "settings": {
+            "header": {
+              "content": "Partilhar",
+              "info": "Quando publica uma ligação da sua loja online nas redes sociais, é apresentada a imagem em destaque para essa página. [Saber mais](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images). Defina um título e uma descrição para a sua loja online. [Saber mais](https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords#set-a-title-and-description-for-your-online-store)"
+            },
             "featured_image_info": {
               "content": "Se incluir uma ligação nas publicações das redes sociais, a imagem em destaque da página será demonstrada como a imagem de pré-visualização. [Saber mais](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)."
             },
@@ -1531,7 +1565,8 @@
         }
       },
       "presets": {
-        "name": "Várias colunas"
+        "name": "Várias colunas",
+        "category": "Imagem"
       }
     },
     "newsletter": {
@@ -1584,7 +1619,8 @@
         }
       },
       "presets": {
-        "name": "Registo de e-mail"
+        "name": "Registo de e-mail",
+        "category": "Interação com comprador"
       }
     },
     "page": {
@@ -1595,14 +1631,22 @@
         }
       },
       "presets": {
-        "name": "Página"
+        "name": "Página",
+        "category": "Interação com comprador"
       }
     },
     "product-recommendations": {
       "name": "Recomendações de produtos",
       "settings": {
+        "header": {
+          "info": "As recomendações dinâmicas utilizam informações de encomenda e de produto para alterar e melhorar ao longo do tempo. [Saber mais](https://help.shopify.com/en/themes/development/recommended-products)"
+        },
         "heading": {
           "label": "Título"
+        },
+        "header__1": {
+          "content": "Recomendações de produtos",
+          "info": "As recomendações dinâmicas utilizam informações de encomenda e de produto para alterar e melhorar ao longo do tempo. [Saber mais](https://help.shopify.com/en/themes/development/recommended-products)"
         },
         "header__2": {
           "content": "Cartão de produtos"
@@ -1710,7 +1754,8 @@
         }
       },
       "presets": {
-        "name": "Texto formatado"
+        "name": "Texto formatado",
+        "category": "Texto"
       }
     },
     "apps": {

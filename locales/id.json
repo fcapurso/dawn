@@ -8,7 +8,7 @@
       "login_form_error": "Sandi salah!",
       "login_form_submit": "Masuk",
       "modal": "Modal sandi",
-      "admin_link_html": "Anda pemilik toko? <a href=\"/admin\" class=\"link underlined-link\">Login di sini</a>",
+      "admin_link_html": "Anda pemilik toko? <a href=\"\/admin\" class=\"link underlined-link\">Login di sini<\/a>",
       "powered_by_shopify_html": "Toko ini didukung oleh {{ shopify }}"
     },
     "social": {
@@ -45,6 +45,7 @@
     },
     "share": {
       "copy_to_clipboard": "Salin tautan",
+      "share": "Bagikan",
       "share_url": "Tautan",
       "success_message": "Tautan disalin ke clipboard",
       "close": "Tutup bagikan"
@@ -78,6 +79,7 @@
     "article": {
       "blog": "Blog",
       "read_more_title": "Baca selengkapnya: {{ title }}",
+      "read_more": "Baca selengkapnya",
       "comments": {
         "one": "{{ count }} komentar",
         "other": "{{ count }} komentar"
@@ -127,8 +129,8 @@
         "view_store_info": "Lihat informasi toko",
         "check_other_stores": "Periksa ketersediaan di toko lainnya",
         "pick_up_available": "Pengambilan tersedia",
-        "pick_up_available_at_html": "Pengambilan dapat dilakukan di <span class=\"color-foreground\">{{ location_name }}</span>",
-        "pick_up_unavailable_at_html": "Saat ini, pengambilan tidak dapat dilakukan di <span class=\"color-foreground\">{{ location_name }}</span>",
+        "pick_up_available_at_html": "Pengambilan dapat dilakukan di <span class=\"color-foreground\">{{ location_name }}<\/span>",
+        "pick_up_unavailable_at_html": "Saat ini, pengambilan tidak dapat dilakukan di <span class=\"color-foreground\">{{ location_name }}<\/span>",
         "unavailable": "Tidak dapat memuat ketersediaan pengambilan",
         "refresh": "Muat ulang"
       },
@@ -138,56 +140,27 @@
         "play_model": "Putar Penampil 3D",
         "play_video": "Putar video"
       },
-      "view_full_details": "Lihat detail lengkap",
-      "include_taxes": "Termasuk pajak.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Biaya pengiriman</a> dihitung saat checkout."
+      "view_full_details": "Lihat detail lengkap"
     },
     "modal": {
       "label": "Galeri media"
-    },
-    "facets": {
-      "apply": "Pakai",
-      "clear": "Hapus",
-      "clear_all": "Hapus semua",
-      "from": "Dari",
-      "filter_and_sort": "Filter dan urutkan",
-      "filter_by_label": "Filter:",
-      "filter_button": "Filter",
-      "filters_selected": {
-        "one": "{{ count }} dipilih",
-        "other": "{{ count }} dipilih"
-      },
-      "max_price": "Harga tertinggi adalah {{ price }}",
-      "product_count": {
-        "one": "{{ product_count }} dari {{ count }} produk",
-        "other": "{{ product_count }} dari {{ count }} produk"
-      },
-      "product_count_simple": {
-        "one": "{{ count }} produk",
-        "other": "{{ count }} produk"
-      },
-      "reset": "Reset",
-      "sort_button": "Urutkan",
-      "sort_by_label": "Urutkan berdasarkan:",
-      "to": "Sampai",
-      "clear_filter": "Hapus filter"
     }
   },
   "templates": {
+    "404": {
+      "title": "Halaman tidak ditemukan",
+      "subtext": "404"
+    },
     "search": {
       "no_results": "Tidak ada hasil ditemukan untuk “{{ terms }}”. Periksa ejaan atau gunakan kata atau frasa yang berbeda.",
       "results_with_count": {
-        "one": "{{ count }} hasil",
-        "other": "{{ count }} hasil"
+        "one": "{{ count }} hasil ditemukan untuk “{{ terms }}”",
+        "other": "{{ count }} hasil ditemukan untuk “{{ terms }}”"
       },
       "title": "Hasil pencarian",
       "page": "Halaman",
       "products": "Produk",
-      "search_for": "Cari “{{ terms }}”",
-      "results_with_count_and_term": {
-        "one": "{{ count }} hasil ditemukan untuk “{{ terms }}”",
-        "other": "{{ count }} hasil ditemukan untuk “{{ terms }}”"
-      }
+      "search_for": "Cari “{{ terms }}”"
     },
     "cart": {
       "cart": "Keranjang"
@@ -202,10 +175,6 @@
         "post_success": "Terima kasih sudah menghubungi kami. Kami akan segera menghubungi Anda.",
         "error_heading": "Mohon sesuaikan:"
       }
-    },
-    "404": {
-      "title": "Halaman tidak ditemukan",
-      "subtext": "404"
     }
   },
   "sections": {
@@ -228,9 +197,9 @@
       "empty": "Keranjang Anda kosong",
       "cart_error": "Terjadi kesalahan saat memperbarui keranjang. Silakan coba lagi.",
       "cart_quantity_error_html": "Hanya dapat menambahkan [quantity] item ini ke keranjang Anda.",
-      "taxes_and_shipping_policy_at_checkout_html": "Pajak dan <a href=\"{{ link }}\">biaya pengiriman</a> dihitung saat checkout",
+      "taxes_and_shipping_policy_at_checkout_html": "Pajak dan <a href=\"{{ link }}\">biaya pengiriman<\/a> dihitung saat checkout",
       "taxes_included_but_shipping_at_checkout": "Termasuk pajak dan biaya pengiriman dihitung saat checkout",
-      "taxes_included_and_shipping_policy_html": "Termasuk pajak. <a href=\"{{ link }}\">Biaya pengiriman</a> dihitung saat checkout.",
+      "taxes_included_and_shipping_policy_html": "Termasuk pajak. <a href=\"{{ link }}\">Biaya pengiriman<\/a> dihitung saat checkout.",
       "taxes_and_shipping_at_checkout": "Pajak dan biaya pengiriman dihitung saat checkout",
       "headings": {
         "product": "Produk",
@@ -241,11 +210,12 @@
       "update": "Perbarui",
       "login": {
         "title": "Sudah punya akun?",
-        "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Login</a> untuk checkout lebih cepat."
+        "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Login<\/a> untuk checkout lebih cepat."
       }
     },
     "footer": {
-      "payment": "Metode pembayaran"
+      "payment": "Metode pembayaran",
+      "social_placeholder": "Ikuti kami di media sosial!"
     },
     "featured_blog": {
       "view_all": "Lihat semua",
@@ -261,18 +231,42 @@
     },
     "collection_template": {
       "title": "Koleksi",
+      "sort_by_label": "Urutkan berdasarkan:",
+      "sort_button": "Urutkan",
       "empty": "Tidak ada produk yang ditemukan",
-      "use_fewer_filters_html": "Gunakan lebih sedikit filter atau <a class=\"{{ class }}\" href=\"{{ link }}\">hapus semua</a>"
+      "apply": "Pakai",
+      "clear": "Hapus",
+      "clear_all": "Hapus semua",
+      "from": "Dari",
+      "filter_and_sort": "Filter dan urutkan",
+      "filter_by_label": "Filter:",
+      "filter_button": "Filter",
+      "max_price": "Harga tertinggi adalah {{ price }}",
+      "reset": "Reset",
+      "to": "Untuk",
+      "use_fewer_filters_html": "Gunakan lebih sedikit filter atau <a class=\"{{ class }}\" href=\"{{ link }}\">hapus semua<\/a>",
+      "product_count": {
+        "one": "{{ product_count }} dari {{ count }} produk",
+        "other": "{{ product_count }} dari {{ count }} produk"
+      },
+      "filters_selected": {
+        "one": "{{ count }} dipilih",
+        "other": "{{ count }} dipilih"
+      },
+      "product_count_simple": {
+        "one": "{{ count }} produk",
+        "other": "{{ count }} produk"
+      }
     },
     "video": {
       "load_video": "Muat video: {{ description }}"
     }
   },
   "localization": {
-    "country_label": "Negara/Wilayah",
+    "country_label": "Negara\/Wilayah",
     "language_label": "Bahasa",
     "update_language": "Perbarui bahasa",
-    "update_country": "Perbarui negara/wilayah"
+    "update_country": "Perbarui negara\/wilayah"
   },
   "customer": {
     "account": {
@@ -301,7 +295,7 @@
       "address1": "Alamat 1",
       "address2": "Alamat 2",
       "city": "Kota",
-      "country": "Negara/Wilayah",
+      "country": "Negara\/Wilayah",
       "province": "Provinsi",
       "zip": "Kode pos",
       "phone": "Telepon",
@@ -395,6 +389,51 @@
       "expired": "Kedaluwarsa",
       "copy_code_success": "Kode berhasil disalin",
       "print_gift_card": "Cetak"
+    }
+  },
+  "pagefly": {
+    "products": {
+      "product": {
+        "regular_price": "Regular price",
+        "sold_out": "Sold out",
+        "unavailable": "Unavailable",
+        "on_sale": "Sale",
+        "quantity": "Quantity",
+        "add_to_cart": "Add to cart",
+        "back_to_collection": "Back to {{ title }}",
+        "view_details": "View details"
+      }
+    },
+    "article": {
+      "tags": "Tags:",
+      "all_topics": "All topics",
+      "by_author": "by {{ author }}",
+      "posted_in": "Posted in",
+      "read_more": "Read more",
+      "back_to_blog": "Back to {{ title }}"
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "post": "Post comment",
+      "moderated": "Please note, comments must be approved before they are published",
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "success": "Your comment was posted successfully! Thank you!",
+      "comments_with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "password_page": {
+      "login_form_message": "Enter store using password:",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "signup_form_email_label": "Email",
+      "signup_form_success": "We will send you an email right before we open!",
+      "password_link": "Enter using password"
     }
   }
 }

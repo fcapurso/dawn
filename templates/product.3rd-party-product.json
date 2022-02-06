@@ -41,7 +41,7 @@
             "show_dynamic_checkout": false
           }
         },
-        "1c6a508a-2efd-4a7e-8895-7426a62831e2": {
+        "0e3b24ec-23ea-43ca-8544-8618d2891efd": {
           "type": "custom_liquid",
           "settings": {
             "custom_liquid": "<h4>Over {{product.title}}<\/h4>"
@@ -51,34 +51,16 @@
           "type": "description",
           "settings": {}
         },
-        "d9d57531-8fb3-4f19-aff8-dcc79e880a0b": {
+        "b0c1e250-cb86-4032-9499-c66629e0661d": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Gebruik",
-            "content": "<p>{{ product.metafields.my_fields.advice_for_use | metafield_tag }}<\/p>",
-            "page": "",
-            "icon": "heart"
-          }
-        },
-        "50d02c70-b33d-4d7c-9d98-d473933a7953": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Wat zit er allemaal in?",
-            "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}<\/p>",
-            "page": "",
-            "icon": "leaf"
-          }
-        },
-        "afa09ba8-757b-43a3-ae27-f7a4cf57df29": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "",
+            "heading": "Over {{ product.vendor }}",
             "content": "",
-            "page": "goed-om-te-weten",
+            "page": "{{ product.metafields.my_fields.brand_info.value }}",
             "icon": "star"
           }
         },
-        "1c2e2771-24f3-41de-b2d9-31660e17fccf": {
+        "e26a61b5-490e-4c66-9fa6-031e9918841e": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Verzendkosten",
@@ -102,17 +84,15 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
-        "1c6a508a-2efd-4a7e-8895-7426a62831e2",
+        "0e3b24ec-23ea-43ca-8544-8618d2891efd",
         "description",
-        "d9d57531-8fb3-4f19-aff8-dcc79e880a0b",
-        "50d02c70-b33d-4d7c-9d98-d473933a7953",
-        "afa09ba8-757b-43a3-ae27-f7a4cf57df29",
-        "1c2e2771-24f3-41de-b2d9-31660e17fccf",
+        "b0c1e250-cb86-4032-9499-c66629e0661d",
+        "e26a61b5-490e-4c66-9fa6-031e9918841e",
         "share"
       ],
       "settings": {
-        "enable_sticky_info": true,
-        "hide_variants": false,
+        "enable_sticky_info": false,
+        "hide_variants": true,
         "enable_video_looping": false
       }
     },

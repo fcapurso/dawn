@@ -33,18 +33,6 @@
         },
         "colors_background_2": {
           "label": "Bakgrunn 2"
-        },
-        "gradient_accent_1": {
-          "label": "Aksent 1-fargeovergang"
-        },
-        "gradient_accent_2": {
-          "label": "Aksent 2-fargeovergang"
-        },
-        "gradient_background_1": {
-          "label": "Bakgrunn 1-fargeovergang"
-        },
-        "gradient_background_2": {
-          "label": "Bakgrunn 2-fargeovergang"
         }
       }
     },
@@ -117,6 +105,21 @@
     "social-media": {
       "name": "Sosiale medier",
       "settings": {
+        "share_facebook": {
+          "label": "Del på Facebook"
+        },
+        "share_twitter": {
+          "label": "Tweet på Twitter"
+        },
+        "share_pinterest": {
+          "label": "Pin på Pinterest"
+        },
+        "header__1": {
+          "content": "Knapper for deling på sosiale medier"
+        },
+        "header__2": {
+          "content": "Sosiale kontoer"
+        },
         "social_twitter_link": {
           "label": "Twitter",
           "info": "https://twitter.com/shopify"
@@ -483,6 +486,25 @@
         },
         "show_author": {
           "label": "Vis forfatter"
+        }
+      },
+      "blocks": {
+        "title": {
+          "name": "Tittel",
+          "settings": {
+            "show_date": {
+              "label": "Vis dato"
+            },
+            "show_author": {
+              "label": "Vis forfatter"
+            }
+          }
+        },
+        "summary": {
+          "name": "Utdrag"
+        },
+        "link": {
+          "name": "Kobling"
         }
       },
       "presets": {
@@ -893,15 +915,12 @@
                 "label": "Tilpass til bilde"
               },
               "options__2": {
-                "label": "Liten"
-              },
-              "options__3": {
                 "label": "Middels"
               },
-              "info": "Bruk et bilde med størrelsesforhold 16:9 for best resultat. [Finn ut mer](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)",
-              "options__4": {
+              "options__3": {
                 "label": "Stor"
-              }
+              },
+              "info": "Bruk et bilde med størrelsesforhold 16:9 for best resultat. [Finn ut mer](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
             }
           }
         },
@@ -918,6 +937,9 @@
         },
         "content": {
           "name": "Innhold"
+        },
+        "social_sharing": {
+          "name": "Knapper for deling på sosiale medier"
         },
         "share": {
           "name": "Del",
@@ -953,31 +975,25 @@
         },
         "show_author": {
           "label": "Vis forfatter"
-        },
-        "layout": {
-          "label": "Layout på store skjermer",
-          "options__1": {
-            "label": "Rutenett"
-          },
-          "options__2": {
-            "label": "Fotomontasje"
+        }
+      },
+      "blocks": {
+        "title": {
+          "name": "Tittel",
+          "settings": {
+            "show_date": {
+              "label": "Vis dato"
+            },
+            "show_author": {
+              "label": "Vis forfatter"
+            }
           }
         },
-        "image_height": {
-          "label": "Høyde på fremhevet bilde",
-          "options__1": {
-            "label": "Tilpass til bilde"
-          },
-          "options__2": {
-            "label": "Liten"
-          },
-          "options__3": {
-            "label": "Middels"
-          },
-          "options__4": {
-            "label": "Stor"
-          },
-          "info": "Bruk et bilde med størrelsesforhold 2:3 for best resultat. [Finn ut mer](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
+        "summary": {
+          "name": "Utdrag"
+        },
+        "link": {
+          "name": "Kobling"
         }
       }
     },
@@ -1066,6 +1082,9 @@
         },
         "show_image_outline": {
           "label": "Vis kantlinje for bilde"
+        },
+        "enable_sort": {
+          "label": "Aktiver sortering"
         },
         "collapse_on_larger_devices": {
           "label": "Lukk på større skjermer"
@@ -1603,6 +1622,9 @@
       "settings": {
         "heading": {
           "label": "Overskrift"
+        },
+        "header__1": {
+          "content": "Produktanbefalinger"
         },
         "header__2": {
           "content": "Produktkort"

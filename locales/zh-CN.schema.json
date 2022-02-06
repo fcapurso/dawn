@@ -33,18 +33,6 @@
         },
         "colors_background_2": {
           "label": "背景 2"
-        },
-        "gradient_accent_1": {
-          "label": "强调色 1 渐变"
-        },
-        "gradient_accent_2": {
-          "label": "强调色 2 渐变"
-        },
-        "gradient_background_1": {
-          "label": "背景 1 渐变"
-        },
-        "gradient_background_2": {
-          "label": "背景 2 渐变"
         }
       }
     },
@@ -117,6 +105,21 @@
     "social-media": {
       "name": "社交媒体",
       "settings": {
+        "share_facebook": {
+          "label": "在 Facebook 上共享"
+        },
+        "share_twitter": {
+          "label": "在 Twitter 上发推文"
+        },
+        "share_pinterest": {
+          "label": "固定在 Pinterest 上"
+        },
+        "header__1": {
+          "content": "社交分享选项"
+        },
+        "header__2": {
+          "content": "社交媒体账户"
+        },
         "social_twitter_link": {
           "label": "Twitter",
           "info": "https://twitter.com/shopify"
@@ -374,7 +377,8 @@
         }
       },
       "presets": {
-        "name": "拼贴画"
+        "name": "拼贴画",
+        "category": "图片"
       }
     },
     "collection-list": {
@@ -435,13 +439,15 @@
         }
       },
       "presets": {
-        "name": "产品系列列表"
+        "name": "产品系列列表",
+        "category": "产品系列"
       }
     },
     "contact-form": {
       "name": "联系表",
       "presets": {
-        "name": "联系表"
+        "name": "联系表",
+        "category": "买家参与度"
       }
     },
     "custom-liquid": {
@@ -453,7 +459,8 @@
         }
       },
       "presets": {
-        "name": "自定义 Liquid"
+        "name": "自定义 Liquid",
+        "category": "文本"
       }
     },
     "featured-blog": {
@@ -485,8 +492,28 @@
           "label": "显示作者"
         }
       },
+      "blocks": {
+        "title": {
+          "settings": {
+            "show_date": {
+              "label": "显示日期"
+            },
+            "show_author": {
+              "label": "显示作者"
+            }
+          },
+          "name": "标题"
+        },
+        "summary": {
+          "name": "摘录"
+        },
+        "link": {
+          "name": "链接"
+        }
+      },
       "presets": {
-        "name": "博客文章"
+        "name": "博客文章",
+        "category": "博客"
       }
     },
     "featured-collection": {
@@ -540,7 +567,8 @@
         }
       },
       "presets": {
-        "name": "特色产品系列"
+        "name": "特色产品系列",
+        "category": "产品系列"
       }
     },
     "footer": {
@@ -797,11 +825,12 @@
         }
       },
       "presets": {
-        "name": "图片横幅"
+        "name": "图片横幅",
+        "category": "图片"
       }
     },
     "image-with-text": {
-      "name": "带文本的图片",
+      "name": "带文本图片",
       "settings": {
         "image": {
           "label": "图片"
@@ -878,7 +907,8 @@
         }
       },
       "presets": {
-        "name": "带文本的图片"
+        "name": "带文本图片",
+        "category": "图片"
       }
     },
     "main-article": {
@@ -892,15 +922,12 @@
                 "label": "适应图片"
               },
               "options__2": {
-                "label": "小"
-              },
-              "options__3": {
                 "label": "中"
               },
-              "info": "若要获得最佳效果，请使用纵横比为 16:9 的图片。[了解详细信息](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)",
-              "options__4": {
+              "options__3": {
                 "label": "大"
-              }
+              },
+              "info": "若要获得最佳效果，请使用纵横比为 16:9 的图片。[了解详细信息](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
             }
           },
           "name": "配图"
@@ -918,6 +945,9 @@
         },
         "content": {
           "name": "内容"
+        },
+        "social_sharing": {
+          "name": "社交分享按钮"
         },
         "share": {
           "name": "分享",
@@ -953,31 +983,25 @@
         },
         "show_author": {
           "label": "显示作者"
+        }
+      },
+      "blocks": {
+        "title": {
+          "settings": {
+            "show_date": {
+              "label": "显示日期"
+            },
+            "show_author": {
+              "label": "显示作者"
+            }
+          },
+          "name": "标题"
         },
-        "layout": {
-          "label": "在大屏幕上的布局",
-          "options__1": {
-            "label": "网格"
-          },
-          "options__2": {
-            "label": "拼贴"
-          }
+        "summary": {
+          "name": "摘录"
         },
-        "image_height": {
-          "label": "配图高度",
-          "options__1": {
-            "label": "适应图片"
-          },
-          "options__2": {
-            "label": "小"
-          },
-          "options__3": {
-            "label": "中"
-          },
-          "options__4": {
-            "label": "大"
-          },
-          "info": "若要获得最佳效果，请使用纵横比为 2:3 的图片。[了解详细信息](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
+        "link": {
+          "name": "链接"
         }
       }
     },
@@ -1050,6 +1074,9 @@
         "header__1": {
           "content": "筛选和排序"
         },
+        "header__2": {
+          "content": "筛选和排序"
+        },
         "enable_tags": {
           "label": "启用筛选",
           "info": "[自定义筛选器](/admin/menus)"
@@ -1066,6 +1093,9 @@
         },
         "show_image_outline": {
           "label": "显示图片边框"
+        },
+        "enable_sort": {
+          "label": "启用排序"
         },
         "collapse_on_larger_devices": {
           "label": "在较大屏幕上时进行折叠"
@@ -1243,6 +1273,10 @@
         },
         "share": {
           "settings": {
+            "header": {
+              "content": "共享",
+              "info": "当您从您的在线商店向社交媒体中发布链接时，将会显示该页面的配图。[了解详细信息](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)。为您的在线商店设置标题和描述。[了解详细信息](https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords#set-a-title-and-description-for-your-online-store)"
+            },
             "featured_image_info": {
               "content": "如果您在社交媒体帖子中包含链接，该页面的配图便会作为预览图片显示。[了解详细信息](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)。"
             },
@@ -1531,7 +1565,8 @@
         }
       },
       "presets": {
-        "name": "多列"
+        "name": "多列",
+        "category": "图片"
       }
     },
     "newsletter": {
@@ -1584,7 +1619,8 @@
         }
       },
       "presets": {
-        "name": "电子邮件注册信息"
+        "name": "电子邮件注册信息",
+        "category": "买家参与度"
       }
     },
     "page": {
@@ -1595,14 +1631,22 @@
         }
       },
       "presets": {
-        "name": "页面"
+        "name": "页面",
+        "category": "买家参与度"
       }
     },
     "product-recommendations": {
       "name": "产品推荐",
       "settings": {
+        "header": {
+          "info": "动态推荐使用订单和产品信息来随着时间而变化和改进。[了解详细信息](https://help.shopify.com/en/themes/development/recommended-products)"
+        },
         "heading": {
           "label": "标题"
+        },
+        "header__1": {
+          "content": "产品推荐",
+          "info": "动态推荐使用订单和产品信息来随着时间而变化和改进。[了解详细信息](https://help.shopify.com/en/themes/development/recommended-products)"
         },
         "header__2": {
           "content": "产品卡"
@@ -1710,7 +1754,8 @@
         }
       },
       "presets": {
-        "name": "富文本"
+        "name": "富文本",
+        "category": "文本"
       }
     },
     "apps": {

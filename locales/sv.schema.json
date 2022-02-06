@@ -33,18 +33,6 @@
         },
         "colors_background_2": {
           "label": "Bakgrund 2"
-        },
-        "gradient_accent_1": {
-          "label": "Tonad accent 1"
-        },
-        "gradient_accent_2": {
-          "label": "Tonad accent 2"
-        },
-        "gradient_background_1": {
-          "label": "Tonad bakgrund 1"
-        },
-        "gradient_background_2": {
-          "label": "Tonad bakgrund 2"
         }
       }
     },
@@ -117,6 +105,21 @@
     "social-media": {
       "name": "Sociala medier",
       "settings": {
+        "share_facebook": {
+          "label": "Dela på Facebook"
+        },
+        "share_twitter": {
+          "label": "Tweet på Twitter"
+        },
+        "share_pinterest": {
+          "label": "Spara en pin på Pinterest"
+        },
+        "header__1": {
+          "content": "Alternativ för social delning"
+        },
+        "header__2": {
+          "content": "Sociala konton"
+        },
         "social_twitter_link": {
           "label": "Twitter",
           "info": "https://twitter.com/shopify"
@@ -374,7 +377,8 @@
         }
       },
       "presets": {
-        "name": "Kollage"
+        "name": "Kollage",
+        "category": "Bild"
       }
     },
     "collection-list": {
@@ -435,13 +439,15 @@
         }
       },
       "presets": {
-        "name": "Kollektionslista"
+        "name": "Kollektionslista",
+        "category": "Produktserie"
       }
     },
     "contact-form": {
       "name": "Kontaktformulär",
       "presets": {
-        "name": "Kontaktformulär"
+        "name": "Kontaktformulär",
+        "category": "Köparengagemang"
       }
     },
     "custom-liquid": {
@@ -453,7 +459,8 @@
         }
       },
       "presets": {
-        "name": "Anpassa Liquid"
+        "name": "Anpassa Liquid",
+        "category": "Text"
       }
     },
     "featured-blog": {
@@ -485,8 +492,28 @@
           "label": "Visa författare"
         }
       },
+      "blocks": {
+        "title": {
+          "settings": {
+            "show_date": {
+              "label": "Visa datum"
+            },
+            "show_author": {
+              "label": "Visa författare"
+            }
+          },
+          "name": "Titel"
+        },
+        "summary": {
+          "name": "Utdrag"
+        },
+        "link": {
+          "name": "Länk"
+        }
+      },
       "presets": {
-        "name": "Blogginlägg"
+        "name": "Blogginlägg",
+        "category": "Blogg"
       }
     },
     "featured-collection": {
@@ -540,7 +567,8 @@
         }
       },
       "presets": {
-        "name": "Utvald produktserie"
+        "name": "Utvald produktserie",
+        "category": "Produktserie"
       }
     },
     "footer": {
@@ -797,7 +825,8 @@
         }
       },
       "presets": {
-        "name": "Bildbanner"
+        "name": "Bildbanner",
+        "category": "Bild"
       }
     },
     "image-with-text": {
@@ -878,7 +907,8 @@
         }
       },
       "presets": {
-        "name": "Bild med text"
+        "name": "Bild med text",
+        "category": "Bild"
       }
     },
     "main-article": {
@@ -892,15 +922,12 @@
                 "label": "Anpassa till bild"
               },
               "options__2": {
-                "label": "Liten"
-              },
-              "options__3": {
                 "label": "Medel"
               },
-              "info": "Använd en bild med bildformat 16:9, för bästa resultat. [Mer information](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)",
-              "options__4": {
+              "options__3": {
                 "label": "Stor"
-              }
+              },
+              "info": "Använd en bild med bildformat 16:9, för bästa resultat. [Mer information](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
             }
           },
           "name": "Utvald bild"
@@ -918,6 +945,9 @@
         },
         "content": {
           "name": "Innehåll"
+        },
+        "social_sharing": {
+          "name": "Delningsknappar på sociala medier"
         },
         "share": {
           "name": "Dela",
@@ -953,31 +983,25 @@
         },
         "show_author": {
           "label": "Visa författare"
+        }
+      },
+      "blocks": {
+        "title": {
+          "settings": {
+            "show_date": {
+              "label": "Visa datum"
+            },
+            "show_author": {
+              "label": "Visa författare"
+            }
+          },
+          "name": "Titel"
         },
-        "layout": {
-          "label": "Layout på stora skärmar",
-          "options__1": {
-            "label": "Rutnät"
-          },
-          "options__2": {
-            "label": "Kollage"
-          }
+        "summary": {
+          "name": "Utdrag"
         },
-        "image_height": {
-          "label": "Bildhöjd på utvald bild",
-          "options__1": {
-            "label": "Anpassa till bild"
-          },
-          "options__2": {
-            "label": "Liten"
-          },
-          "options__3": {
-            "label": "Medel"
-          },
-          "options__4": {
-            "label": "Stor"
-          },
-          "info": "Använd en bild med bildformat 2:3, för bästa resultat. [Mer information](https://help.shopify.com/en/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)"
+        "link": {
+          "name": "Länk"
         }
       }
     },
@@ -1050,6 +1074,9 @@
         "header__1": {
           "content": "Filtrering och sortering"
         },
+        "header__2": {
+          "content": "Filtrering och sortering"
+        },
         "enable_tags": {
           "label": "Aktivera filtrering",
           "info": "[Kundfilter](/admin/menus)"
@@ -1066,6 +1093,9 @@
         },
         "show_image_outline": {
           "label": "Visa bildgräns"
+        },
+        "enable_sort": {
+          "label": "Aktivera sortering"
         },
         "collapse_on_larger_devices": {
           "label": "Dölj på större skärmar"
@@ -1243,6 +1273,10 @@
         },
         "share": {
           "settings": {
+            "header": {
+              "content": "Dela",
+              "info": "När du delar en länk från din webbutik via sociala medier visas den utvalda bilden för den sidan. [Läs mer](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images). Ange en titel och beskrivning för din webbutik. [Läs mer](https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords#set-a-title-and-description-for-your-online-store)"
+            },
             "featured_image_info": {
               "content": "Om du inkluderar en länk i inlägg på sociala medier kommer sidans utvalda bild att visas som förhandsgranskningsbild. [Läs mer](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)."
             },
@@ -1531,7 +1565,8 @@
         }
       },
       "presets": {
-        "name": "Multikolumn"
+        "name": "Multikolumn",
+        "category": "Bild"
       }
     },
     "newsletter": {
@@ -1584,7 +1619,8 @@
         }
       },
       "presets": {
-        "name": "E-postregistrering"
+        "name": "E-postregistrering",
+        "category": "Köparengagemang"
       }
     },
     "page": {
@@ -1595,14 +1631,22 @@
         }
       },
       "presets": {
-        "name": "Sida"
+        "name": "Sida",
+        "category": "Köparengagemang"
       }
     },
     "product-recommendations": {
       "name": "Produktrekommendationer",
       "settings": {
+        "header": {
+          "info": "Dynamiska rekommendationer använder order- och produktinformation för att ändras och förbättras över tid. [Läs mer](https://help.shopify.com/en/themes/development/recommended-products)"
+        },
         "heading": {
           "label": "Rubrik"
+        },
+        "header__1": {
+          "content": "Produktrekommendationer",
+          "info": "Dynamiska rekommendationer använder order- och produktinformation för att ändras och förbättras över tid. [Läs mer](https://help.shopify.com/en/themes/development/recommended-products)"
         },
         "header__2": {
           "content": "Produktkort"
@@ -1710,7 +1754,8 @@
         }
       },
       "presets": {
-        "name": "Rich text"
+        "name": "Rich text",
+        "category": "Text"
       }
     },
     "apps": {
