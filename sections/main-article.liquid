@@ -56,7 +56,7 @@
                 {% render 'icon-share' %}
                 {{ block.settings.share_label | escape }}
               </button>
-              <details>
+              <details id="Details-{{ block.id }}-{{ section.id }}">
                 <summary class="share-button__button">
                   {% render 'icon-share' %}
                   {{ block.settings.share_label | escape }}
@@ -91,8 +91,8 @@
     {%- endcase -%}
   {%- endfor -%}
 
-  <div class="element-margin center">
-    <a href="{{ blog.url }}" class="article-template__link link animate-arrow{% if blog.comments_enabled? == false %} spaced-section{% endif %}">
+  <div class="article-template__back element-margin-top center">
+    <a href="{{ blog.url }}" class="article-template__link link animate-arrow">
       <span class="icon-wrap">{% render 'icon-arrow' %}</span>
       {{ 'blogs.article.back_to_blog' | t: title: blog.title }}
     </a>
@@ -103,7 +103,7 @@
         {%- if article.comments_count > 0 -%}
           {%- assign anchorId = '#Comments-' | append: article.id -%}
 
-          <h2 id="Comments-{{ article.id }}">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
+          <h2 id="Comments-{{ article.id }}" tabindex="-1">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
           {% paginate article.comments by 5 %}
             <div class="article-template__comments">
               {%- if comment.status == 'pending' and comment.content -%}
@@ -137,7 +137,7 @@
           <h2>{{ 'blogs.article.comment_form_title' | t }}</h2>
           {%- if form.errors -%}
             <div class="form__message" role="alert">
-              <h3 class="form-status caption-large" tabindex="-1" autofocus>
+              <h3 class="form-status caption-large text-body" tabindex="-1" autofocus>
                 {% render 'icon-error' %} {{ 'templates.contact.form.error_heading' | t }}
               </h3>
             </div>
@@ -289,6 +289,7 @@
 {
   "name": "t:sections.main-article.name",
   "tag": "section",
+  "class": "section",
   "blocks": [
     {
       "type": "@app"

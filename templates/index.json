@@ -10,7 +10,7 @@
             "heading_size": "medium"
           }
         },
-        "b46c8a43-5827-4d30-a474-a470f6655093": {
+        "text": {
           "type": "text",
           "settings": {
             "text": "ambachtelijk gemaakte zeep met pure ingrediënten, zero-waste verpakt"
@@ -19,16 +19,16 @@
       },
       "block_order": [
         "heading",
-        "b46c8a43-5827-4d30-a474-a470f6655093"
+        "text"
       ],
       "settings": {
-        "image": "shopify:\/\/shop_images\/Zogezeept-359-Edit_ce87f719-1f22-4bcc-8901-3e6f8761893e.jpg",
-        "adapt_height_first_image": false,
-        "desktop_text_box_position": "center",
-        "show_text_box": false,
         "image_overlay_opacity": 10,
-        "color_scheme": "background-1",
+        "image_height": "large",
+        "desktop_content_position": "bottom-center",
+        "show_text_box": false,
         "stack_images_on_mobile": true,
+        "color_scheme": "background-1",
+        "image": "shopify:\/\/shop_images\/Zogezeept-359-Edit_ce87f719-1f22-4bcc-8901-3e6f8761893e.jpg",
         "show_text_below": false
       }
     },
@@ -55,10 +55,12 @@
       ],
       "settings": {
         "color_scheme": "background-1",
-        "full_width": true
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 0
       }
     },
-    "featured_products": {
+    "featured_collection": {
       "type": "featured-collection",
       "settings": {
         "title": "In de kijker",
@@ -71,27 +73,28 @@
         "add_image_padding": false,
         "show_image_outline": true,
         "show_vendor": false,
-        "show_rating": false
+        "show_rating": false,
+        "padding_top": 28
       }
     },
-    "1632494570617e7b33": {
+    "multicolumn": {
       "type": "multicolumn",
       "blocks": {
-        "1632494570617e7b33-0": {
+        "column1": {
           "type": "column",
           "settings": {
             "title": "",
             "text": "<p>De waaat? <\/p><p>Laat ik het een kwaliteitslabel noemen. Je kunt namelijk alleen maar lid worden van het gilde als je in orde bent met de Europese cosmetica wetgeving.<\/p><p>Dat betekent dat je recepten door een erkende instantie zijn getest en goedgekeurd, dat de registratie van je processen in orde is, evenals je verzekering.<\/p>"
           }
         },
-        "1fb45c1c-b0eb-4d11-8ac6-7e7981c3d02b": {
+        "column2": {
           "type": "column",
           "settings": {
             "title": "",
             "text": "<p>Belangrijk voor mij om kwalitatieve producten te bewijzen, belangrijk voor mijn klanten omdat ze weten dat ik niet 'Oeps, dit recept had blijkbaar iets teveel loog' kan voorhebben. Ook de verhoudingen van de essentiële oliën vallen zo gegarandeerd binnen de veiligheidsnormen.<\/p>"
           }
         },
-        "97cb68c6-f32d-4714-8576-5e93459e2094": {
+        "column3": {
           "type": "column",
           "settings": {
             "image": "shopify:\/\/shop_images\/Guild_for-electronic-publishing-1024x749.png",
@@ -101,9 +104,9 @@
         }
       },
       "block_order": [
-        "1632494570617e7b33-0",
-        "1fb45c1c-b0eb-4d11-8ac6-7e7981c3d02b",
-        "97cb68c6-f32d-4714-8576-5e93459e2094"
+        "column1",
+        "column2",
+        "column3"
       ],
       "settings": {
         "title": "Trots lid van de Guild of Craft Soap & Toiletry Makers",
@@ -121,6 +124,6 @@
     "image_banner",
     "rich_text",
     "featured_products",
-    "1632494570617e7b33"
+    "multicolumn"
   ]
 }

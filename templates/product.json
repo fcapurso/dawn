@@ -14,7 +14,7 @@
           "type": "title",
           "settings": {}
         },
-        "subtitle": {
+        "caption": {
           "type": "text",
           "settings": {
             "text": "{{ product.metafields.descriptors.subtitle.value }}",
@@ -51,7 +51,7 @@
           "type": "description",
           "settings": {}
         },
-        "e26a61b5-490e-4c66-9fa6-031e9918841e": {
+        "collapsible-row-0": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Verzendkosten",
@@ -70,6 +70,7 @@
       "block_order": [
         "vendor",
         "title",
+        "caption",
         "subtitle",
         "price",
         "variant_picker",
@@ -77,13 +78,14 @@
         "buy_buttons",
         "0e3b24ec-23ea-43ca-8544-8618d2891efd",
         "description",
-        "e26a61b5-490e-4c66-9fa6-031e9918841e",
+        "collapsible-row-0",
         "share"
       ],
       "settings": {
         "enable_sticky_info": false,
         "hide_variants": true,
-        "enable_video_looping": false
+        "enable_video_looping": false,
+        "padding_bottom": 12
       }
     },
     "product-recommendations": {
@@ -92,15 +94,17 @@
         "heading": "Ook leuk voor jou?",
         "image_ratio": "adapt",
         "show_secondary_image": false,
-        "add_image_padding": false,
         "show_image_outline": true,
         "show_vendor": false,
-        "show_rating": false
+        "show_rating": false,
+        "padding_bottom": 28
       }
     }
   },
   "order": [
     "main",
+    "image-with-text",
+    "multicolumn",
     "product-recommendations"
   ]
 }
