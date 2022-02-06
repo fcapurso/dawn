@@ -12,7 +12,8 @@
         },
         "title": {
           "type": "title",
-          "settings": {}
+          "settings": {
+          }
         },
         "subtitle": {
           "type": "text",
@@ -23,7 +24,8 @@
         },
         "price": {
           "type": "price",
-          "settings": {}
+          "settings": {
+          }
         },
         "variant_picker": {
           "type": "variant_picker",
@@ -33,7 +35,8 @@
         },
         "quantity_selector": {
           "type": "quantity_selector",
-          "settings": {}
+          "settings": {
+          }
         },
         "buy_buttons": {
           "type": "buy_buttons",
@@ -49,42 +52,43 @@
         },
         "description": {
           "type": "description",
-          "settings": {}
+          "settings": {
+          }
         },
         "advice_for_use": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Gebruik",
+            "icon": "heart",
             "content": "<p>{{ product.metafields.my_fields.advice_for_use | metafield_tag }}<\/p>",
-            "page": "",
-            "icon": "heart"
+            "page": ""
           }
         },
         "ingredients": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Wat zit er allemaal in?",
+            "icon": "leaf",
             "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}<\/p>",
-            "page": "",
-            "icon": "leaf"
+            "page": ""
           }
         },
         "good_to_know": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "",
+            "icon": "star",
             "content": "",
-            "page": "goed-om-te-weten",
-            "icon": "star"
+            "page": "goed-om-te-weten"
           }
         },
         "shipping_policy": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Verzendkosten",
+            "icon": "truck",
             "content": "<p><strong>Binnen België kost verzending €4,95, naar Nederland €5,95.<\/strong><\/p><p>Bestellingen worden met track & trace verzonden. De m\/v\/x van PostNl brengt het zo snel mogelijk naar jouw brievenbus. Reken gemiddeld op 3 werkdagen.<\/p>",
-            "page": "",
-            "icon": "truck"
+            "page": ""
           }
         },
         "share": {
@@ -119,13 +123,9 @@
     "product-recommendations": {
       "type": "product-recommendations",
       "settings": {
-        "heading": "Ook leuk voor jou?",
-        "image_ratio": "adapt",
-        "show_secondary_image": false,
-        "add_image_padding": false,
-        "show_image_outline": true,
-        "show_vendor": false,
-        "show_rating": false
+        "image_ratio": "square",
+        "show_secondary_image": true,
+        "padding_bottom": 28
       }
     }
   },
