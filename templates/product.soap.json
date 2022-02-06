@@ -115,9 +115,22 @@
         "hide_variants": false,
         "enable_video_looping": false
       }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "Ook leuk voor jou?",
+        "image_ratio": "adapt",
+        "show_secondary_image": false,
+        "add_image_padding": false,
+        "show_image_outline": true,
+        "show_vendor": false,
+        "show_rating": false
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "product-recommendations"
   ]
 }
