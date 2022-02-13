@@ -13,6 +13,11 @@
     "social_instagram_link": "https:\/\/instagram.com\/zogezeept",
     "favicon": "shopify:\/\/shop_images\/LogoAloneRound.png",
     "currency_code_enabled": true,
+    "checkout_logo_position": "left",
+    "checkout_logo_size": "medium",
+    "checkout_sidebar_background_color": "#fafafa",
+    "checkout_accent_color": "#207567",
+    "checkout_button_color": "#207567",
     "sections": {
       "announcement-bar": {
         "type": "announcement-bar",
