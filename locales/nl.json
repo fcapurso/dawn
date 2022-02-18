@@ -361,6 +361,9 @@
       "title": "Account aanmaken",
       "first_name": "Voornaam",
       "last_name": "Achternaam",
+      "b2b_registration": "Maak een B2B account aan",
+      "company": "Bedrijf",
+      "vat_number": "BTW nummer",
       "email": "E‑mail",
       "password": "Wachtwoord",
       "submit": "Aanmaken"

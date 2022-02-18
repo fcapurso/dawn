@@ -35,6 +35,16 @@
         {%- endfor -%}
       </ul>
     {%- endif -%}
+    <div class="checkbox">      
+      <input
+        type="checkbox"
+        id="RegisterForm-B2bCustomer"
+        onclick="toggleCompanyFields()"
+      >
+      <label for="RegisterForm-B2bCustomer">
+        {{ 'customer.register.b2b_registration' | t }}
+      </label>
+    </div>
     <div class="field">      
       <input
         type="text"
@@ -59,6 +69,29 @@
       >
       <label for="RegisterForm-LastName">
         {{ 'customer.register.last_name' | t }}
+      </label>
+    </div>
+    <div class="field company_data" style="display:none">
+      <input
+        type="text"
+        name="customer[note][company]"
+        id="RegisterForm-Company"
+        autocomplete="organization"
+        placeholder="{{ 'customer.register.company' | t }}"
+      >
+      <label for="RegisterForm-Company">
+        {{ 'customer.register.company' | t }}
+      </label>
+    </div>
+    <div class="field company_data" style="display:none">
+      <input
+        type="text"
+        name="customer[note][vat_number]"
+        id="RegisterForm-VatNumber"
+        placeholder="{{ 'customer.register.vat_number' | t }}"
+      >
+      <label for="RegisterForm-VatNumber">
+        {{ 'customer.register.vat_number' | t }}
       </label>
     </div>
     <div class="field">      
@@ -118,3 +151,18 @@
     </button>
   {%- endform -%}
 </div>
+
+<script src="http://cdn.shopify.com/s/files/1/0212/5406/t/1/assets/jquery-1.4.2.min.js?241" type="text/javascript"></script>
+<script>
+  function toggleCompanyFields() {
+    // Get the checkbox
+    var checkBox = document.getElementById("RegisterForm-B2bCustomer");
+
+    // If the checkbox is checked, display the company fields
+    if (checkBox.checked == true){
+      $('.company_data').show();
+    } else {
+      $('.company_data').hide();
+    }
+  }
+</script>

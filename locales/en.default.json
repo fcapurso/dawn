@@ -385,6 +385,9 @@
       "title": "Create account",
       "first_name": "First name",
       "last_name": "Last name",
+      "b2b_registration": "Create a B2B account",
+      "company": "Company",
+      "vat_number": "VAT number",
       "email": "Email",
       "password": "Password",
       "submit": "Create"
