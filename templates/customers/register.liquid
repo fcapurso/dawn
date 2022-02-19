@@ -39,7 +39,6 @@
       <input
         type="checkbox"
         id="RegisterForm-B2bCustomer"
-        onclick="toggleCompanyFields()"
       >
       <label for="RegisterForm-B2bCustomer">
         {{ 'customer.register.b2b_registration' | t }}
@@ -152,17 +151,18 @@
   {%- endform -%}
 </div>
 
-<script src="http://cdn.shopify.com/s/files/1/0212/5406/t/1/assets/jquery-1.4.2.min.js?241" type="text/javascript"></script>
 <script>
-  function toggleCompanyFields() {
-    // Get the checkbox
-    var checkBox = document.getElementById("RegisterForm-B2bCustomer");
+  document.addEventListener('DOMContentLoaded', () => {
+    $('#RegisterForm-B2bCustomer').click(() => {
+      // Get the checkbox
+      var checkBox = document.getElementById("RegisterForm-B2bCustomer");
 
-    // If the checkbox is checked, display the company fields
-    if (checkBox.checked == true){
-      $('.company_data').show();
-    } else {
-      $('.company_data').hide();
-    }
-  }
+      // If the checkbox is checked, display the company fields
+      if (checkBox.checked == true){
+        $('.company_data').show();
+      } else {
+        $('.company_data').hide();
+      }
+    });
+  });
 </script>
