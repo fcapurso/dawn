@@ -25,7 +25,7 @@
           "announcement-bar-0": {
             "type": "announcement",
             "settings": {
-              "text": "***Bestellingen worden vanaf 17\/4 verwerkt ***Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
+              "text": "Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
               "color_scheme": "background-1",
               "link": "shopify:\/\/policies\/shipping-policy"
             }
