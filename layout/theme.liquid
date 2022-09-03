@@ -260,5 +260,6 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
   {% if content_for_header contains 'product_label' %}{% include 'bss-product-label-js' %}{% endif %}
-  </body>
+  <div data-app="mm" data-product="{{product.id}}"></div>
+</body>
 </html>
