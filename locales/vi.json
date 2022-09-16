@@ -74,7 +74,7 @@
     "loading": "Đang tải...",
     "skip_to_product_info": "Chuyển đến thông tin sản phẩm",
     "total_reviews": "tổng số lượt đánh giá",
-    "star_reviews_info": "{{ rating_value }}/{{ rating_max }} sao",
+    "star_reviews_info": "{{ rating_value }}\/{{ rating_max }} sao",
     "collapsible_content_title": "Nội dung có thể thu gọn",
     "complementary_products": "Sản phẩm bổ sung"
   },
@@ -148,7 +148,7 @@
       },
       "view_full_details": "Xem toàn bộ chi tiết",
       "include_taxes": "Đã bao gồm thuế.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Phí vận chuyển</a> được tính khi thanh toán.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Phí vận chuyển<\/a> được tính khi thanh toán.",
       "choose_options": "Chọn các tùy chọn",
       "choose_product_options": "Chọn tùy chọn cho {{ product_name }}"
     },

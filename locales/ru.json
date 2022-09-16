@@ -150,7 +150,7 @@
       },
       "view_full_details": "Просмотреть всю информацию",
       "include_taxes": "Сумма налога включена.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Стоимость доставки</a> рассчитывается при оформлении заказа.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Стоимость доставки<\/a> рассчитывается при оформлении заказа.",
       "choose_options": "Выберите варианты",
       "choose_product_options": "Выберите варианты для {{ product_name }}"
     },
@@ -291,7 +291,7 @@
     "collection_template": {
       "title": "Коллекция",
       "empty": "Продукты не найдены",
-      "use_fewer_filters_html": "Используйте меньше фильтров или <a class=\"{{ class }}\" href=\"{{ link }}\">удалите все</a>"
+      "use_fewer_filters_html": "Используйте меньше фильтров или <a class=\"{{ class }}\" href=\"{{ link }}\">удалите все<\/a>"
     },
     "video": {
       "load_video": "Загрузить видео: {{ description }}"

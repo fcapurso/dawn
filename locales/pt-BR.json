@@ -149,7 +149,7 @@
       },
       "view_full_details": "Ver informações completas",
       "include_taxes": "Tributo incluído.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Frete</a> calculado no checkout.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Frete<\/a> calculado no checkout.",
       "choose_options": "Escolher opções",
       "choose_product_options": "Escolha opções para {{ product_name }}"
     },
@@ -284,7 +284,7 @@
     "collection_template": {
       "title": "Coleção",
       "empty": "Nenhum produto encontrado",
-      "use_fewer_filters_html": "Usar menos filtros ou <a class=\"{{ class }}\" href=\"{{ link }}\">remover tudo</a>"
+      "use_fewer_filters_html": "Usar menos filtros ou <a class=\"{{ class }}\" href=\"{{ link }}\">remover tudo<\/a>"
     },
     "video": {
       "load_video": "Carregar vídeo: {{ description }}"

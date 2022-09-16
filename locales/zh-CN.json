@@ -74,7 +74,7 @@
     "loading": "正在加载…",
     "skip_to_product_info": "跳至产品信息",
     "total_reviews": "总评论数",
-    "star_reviews_info": "{{ rating_value }}/{{ rating_max }} 星",
+    "star_reviews_info": "{{ rating_value }}\/{{ rating_max }} 星",
     "collapsible_content_title": "可折叠内容",
     "complementary_products": "互补产品"
   },
@@ -148,7 +148,7 @@
       },
       "view_full_details": "查看完整详细信息",
       "include_taxes": "含税费。",
-      "shipping_policy_html": "结账时计算的<a href=\"{{ link }}\">运费</a>。",
+      "shipping_policy_html": "结账时计算的<a href=\"{{ link }}\">运费<\/a>。",
       "choose_options": "选择选项",
       "choose_product_options": "选择用于 {{ product_name }} 的选项"
     },
@@ -277,7 +277,7 @@
     "collection_template": {
       "title": "收藏",
       "empty": "未找到产品",
-      "use_fewer_filters_html": "减少使用的筛选条件数量或<a class=\"{{ class }}\" href=\"{{ link }}\">删除所有筛选条件</a>"
+      "use_fewer_filters_html": "减少使用的筛选条件数量或<a class=\"{{ class }}\" href=\"{{ link }}\">删除所有筛选条件<\/a>"
     },
     "video": {
       "load_video": "加载视频：{{ description }}"

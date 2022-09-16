@@ -150,7 +150,7 @@
       },
       "view_full_details": "Prikaži vse podrobnosti",
       "include_taxes": "Vključno z davkom.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Dostava</a> se obračuna ob zaključku nakupa.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Dostava<\/a> se obračuna ob zaključku nakupa.",
       "choose_options": "Izberite možnosti",
       "choose_product_options": "Izberite možnosti za izdelek {{ product_name }}"
     },
@@ -291,7 +291,7 @@
     "collection_template": {
       "title": "Zbirka",
       "empty": "Ni najdenih izdelkov",
-      "use_fewer_filters_html": "Uporabite manj filtrov ali <a class=\"{{ class }}\" href=\"{{ link }}\">odstranite vse</a>"
+      "use_fewer_filters_html": "Uporabite manj filtrov ali <a class=\"{{ class }}\" href=\"{{ link }}\">odstranite vse<\/a>"
     },
     "video": {
       "load_video": "Naloži videoposnetek: {{ description }}"

@@ -74,7 +74,7 @@
     "loading": "Betöltés folyamatban…",
     "skip_to_product_info": "Kihagyás, és ugrás a termékadatokra",
     "total_reviews": "összes értékelés",
-    "star_reviews_info": "{{ rating_max }}/{{ rating_value }} csillag",
+    "star_reviews_info": "{{ rating_max }}\/{{ rating_value }} csillag",
     "collapsible_content_title": "Összecsukható tartalom",
     "complementary_products": "Kiegészítő termékek"
   },
@@ -148,7 +148,7 @@
       },
       "view_full_details": "Minden részlet megtekintése",
       "include_taxes": "Tartalmazza az adót.",
-      "shipping_policy_html": "A <a href=\"{{ link }}\">szállítási költséget</a> a megrendeléskor számítjuk ki.",
+      "shipping_policy_html": "A <a href=\"{{ link }}\">szállítási költséget<\/a> a megrendeléskor számítjuk ki.",
       "choose_options": "Válassz a lehetőségek közül",
       "choose_product_options": "Termékváltozatok – {{ product_name }}"
     },
@@ -277,7 +277,7 @@
     "collection_template": {
       "title": "Kollekció",
       "empty": "Nincs találat",
-      "use_fewer_filters_html": "Használj kevesebb szűrőt, vagy <a class=\"{{ class }}\" href=\"{{ link }}\">távolítsd el az összeset</a>."
+      "use_fewer_filters_html": "Használj kevesebb szűrőt, vagy <a class=\"{{ class }}\" href=\"{{ link }}\">távolítsd el az összeset<\/a>."
     },
     "video": {
       "load_video": "Videó betöltése: {{ description }}"

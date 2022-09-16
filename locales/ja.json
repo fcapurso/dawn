@@ -148,7 +148,7 @@
       },
       "view_full_details": "詳細を表示する",
       "include_taxes": "税込み。",
-      "shipping_policy_html": "<a href=\"{{ link }}\">配送料</a>はチェックアウト時に計算されます。",
+      "shipping_policy_html": "<a href=\"{{ link }}\">配送料<\/a>はチェックアウト時に計算されます。",
       "choose_options": "オプションを選択",
       "choose_product_options": "{{ product_name }}のオプションを選択する"
     },
@@ -277,7 +277,7 @@
     "collection_template": {
       "title": "コレクション",
       "empty": "商品が見つかりません",
-      "use_fewer_filters_html": "絞り込みの数を減らす、または<a class=\"{{ class }}\" href=\"{{ link }}\">すべて削除する</a>"
+      "use_fewer_filters_html": "絞り込みの数を減らす、または<a class=\"{{ class }}\" href=\"{{ link }}\">すべて削除する<\/a>"
     },
     "video": {
       "load_video": "動画を読み込む: {{ description }}"
