@@ -7,13 +7,14 @@
           "type": "heading",
           "settings": {
             "heading": "zeep zonder zooi",
-            "heading_size": "medium"
+            "heading_size": "h1"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "ambachtelijk gemaakte zeep met pure ingrediënten, zero-waste verpakt"
+            "text": "ambachtelijk gemaakte zeep met pure ingrediënten, zero-waste verpakt",
+            "text_style": "body"
           }
         }
       },
@@ -23,9 +24,14 @@
       ],
       "settings": {
         "image": "shopify:\/\/shop_images\/Zogezeept-359-Edit_ce87f719-1f22-4bcc-8901-3e6f8761893e.jpg",
-        "show_text_box": false,
         "image_overlay_opacity": 10,
+        "image_height": "medium",
+        "adapt_height_first_image": false,
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
         "color_scheme": "background-1",
+        "mobile_content_alignment": "center",
         "stack_images_on_mobile": true,
         "show_text_below": false
       }
@@ -36,7 +42,7 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "Welkom bij Zogezeept!",
+            "heading": "<p>Welkom bij Zogezeept!<\/p>",
             "heading_size": "h1"
           }
         },
@@ -52,24 +58,39 @@
         "text"
       ],
       "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
         "color_scheme": "background-1",
-        "full_width": true
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
       }
     },
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
         "title": "In de kijker",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
         "collection": "spotlight",
         "products_to_show": 4,
+        "columns_desktop": 4,
+        "full_width": false,
         "show_view_all": false,
-        "swipe_on_mobile": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "background-1",
         "image_ratio": "square",
         "show_secondary_image": true,
-        "add_image_padding": false,
-        "show_image_outline": true,
         "show_vendor": false,
-        "show_rating": false
+        "show_rating": false,
+        "enable_quick_add": false,
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "multicolumn": {
@@ -79,14 +100,18 @@
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>De waaat? <\/p><p>Laat ik het een kwaliteitslabel noemen. Je kunt namelijk alleen maar lid worden van het gilde als je in orde bent met de Europese cosmetica wetgeving.<\/p><p>Dat betekent dat je recepten door een erkende instantie zijn getest en goedgekeurd, dat de registratie van je processen in orde is, evenals je verzekering.<\/p>"
+            "text": "<p>De waaat? <\/p><p>Laat ik het een kwaliteitslabel noemen. Je kunt namelijk alleen maar lid worden van het gilde als je in orde bent met de Europese cosmetica wetgeving.<\/p><p>Dat betekent dat je recepten door een erkende instantie zijn getest en goedgekeurd, dat de registratie van je processen in orde is, evenals je verzekering.<\/p>",
+            "link_label": "",
+            "link": ""
           }
         },
         "column2": {
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>Belangrijk voor mij om kwalitatieve producten te bewijzen, belangrijk voor mijn klanten omdat ze weten dat ik niet 'Oeps, dit recept had blijkbaar iets teveel loog' kan voorhebben. Ook de verhoudingen van de essentiële oliën vallen zo gegarandeerd binnen de veiligheidsnormen.<\/p>"
+            "text": "<p>Belangrijk voor mij om kwalitatieve producten te bewijzen, belangrijk voor mijn klanten omdat ze weten dat ik niet 'Oeps, dit recept had blijkbaar iets teveel loog' kan voorhebben. Ook de verhoudingen van de essentiële oliën vallen zo gegarandeerd binnen de veiligheidsnormen.<\/p>",
+            "link_label": "",
+            "link": ""
           }
         },
         "column3": {
@@ -94,7 +119,9 @@
           "settings": {
             "image": "shopify:\/\/shop_images\/Guild_for-electronic-publishing-1024x749.png",
             "title": "",
-            "text": ""
+            "text": "",
+            "link_label": "",
+            "link": ""
           }
         }
       },
@@ -105,13 +132,19 @@
       ],
       "settings": {
         "title": "Trots lid van de Guild of Craft Soap & Toiletry Makers",
+        "heading_size": "h2",
         "image_width": "full",
         "image_ratio": "adapt",
+        "columns_desktop": 3,
         "column_alignment": "left",
         "background_style": "none",
         "button_label": "",
         "button_link": "",
-        "swipe_on_mobile": false
+        "color_scheme": "background-1",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     }
   },
