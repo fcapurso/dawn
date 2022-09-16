@@ -1,19 +1,27 @@
-Dawn 3.0.0 introduces a new suite of theme style settings to let you customize the overall look and feel of your store.
+Dawn 7.0.0 introduces several fixes and enhancements to make the themes even more flexible and easy to use. We now offer additional customization options in the header to change the position of your logo, new ways of displaying your product page and featured product images, and a new complementary product block to help boost sales.
 
 ### Added
-- Layout theme settings let you change the amount of spacing between each section, as well as the spacing between repeated items within sections.
-- New theme settings let you change the look of your buttons, variant pills, inputs, badges, media, content containers, drawers, dropdowns, and pop-ups by editing their borders, corners, and shadow effects. 
-- New theme settings on cards (product cards, collection cards, blog cards, collage section cards) let you pick from different styles, define text alignment, and edit their borders, corners, and shadow effects. 
-- The new collapsible content section lets you add content to your pages using a layout composed of collapsible rows. It’s ideal to build a frequently asked questions page, or add a section with secondary information to your product pages.
-- We added new icon options to the collapsible row block on the product page. 
-- We added a new color scheme setting on many sections, allowing more flexibility to customize the look of your store. Find it in: blog posts, collage, collapsible content, collection banner, contact form, custom liquid, featured collection, featured product, multicolumn, page, and product recommendations. 
-- New top and bottom padding settings were added on most sections, letting you define the amount of space at the top and bottom of the section. Find it in: blog posts, cart items, collage, collapsible content, collection list, collection product grid, contact form, custom liquid, email signup, featured collection, featured product, footer, image with text, search results, multicolumn, product information, page, product recommendations, rich text, and video.
-- You can now define the amount of space between your header and the following section with a new bottom margin setting on the header section.
-- You can now define the amount of space between your footer and the previous section with a new top margin setting on the footer section. 
-- We added support for app blocks to the featured product section.
+- The announcement bar section has a new setting that lets you set the text alignment.
+- The header is now more flexible. We added a new logo position option called “Middle center” to feature your logo in the center and your navigation menu on the left, on larger screens.
+- The product information section has a new layout option that allows you to split your product images into a two-column grid.
+- The product information section has a new block that allows you to display complementary products.
+- The product information and featured product sections now allow desktop media to be displayed on the left or on the right on larger screens.
+- We added pagination to the main collection list.
+- We introduced the ability to add and reorder sections, including app sections, to the customer account pages.
 
 ### Changed
-- The page width layout setting where you set the maximum width of your online store pages has changed to offer a range from 1000px to 1600px. 
+- Important: We introduced new theme settings to style “product cards”, “blog cards” and “collection cards” separately. Prior to this update, all these components were styled with the cards’ theme settings. If you have previously updated the style of your cards, this update may cause visual changes to your product cards, blog cards, or collection cards. This can be modified by adjusting their styling in theme settings.
+- We introduced a new setting on the collage section to let you apply product card styling to all card types featured in the section.
 
-### Removed
-- Important: Dawn no longer includes the Craft preset. If you’re interested in achieving the Craft look, you can now install the new [Craft theme](https://themes.shopify.com/themes/craft). 
+### Fixes and improvements
+- We fixed the setting that displays the product’s vendor name on the cart pop up notification.
+- We fixed an issue where the search dropdown window wasn’t matching the width of the search input field on smaller screens.
+- We fixed an issue where the quick add buttons would still display when JavaScript was disabled.
+- We fixed an issue where the login link wouldn’t display properly in the menu drawer on Android.
+- We fixed video controls not being clickable on the featured product section.
+- We fixed an issue with the cart notification overlapping the rest of the content on Safari v15.6.
+- We added max width to iFrames placed in the product description so the content doesn’t overflow.
+- We fixed the slider padding being different on Safari from the rest of the browsers.
+- We fixed an issue where manually inputting a quantity in the cart drawer could remove the item in question.
+- We fixed a bug to allow the removal of filters.
+- We fixed focus rings for Windows High Contrast mode.

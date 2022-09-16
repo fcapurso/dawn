@@ -71,7 +71,6 @@
         "vendor",
         "title",
         "caption",
-        "subtitle",
         "price",
         "variant_picker",
         "quantity_selector",
@@ -94,6 +93,10 @@
         "heading": "Ook leuk voor jou?",
         "image_ratio": "square",
         "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "columns_mobile": "2",
+        "padding_top": 36,
         "padding_bottom": 28
       }
     }
