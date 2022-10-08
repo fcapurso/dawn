@@ -55,6 +55,19 @@
           "settings": {
           }
         },
+        "78fb3c84-44ae-4d32-bf23-c1a98fb04484": {
+          "type": "complementary",
+          "settings": {
+            "block_heading": "Past goed bij",
+            "make_collapsible_row": true,
+            "icon": "price_tag",
+            "product_list_limit": 10,
+            "products_per_page": 3,
+            "pagination_style": "counter",
+            "image_ratio": "square",
+            "enable_quick_add": true
+          }
+        },
         "6edc873f-e57f-4fe7-886f-20c32d052fd2": {
           "type": "collapsible_tab",
           "settings": {
@@ -99,6 +112,7 @@
         "buy_buttons",
         "product_info",
         "description",
+        "78fb3c84-44ae-4d32-bf23-c1a98fb04484",
         "6edc873f-e57f-4fe7-886f-20c32d052fd2",
         "brand_info",
         "shipping_policy",
