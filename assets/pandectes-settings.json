@@ -5,7 +5,7 @@
     "primaryLocale": "nl",
     "adminMode": false
   },
-  "tsPublished": 1665258896,
+  "tsPublished": 1665259250,
   "declaration": {
     "showPurpose": false,
     "showProvider": false,
@@ -25,7 +25,7 @@
         "nl": "Wij respecteren uw privacy"
       },
       "consentText": {
-        "nl": "Deze website maakt gebruik van cookies om u de beste ervaring te bieden."
+        "nl": "Ook bij Zogezeept gebruiken we cookies om je website ervaring zo goed mogelijk te maken."
       },
       "dismissButtonText": {
         "nl": "OK"
@@ -40,10 +40,10 @@
         "nl": "Voorkeuren"
       },
       "allowButtonText": {
-        "nl": "Aanvaarden"
+        "nl": "Prima, cookie maar raakt!"
       },
       "denyButtonText": {
-        "nl": "Afwijzen"
+        "nl": "Nee, ik ben niet zo dol op cookies"
       },
       "leaveSiteButtonText": {
         "nl": "Verlaat deze site"
@@ -251,14 +251,14 @@
     "dismissOnTimeout": false,
     "palette": {
       "popup": {
-        "background": "#FFFFFF",
+        "background": "#B4D6C1",
         "backgroundForCalculations": {
           "a": 1,
-          "b": 255,
-          "g": 255,
-          "r": 255
+          "b": 193,
+          "g": 214,
+          "r": 180
         },
-        "text": "#000000"
+        "text": "#207567"
       },
       "button": {
         "background": "transparent",
@@ -268,14 +268,14 @@
           "g": 255,
           "r": 255
         },
-        "text": "#000000",
+        "text": "#207567",
         "textForCalculation": {
           "a": 1,
-          "b": 0,
-          "g": 0,
-          "r": 0
+          "b": 103,
+          "g": 117,
+          "r": 32
         },
-        "border": "#000000"
+        "border": "#207567"
       }
     },
     "content": {
@@ -285,7 +285,7 @@
       "target": "",
       "logo": "<img class=\"cc-banner-logo\" style=\"height: 40px;\" src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/0368\/7985\/9845\/t\/22\/assets\/pandectes-logo.png?v=1665258761\" alt=\"Zogezeept\" \/>"
     },
-    "window": "<div role=\"dialog\" aria-live=\"polite\" aria-label=\"cookieconsent\" aria-describedby=\"cookieconsent:desc\" id=\"pandectes-banner\" class=\"cc-window-wrapper cc-top-wrapper\"><div class=\"pd-cookie-banner-window cc-window {{classes}}\"><!--googleoff: all-->{{children}}<!--googleon: all--><\/div><\/div>",
+    "window": "<div role=\"dialog\" aria-live=\"polite\" aria-label=\"cookieconsent\" aria-describedby=\"cookieconsent:desc\" id=\"pandectes-banner\" class=\"cc-window-wrapper cc-bottom-right-wrapper\"><div class=\"pd-cookie-banner-window cc-window {{classes}}\"><!--googleoff: all-->{{children}}<!--googleon: all--><\/div><\/div>",
     "compliance": {
       "opt-both": "<div class=\"cc-compliance cc-highlight\">{{deny}}{{allow}}<\/div>"
     },
@@ -293,9 +293,9 @@
     "layouts": {
       "basic": "{{logo}}{{messagelink}}{{compliance}}{{close}}"
     },
-    "position": "top",
+    "position": "bottom-right",
     "theme": "wired",
-    "revokable": true,
+    "revokable": false,
     "animateRevokable": false,
     "revokableReset": false,
     "revokableLogoUrl": "https:\/\/cdn.shopify.com\/s\/files\/1\/0368\/7985\/9845\/t\/22\/assets\/pandectes-reopen-logo.png?v=1665258762",
@@ -321,12 +321,12 @@
   },
   "banner": {
     "resetTs": 1665258760,
-    "extraCss": "        .cc-banner-logo {max-width: 24em!important;}    @media(min-width: 768px) {.cc-window.cc-floating{max-width: 24em!important;width: 24em!important;}}    .cc-message, .cc-header, .cc-logo {text-align: left}    .cc-window-wrapper{z-index: 2147483647;}    .cc-window{z-index: 2147483647;font-family: inherit;}    .cc-header{font-family: inherit;}    .pd-cp-ui{font-family: inherit; background-color: #FFFFFF;color:#000000;}    .pd-cp-btn{}    input + .pd-cp-preferences-slider{background-color: rgba(0, 0, 0, 0.3)}    .pd-cp-scrolling-section::-webkit-scrollbar{background-color: rgba(0, 0, 0, 0.3)}    input:checked + .pd-cp-preferences-slider{background-color: rgba(0, 0, 0, 1)}    .pd-cp-scrolling-section::-webkit-scrollbar-thumb {background-color: rgba(0, 0, 0, 1)}    .pd-cp-ui-close{color:#000000;}    .pd-cp-preferences-slider:before{background-color: #FFFFFF}    .pd-cp-title:before {border-color: #000000!important}    .pd-cp-preferences-slider{background-color:#000000}    .pd-cp-toggle{color:#000000!important}    @media(max-width:699px) {.pd-cp-ui-close-top svg {fill: #000000}}    .pd-cp-toggle:hover,.pd-cp-toggle:visited,.pd-cp-toggle:active{color:#000000!important}    .pd-cookie-banner-window {box-shadow: 0 0 18px rgb(0 0 0 \/ 20%);}  ",
+    "extraCss": "        .cc-banner-logo {max-width: 24em!important;}    @media(min-width: 768px) {.cc-window.cc-floating{max-width: 24em!important;width: 24em!important;}}    .cc-message, .cc-header, .cc-logo {text-align: left}    .cc-window-wrapper{z-index: 2147483647;}    .cc-window{z-index: 2147483647;font-family: inherit;}    .cc-header{font-family: inherit;}    .pd-cp-ui{font-family: inherit; background-color: #B4D6C1;color:#207567;}    .pd-cp-btn{}    input + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 0.3)}    .pd-cp-scrolling-section::-webkit-scrollbar{background-color: rgba(32, 117, 103, 0.3)}    input:checked + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 1)}    .pd-cp-scrolling-section::-webkit-scrollbar-thumb {background-color: rgba(32, 117, 103, 1)}    .pd-cp-ui-close{color:#207567;}    .pd-cp-preferences-slider:before{background-color: #B4D6C1}    .pd-cp-title:before {border-color: #207567!important}    .pd-cp-preferences-slider{background-color:#207567}    .pd-cp-toggle{color:#207567!important}    @media(max-width:699px) {.pd-cp-ui-close-top svg {fill: #207567}}    .pd-cp-toggle:hover,.pd-cp-toggle:visited,.pd-cp-toggle:active{color:#207567!important}    .pd-cookie-banner-window {box-shadow: 0 0 18px rgb(0 0 0 \/ 20%);}  ",
     "customJavascript": null,
     "showPoweredBy": false,
     "isActive": true,
     "implicitSavePreferences": false,
-    "cookieIcon": false,
+    "cookieIcon": true,
     "blockBots": false,
     "showCookiesDetails": true,
     "cookiesBlockedByDefault": "7",
