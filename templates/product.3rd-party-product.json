@@ -58,7 +58,7 @@
         "brand_info": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Over {{ product.vendor }}",
+            "heading": "Waarom {{ product.vendor }}",
             "icon": "star",
             "content": "",
             "page": "{{ product.metafields.my_fields.brand_info.value }}"
