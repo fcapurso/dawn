@@ -5,7 +5,7 @@
     "primaryLocale": "nl",
     "adminMode": false
   },
-  "tsPublished": 1665258762,
+  "tsPublished": 1665258775,
   "declaration": {
     "showPurpose": false,
     "showProvider": false,
@@ -338,19 +338,245 @@
   },
   "cookies": {
     "0": [
-
+      {
+        "name": "keep_alive",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "14 day(s)",
+        "purpose": {
+          "nl": "Gebruikt in verband met lokalisatie van kopers."
+        }
+      },
+      {
+        "name": "secure_customer_sig",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "1 year(s)",
+        "purpose": {
+          "nl": "Gebruikt in verband met klantenlogin."
+        }
+      },
+      {
+        "name": "localization",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "1 year(s)",
+        "purpose": {
+          "nl": "Shopify-winkellokalisatie"
+        }
+      },
+      {
+        "name": "cart_currency",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "14 day(s)",
+        "purpose": {
+          "nl": "De cookie is nodig voor de veilige betaal- en betaalfunctie op de website. Deze functie wordt geleverd door shopify.com."
+        }
+      },
+      {
+        "name": "shopify_pay_redirect",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "60 minute(s)",
+        "purpose": {
+          "nl": "De cookie is nodig voor de veilige betaal- en betaalfunctie op de website. Deze functie wordt geleverd door shopify.com."
+        }
+      },
+      {
+        "name": "cart_sig",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "14 day(s)",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_secure_session_id",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "24 hour(s)",
+        "purpose": {
+          "nl": "Gebruikt in verband met navigatie door een winkelpui."
+        }
+      },
+      {
+        "name": "_tracking_consent",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "purpose": {
+          "nl": "Voorkeuren volgen."
+        }
+      }
     ],
     "1": [
-
+      {
+        "name": "_orig_referrer",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "14 day(s)",
+        "purpose": {
+          "nl": "Volgt bestemmingspagina's."
+        }
+      },
+      {
+        "name": "_landing_page",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "14 day(s)",
+        "purpose": {
+          "nl": "Volgt bestemmingspagina's."
+        }
+      },
+      {
+        "name": "_y",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_s",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_shopify_y",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_shopify_s",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_shopify_sa_p",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "purpose": {
+          "nl": "Shopify-analyses met betrekking tot marketing en verwijzingen."
+        }
+      },
+      {
+        "name": "_shopify_sa_t",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "purpose": {
+          "nl": "Shopify-analyses met betrekking tot marketing en verwijzingen."
+        }
+      }
     ],
     "2": [
-
+      {
+        "name": "_gid",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Google",
+        "firstParty": false,
+        "retention": "24 hour(s)",
+        "purpose": {
+          "nl": "Cookie wordt geplaatst door Google Analytics om paginaweergaven te tellen en bij te houden."
+        }
+      },
+      {
+        "name": "_ga",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Google",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "purpose": {
+          "nl": "Cookie is ingesteld door Google Analytics met onbekende functionaliteit"
+        }
+      },
+      {
+        "name": "_gat",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Google",
+        "firstParty": false,
+        "retention": "51 second(s)",
+        "purpose": {
+          "nl": "Cookie wordt geplaatst door Google Analytics om verzoeken van bots te filteren."
+        }
+      }
     ],
     "4": [
-
+      {
+        "name": "_fbp",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Facebook",
+        "firstParty": false,
+        "retention": "90 day(s)",
+        "purpose": {
+          "nl": "Cookie wordt door Facebook geplaatst om bezoeken aan websites bij te houden."
+        }
+      }
     ],
     "8": [
-
+      {
+        "name": "dynamic_checkout_shown_on_cart",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Unknown",
+        "firstParty": true,
+        "retention": "30 minute(s)",
+        "purpose": {
+          "nl": ""
+        }
+      }
     ]
   },
   "blocker": {
