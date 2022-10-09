@@ -27,6 +27,12 @@
           "settings": {
           }
         },
+        "825b2d8c-d800-4a77-a3a7-073eff76f77d": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% if product.metafields.my_fields.discounts != '' %}<span class=\"price-item price-item--regular\">{{product.metafields.my_fields.discounts}}<\/span>{% endif %}"
+          }
+        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
@@ -107,6 +113,7 @@
         "title",
         "subtitle",
         "price",
+        "825b2d8c-d800-4a77-a3a7-073eff76f77d",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
