@@ -4,7 +4,11 @@
 {%- if pick_up_availabilities.size > 0 -%}
   <pickup-availability-preview class="pickup-availability-preview">
     {%- liquid
-      assign closest_location = pick_up_availabilities[1]
+      if pick_up_availabilities.size > 1
+        assign closest_location = pick_up_availabilities[1]
+      else
+        assign closest_location = pick_up_availabilities.first
+      endif
 
       if closest_location.available
         render 'icon-tick'
