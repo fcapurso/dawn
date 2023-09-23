@@ -76,11 +76,20 @@
               "heading": "Neem contact met ons op",
               "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
             }
+          },
+          "6fda407a-8f93-4102-8403-1541e233696d": {
+            "type": "image",
+            "settings": {
+              "image": "shopify:\/\/shop_images\/HIB_logo.png",
+              "image_width": 100,
+              "alignment": "center"
+            }
           }
         },
         "block_order": [
           "footer-0",
-          "footer-1"
+          "footer-1",
+          "6fda407a-8f93-4102-8403-1541e233696d"
         ],
         "settings": {
           "color_scheme": "background-1",

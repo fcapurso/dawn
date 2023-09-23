@@ -55,6 +55,21 @@
           "settings": {
           }
         },
+        "product_logos": {
+          "type": "custom-product-logos",
+          "settings": {
+            "selected_image_1": "shopify:\/\/shop_images\/vegan_logo.png",
+            "product_tag_1": "vegan",
+            "selected_image_2": "shopify:\/\/shop_images\/vegetarian_logo.png",
+            "product_tag_2": "vegetarian",
+            "selected_image_3": "shopify:\/\/shop_images\/palm_oil_free_logo.png",
+            "product_tag_3": "",
+            "selected_image_4": "shopify:\/\/shop_images\/cruelty_free_logo.png",
+            "product_tag_4": "",
+            "selected_image_5": "shopify:\/\/shop_images\/handmade_with_love_logo.png",
+            "product_tag_5": ""
+          }
+        },
         "advice_for_use": {
           "type": "collapsible_tab",
           "settings": {
@@ -108,6 +123,7 @@
         "buy_buttons",
         "product_info",
         "description",
+        "product_logos",
         "advice_for_use",
         "ingredients",
         "good_to_know",
@@ -119,6 +135,7 @@
         "media_position": "left",
         "gallery_layout": "thumbnail",
         "media_size": "small",
+        "image_zoom": "lightbox",
         "mobile_thumbnails": "hide",
         "hide_variants": true,
         "enable_video_looping": false,
