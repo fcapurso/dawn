@@ -62,11 +62,10 @@
             "product_tag_1": "vegan",
             "selected_image_2": "shopify:\/\/shop_images\/vegetarian_logo.png",
             "product_tag_2": "vegetarian",
-            "selected_image_3": "shopify:\/\/shop_images\/palm_oil_free_logo.png",
+            "selected_image_3": "shopify:\/\/shop_images\/cruelty_free_logo.png",
             "product_tag_3": "",
-            "selected_image_4": "shopify:\/\/shop_images\/cruelty_free_logo.png",
+            "selected_image_4": "shopify:\/\/shop_images\/handmade_with_love_logo.png",
             "product_tag_4": "",
-            "selected_image_5": "shopify:\/\/shop_images\/handmade_with_love_logo.png",
             "product_tag_5": ""
           }
         },
@@ -75,8 +74,8 @@
           "settings": {
             "heading": "Gebruik",
             "icon": "heart",
-            "content": "<p>{{ product.metafields.my_fields.advice_for_use | metafield_tag }}<\/p>",
-            "page": ""
+            "content": "",
+            "page": "gebruik-badzout"
           }
         },
         "ingredients": {
@@ -86,15 +85,6 @@
             "icon": "leaf",
             "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}<\/p>",
             "page": ""
-          }
-        },
-        "good_to_know": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Goed om te weten",
-            "icon": "star",
-            "content": "",
-            "page": "goed-om-te-weten-over-zeep"
           }
         },
         "shipping_policy": {
@@ -126,7 +116,6 @@
         "product_logos",
         "advice_for_use",
         "ingredients",
-        "good_to_know",
         "shipping_policy",
         "share"
       ],
