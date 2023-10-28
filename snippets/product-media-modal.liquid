@@ -1,17 +1,17 @@
 {% comment %}
-    Renders a product media modal. Also see 'product-media-gallery'
+  Renders a product media modal. Also see 'product-media-gallery'
 
-    Accepts:
-    - product: {Object} Product liquid object
-    - variant_images: {Array} Product images associated with a variant
+  Accepts:
+  - product: {Object} Product liquid object
+  - variant_images: {Array} Product images associated with a variant
 
-    Usage:
-    {% render 'product-media-modal' %}
+  Usage:
+  {% render 'product-media-modal' %}
 {% endcomment %}
 
 <product-modal id="ProductModal-{{ section.id }}" class="product-media-modal media-modal">
   <div
-    class="product-media-modal__dialog"
+    class="product-media-modal__dialog color-{{ section.settings.color_scheme }} gradient"
     role="dialog"
     aria-label="{{ 'products.modal.label' | t }}"
     aria-modal="true"
@@ -27,7 +27,7 @@
     </button>
 
     <div
-      class="product-media-modal__content color-background-1 gradient"
+      class="product-media-modal__content color-{{ section.settings.color_scheme }} gradient"
       role="document"
       aria-label="{{ 'products.modal.label' | t }}"
       tabindex="0"
