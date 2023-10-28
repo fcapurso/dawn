@@ -27,7 +27,7 @@
           "settings": {
           }
         },
-        "825b2d8c-d800-4a77-a3a7-073eff76f77d": {
+        "discounts": {
           "type": "custom_liquid",
           "settings": {
             "custom_liquid": "{% if product.metafields.my_fields.discounts != '' %}<span class=\"price-item price-item--regular\">{{product.metafields.my_fields.discounts}}<\/span>{% endif %}"
@@ -61,20 +61,7 @@
           "settings": {
           }
         },
-        "78fb3c84-44ae-4d32-bf23-c1a98fb04484": {
-          "type": "complementary",
-          "settings": {
-            "block_heading": "Past goed bij",
-            "make_collapsible_row": true,
-            "icon": "price_tag",
-            "product_list_limit": 10,
-            "products_per_page": 3,
-            "pagination_style": "counter",
-            "image_ratio": "square",
-            "enable_quick_add": true
-          }
-        },
-        "6edc873f-e57f-4fe7-886f-20c32d052fd2": {
+        "ingredients": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Wat zit er allemaal in?",
@@ -113,14 +100,13 @@
         "title",
         "subtitle",
         "price",
-        "825b2d8c-d800-4a77-a3a7-073eff76f77d",
+        "discounts",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
         "product_info",
         "description",
-        "78fb3c84-44ae-4d32-bf23-c1a98fb04484",
-        "6edc873f-e57f-4fe7-886f-20c32d052fd2",
+        "ingredients",
         "brand_info",
         "shipping_policy",
         "share"
@@ -130,6 +116,7 @@
         "media_position": "left",
         "gallery_layout": "thumbnail",
         "media_size": "small",
+        "image_zoom": "lightbox",
         "mobile_thumbnails": "hide",
         "hide_variants": true,
         "enable_video_looping": false,
