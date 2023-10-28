@@ -135,8 +135,8 @@
         "padding_bottom": 36
       }
     },
-    "product-recommendations": {
-      "type": "product-recommendations",
+    "related-products": {
+      "type": "related-products",
       "settings": {
         "heading": "Ook leuk voor jou?",
         "heading_size": "h2",
@@ -155,6 +155,6 @@
   },
   "order": [
     "main",
-    "product-recommendations"
+    "related-products"
   ]
 }
