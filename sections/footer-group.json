@@ -9,14 +9,14 @@
           "type": "text",
           "settings": {
             "heading": "Neem contact met ons op",
-            "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel/B&B/koffiebar/...? Andere zaken die op je hart liggen?</p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!</a></p>"
+            "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
           }
         },
         "4da2da0b-6e8e-401c-b39b-ee32c23d0cad": {
           "type": "image",
           "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/Guild_for-electronic-publishing_square.png",
+            "image": "shopify:\/\/shop_images\/Guild_for-electronic-publishing_square.png",
             "image_width": 200,
             "alignment": "right"
           }
@@ -24,7 +24,7 @@
         "c88bc92b-58eb-468d-8692-56c2fb002eb1": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/HIB_2018_Logo_-_transparent_square.png",
+            "image": "shopify:\/\/shop_images\/HIB_2018_Logo_-_transparent_square.png",
             "image_width": 200,
             "alignment": "right"
           }
