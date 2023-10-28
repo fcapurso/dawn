@@ -1,18 +1,11 @@
 {
   "current": {
-    "colors_solid_button_labels": "#207567",
-    "colors_accent_1": "#b4d6c1",
-    "colors_accent_2": "#6baf92",
-    "colors_text": "#207567",
-    "colors_outline_button_labels": "#6baf92",
-    "colors_background_1": "#fafafa",
-    "colors_background_2": "rgba(0,0,0,0)",
+    "favicon": "shopify:\/\/shop_images\/LogoAloneRound.png",
     "type_header_font": "serif",
     "type_body_font": "josefin_slab_n4",
     "variant_pills_radius": 14,
     "social_facebook_link": "https:\/\/www.facebook.com\/zogezeept",
     "social_instagram_link": "https:\/\/instagram.com\/zogezeept",
-    "favicon": "shopify:\/\/shop_images\/LogoAloneRound.png",
     "currency_code_enabled": true,
     "cart_type": "drawer",
     "checkout_header_image": "shopify:\/\/shop_images\/Zogezeept-359-Edit_d33e1c12-40c4-4c88-bc20-26108dbebbca.jpg",
@@ -24,6 +17,13 @@
     "checkout_sidebar_background_color": "#fafafa",
     "checkout_accent_color": "#207567",
     "checkout_button_color": "#207567",
+    "colors_solid_button_labels": "#207567",
+    "colors_accent_1": "#b4d6c1",
+    "colors_accent_2": "#6baf92",
+    "colors_text": "#207567",
+    "colors_outline_button_labels": "#6baf92",
+    "colors_background_1": "#fafafa",
+    "colors_background_2": "rgba(0,0,0,0)",
     "sections": {
       "announcement-bar": {
         "type": "announcement-bar",
@@ -32,8 +32,6 @@
             "type": "announcement",
             "settings": {
               "text": "Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
-              "text_alignment": "center",
-              "color_scheme": "background-1",
               "link": "shopify:\/\/policies\/shipping-policy"
             }
           }
@@ -47,13 +45,11 @@
       "header": {
         "type": "header",
         "settings": {
-          "color_scheme": "background-1",
-          "logo_width": 100,
           "logo_position": "middle-left",
           "menu": "main-menu",
           "menu_type_desktop": "dropdown",
           "show_line_separator": true,
-          "enable_sticky_header": true,
+          "color_scheme": "background-1",
           "mobile_logo_position": "center",
           "margin_bottom": 0,
           "padding_top": 20,
@@ -115,68 +111,68 @@
         "settings": {
         }
       }
+    },
+    "color_schemes": {
+      "background-1": {
+        "settings": {
+          "background": "#FFFFFF",
+          "background_gradient": "",
+          "text": "#121212",
+          "button": "#121212",
+          "button_label": "#FFFFFF",
+          "secondary_button_label": "#121212",
+          "shadow": "#121212"
+        }
+      },
+      "background-2": {
+        "settings": {
+          "background": "#F3F3F3",
+          "background_gradient": "",
+          "text": "#121212",
+          "button": "#121212",
+          "button_label": "#F3F3F3",
+          "secondary_button_label": "#121212",
+          "shadow": "#121212"
+        }
+      },
+      "inverse": {
+        "settings": {
+          "background": "#242833",
+          "background_gradient": "",
+          "text": "#FFFFFF",
+          "button": "#FFFFFF",
+          "button_label": "#000000",
+          "secondary_button_label": "#FFFFFF",
+          "shadow": "#121212"
+        }
+      },
+      "accent-1": {
+        "settings": {
+          "background": "#121212",
+          "background_gradient": "",
+          "text": "#FFFFFF",
+          "button": "#FFFFFF",
+          "button_label": "#121212",
+          "secondary_button_label": "#FFFFFF",
+          "shadow": "#121212"
+        }
+      },
+      "accent-2": {
+        "settings": {
+          "background": "#334FB4",
+          "background_gradient": "",
+          "text": "#FFFFFF",
+          "button": "#FFFFFF",
+          "button_label": "#334FB4",
+          "secondary_button_label": "#FFFFFF",
+          "shadow": "#121212"
+        }
+      }
     }
   },
   "presets": {
     "Default": {
       "logo_width": 90,
-      "color_schemes": {
-        "background-1": {
-          "settings": {
-            "background": "#FFFFFF",
-            "background_gradient": "",
-            "text": "#121212",
-            "button": "#121212",
-            "button_label": "#FFFFFF",
-            "secondary_button_label": "#121212",
-            "shadow": "#121212"
-          }
-        },
-        "background-2": {
-          "settings": {
-            "background": "#F3F3F3",
-            "background_gradient": "",
-            "text": "#121212",
-            "button": "#121212",
-            "button_label": "#F3F3F3",
-            "secondary_button_label": "#121212",
-            "shadow": "#121212"
-          }
-        },
-        "inverse": {
-          "settings": {
-            "background": "#242833",
-            "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#000000",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
-          }
-        },
-        "accent-1": {
-          "settings": {
-            "background": "#121212",
-            "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#121212",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
-          }
-        },
-        "accent-2": {
-          "settings": {
-            "background": "#334FB4",
-            "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#334FB4",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
-          }
-        }
-      },
       "type_header_font": "assistant_n4",
       "heading_scale": 100,
       "type_body_font": "assistant_n4",
@@ -295,7 +291,6 @@
               "type": "announcement",
               "settings": {
                 "text": "Welcome to our store",
-                "color_scheme": "background-1",
                 "link": ""
               }
             }
@@ -309,12 +304,10 @@
         "header": {
           "type": "header",
           "settings": {
-            "color_scheme": "background-1",
-            "logo_width": 90,
             "logo_position": "middle-left",
             "menu": "main-menu",
             "show_line_separator": true,
-            "enable_sticky_header": true,
+            "color_scheme": "background-1",
             "margin_bottom": 0
           }
         },

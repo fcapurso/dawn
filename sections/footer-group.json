@@ -12,30 +12,32 @@
             "menu": "footer"
           }
         },
-        "footer-1": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Info",
-            "menu": "footer"
-          }
-        },
-        "footer-2": {
+        "4d842893-d2d6-4fa8-a2c9-340ac7ff90ff": {
           "type": "text",
           "settings": {
-            "heading": "Our mission",
-            "subtext": "<p>Share contact information, store details, and brand content with your customers.<\/p>"
+            "heading": "Neem contact met ons op",
+            "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
+          }
+        },
+        "5d592fd7-b896-4071-9d51-452ad67c876e": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/HIB_logo.png",
+            "image_width": 100,
+            "alignment": "center"
           }
         }
       },
       "block_order": [
         "footer-0",
-        "footer-1",
-        "footer-2"
+        "4d842893-d2d6-4fa8-a2c9-340ac7ff90ff",
+        "5d592fd7-b896-4071-9d51-452ad67c876e"
       ],
       "settings": {
         "color_scheme": "background-1",
         "newsletter_enable": true,
-        "newsletter_heading": "Subscribe to our emails",
+        "newsletter_heading": "Blijf op de hoogte",
+        "enable_follow_on_shop": false,
         "show_social": true,
         "enable_country_selector": false,
         "enable_language_selector": false,
