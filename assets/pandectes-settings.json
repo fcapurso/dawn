@@ -1,11 +1,11 @@
 {
   "store": {
     "plan": "basic",
-    "theme": "dawn\/current",
+    "theme": "dawn\/update-to-11.0.0",
     "primaryLocale": "nl",
     "adminMode": false
   },
-  "tsPublished": 1665269549,
+  "tsPublished": 1698532141,
   "declaration": {
     "showPurpose": false,
     "showProvider": false,
@@ -32,6 +32,9 @@
       },
       "linkText": {
         "nl": "Kom meer te weten"
+      },
+      "imprintText": {
+        "nl": "Afdruk"
       },
       "preferencesButtonText": {
         "nl": "Voorkeuren"
@@ -83,6 +86,9 @@
       },
       "erasureSectionParagraphText": {
         "nl": "U heeft het recht om al uw gegevens te laten wissen. Daarna heeft u geen toegang meer tot uw account."
+      },
+      "declIntroText": {
+        "nl": "We gebruiken cookies om de functionaliteit van de website te optimaliseren, de prestaties te analyseren en u een gepersonaliseerde ervaring te bieden. Sommige cookies zijn essentieel om de website goed te laten werken en correct te laten functioneren. Die cookies kunnen niet worden uitgeschakeld. In dit venster kunt u uw voorkeur voor cookies beheren."
       }
     },
     "categories": {
@@ -145,6 +151,27 @@
       "declThirdParty": {
         "nl": "Derde partij"
       },
+      "declSeconds": {
+        "nl": "seconden"
+      },
+      "declMinutes": {
+        "nl": "minuten"
+      },
+      "declHours": {
+        "nl": "uur"
+      },
+      "declDays": {
+        "nl": "dagen"
+      },
+      "declMonths": {
+        "nl": "maanden"
+      },
+      "declYears": {
+        "nl": "jaren"
+      },
+      "declSession": {
+        "nl": "Sessie"
+      },
       "cookiesDetailsText": {
         "nl": "Cookiegegevens"
       },
@@ -194,7 +221,7 @@
         "nl": "Uw verzoek is niet geverifieerd. Probeer het opnieuw en als het probleem aanhoudt, neem dan contact op met de winkeleigenaar voor hulp"
       },
       "consentSectionTitleText": {
-        "nl": "Toestemming voor cookiebeleid"
+        "nl": "Uw toestemming voor cookies"
       },
       "consentSectionNoConsentText": {
         "nl": "U heeft niet ingestemd met het cookiebeleid van deze website."
@@ -202,8 +229,17 @@
       "consentSectionConsentedText": {
         "nl": "U heeft ingestemd met het cookiebeleid van deze website op:"
       },
+      "consentStatus": {
+        "nl": "Toestemmingsvoorkeur"
+      },
+      "consentDate": {
+        "nl": "Toestemmingsdatum"
+      },
+      "consentId": {
+        "nl": "Toestemmings-ID"
+      },
       "consentSectionChangeConsentActionText": {
-        "nl": "Toestemming intrekken"
+        "nl": "Wijzig de toestemmingsvoorkeur"
       },
       "accessSectionGDPRRequestsActionText": {
         "nl": "Verzoeken van betrokkenen"
@@ -236,6 +272,7 @@
     "fadeInTimeout": 0,
     "defaultBlocked": 7,
     "showLink": true,
+    "showImprintLink": false,
     "enabled": true,
     "cookie": {
       "name": "_pandectes_gdpr",
@@ -276,6 +313,7 @@
     },
     "content": {
       "href": "https:\/\/zogezeept.myshopify.com\/policies\/privacy-policy",
+      "imprintHref": "\/",
       "close": "&#10005;",
       "target": "",
       "logo": ""
@@ -293,7 +331,7 @@
     "revokable": false,
     "animateRevokable": false,
     "revokableReset": false,
-    "revokableLogoUrl": "https:\/\/cdn.shopify.com\/s\/files\/1\/0368\/7985\/9845\/t\/22\/assets\/pandectes-reopen-logo.png?v=1665258762",
+    "revokableLogoUrl": "https:\/\/cdn.shopify.com\/s\/files\/1\/0368\/7985\/9845\/t\/27\/assets\/pandectes-reopen-logo.png?v=1698532137",
     "revokablePlacement": "bottom-left",
     "revokableMarginHorizontal": 15,
     "revokableMarginVertical": 15,
@@ -316,15 +354,16 @@
   },
   "banner": {
     "resetTs": 1665258760,
-    "extraCss": "        .cc-banner-logo {max-width: 24em!important;}    @media(min-width: 768px) {.cc-window.cc-floating{max-width: 24em!important;width: 24em!important;}}    .cc-message, .cc-header, .cc-logo {text-align: left}    .cc-window-wrapper{z-index: 2147483647;}    .cc-window{z-index: 2147483647;font-family: inherit;}    .cc-header{font-family: inherit;}    .pd-cp-ui{font-family: inherit; background-color: #B4D6C1;color:#207567;}    .pd-cp-btn{background-color:#207567;color:#FAFAFA!important;}    input + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 0.3)}    .pd-cp-scrolling-section::-webkit-scrollbar{background-color: rgba(32, 117, 103, 0.3)}    input:checked + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 1)}    .pd-cp-scrolling-section::-webkit-scrollbar-thumb {background-color: rgba(32, 117, 103, 1)}    .pd-cp-ui-close{color:#207567;}    .pd-cp-preferences-slider:before{background-color: #B4D6C1}    .pd-cp-title:before {border-color: #207567!important}    .pd-cp-preferences-slider{background-color:#207567}    .pd-cp-toggle{color:#207567!important}    @media(max-width:699px) {.pd-cp-ui-close-top svg {fill: #207567}}    .pd-cp-toggle:hover,.pd-cp-toggle:visited,.pd-cp-toggle:active{color:#207567!important}    .pd-cookie-banner-window {box-shadow: 0 0 18px rgb(0 0 0 \/ 20%);}  ",
+    "extraCss": "        .cc-banner-logo {max-width: 24em!important;}    @media(min-width: 768px) {.cc-window.cc-floating{max-width: 24em!important;width: 24em!important;}}    .cc-message, .cc-header, .cc-logo {text-align: left}    .cc-window-wrapper{z-index: 2147483647;}    .cc-window{z-index: 2147483647;font-family: inherit;}    .cc-header{font-family: inherit;}    .pd-cp-ui{font-family: inherit; background-color: #B4D6C1;color:#207567;}    button.pd-cp-btn, a.pd-cp-btn{background-color:#207567;color:#FAFAFA!important;}    input + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 0.3)}    .pd-cp-scrolling-section::-webkit-scrollbar{background-color: rgba(32, 117, 103, 0.3)}    input:checked + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 1)}    .pd-cp-scrolling-section::-webkit-scrollbar-thumb {background-color: rgba(32, 117, 103, 1)}    .pd-cp-ui-close{color:#207567;}    .pd-cp-preferences-slider:before{background-color: #B4D6C1}    .pd-cp-title:before {border-color: #207567!important}    .pd-cp-preferences-slider{background-color:#207567}    .pd-cp-toggle{color:#207567!important}    @media(max-width:699px) {.pd-cp-ui-close-top svg {fill: #207567}}    .pd-cp-toggle:hover,.pd-cp-toggle:visited,.pd-cp-toggle:active{color:#207567!important}    .pd-cookie-banner-window {box-shadow: 0 0 18px rgb(0 0 0 \/ 20%);}  ",
     "customJavascript": null,
     "showPoweredBy": false,
+    "hybridStrict": false,
+    "cookiesBlockedByDefault": "7",
     "isActive": true,
     "implicitSavePreferences": false,
     "cookieIcon": true,
     "blockBots": false,
     "showCookiesDetails": true,
-    "cookiesBlockedByDefault": "7",
     "hasTransition": true,
     "blockingPage": false,
     "showOnlyLandingPage": false,
@@ -340,6 +379,8 @@
         "provider": "Shopify",
         "firstParty": true,
         "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
         "purpose": {
           "nl": "Gebruikt in verband met lokalisatie van kopers."
         }
@@ -351,6 +392,8 @@
         "provider": "Shopify",
         "firstParty": true,
         "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
         "purpose": {
           "nl": "Gebruikt in verband met klantenlogin."
         }
@@ -362,6 +405,8 @@
         "provider": "Shopify",
         "firstParty": true,
         "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
         "purpose": {
           "nl": "Shopify-winkellokalisatie"
         }
@@ -373,6 +418,8 @@
         "provider": "Shopify",
         "firstParty": true,
         "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
         "purpose": {
           "nl": "De cookie is nodig voor de veilige betaal- en betaalfunctie op de website. Deze functie wordt geleverd door shopify.com."
         }
@@ -384,6 +431,8 @@
         "provider": "Shopify",
         "firstParty": true,
         "retention": "60 minute(s)",
+        "expires": 60,
+        "unit": "declMinutes",
         "purpose": {
           "nl": "De cookie is nodig voor de veilige betaal- en betaalfunctie op de website. Deze functie wordt geleverd door shopify.com."
         }
@@ -395,6 +444,8 @@
         "provider": "Shopify",
         "firstParty": true,
         "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
         "purpose": {
           "nl": "Shopify-analyses."
         }
@@ -406,6 +457,8 @@
         "provider": "Shopify",
         "firstParty": true,
         "retention": "24 hour(s)",
+        "expires": 24,
+        "unit": "declHours",
         "purpose": {
           "nl": "Gebruikt in verband met navigatie door een winkelpui."
         }
@@ -417,6 +470,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
         "purpose": {
           "nl": "Voorkeuren volgen."
         }
@@ -430,6 +485,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
         "purpose": {
           "nl": "Volgt bestemmingspagina's."
         }
@@ -441,6 +498,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
         "purpose": {
           "nl": "Volgt bestemmingspagina's."
         }
@@ -452,6 +511,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
         "purpose": {
           "nl": "Shopify-analyses."
         }
@@ -463,6 +524,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
         "purpose": {
           "nl": "Shopify-analyses."
         }
@@ -474,6 +537,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
         "purpose": {
           "nl": "Shopify-analyses."
         }
@@ -485,6 +550,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
         "purpose": {
           "nl": "Shopify-analyses."
         }
@@ -496,6 +563,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
         "purpose": {
           "nl": "Shopify-analyses met betrekking tot marketing en verwijzingen."
         }
@@ -507,6 +576,8 @@
         "provider": "Shopify",
         "firstParty": false,
         "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
         "purpose": {
           "nl": "Shopify-analyses met betrekking tot marketing en verwijzingen."
         }
@@ -520,6 +591,8 @@
         "provider": "Google",
         "firstParty": false,
         "retention": "24 hour(s)",
+        "expires": 24,
+        "unit": "declHours",
         "purpose": {
           "nl": "Cookie wordt geplaatst door Google Analytics om paginaweergaven te tellen en bij te houden."
         }
@@ -531,6 +604,8 @@
         "provider": "Google",
         "firstParty": false,
         "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
         "purpose": {
           "nl": "Cookie is ingesteld door Google Analytics met onbekende functionaliteit"
         }
@@ -542,6 +617,8 @@
         "provider": "Google",
         "firstParty": false,
         "retention": "51 second(s)",
+        "expires": 51,
+        "unit": "declSeconds",
         "purpose": {
           "nl": "Cookie wordt geplaatst door Google Analytics om verzoeken van bots te filteren."
         }
@@ -555,6 +632,8 @@
         "provider": "Facebook",
         "firstParty": false,
         "retention": "90 day(s)",
+        "expires": 90,
+        "unit": "declSession",
         "purpose": {
           "nl": "Cookie wordt door Facebook geplaatst om bezoeken aan websites bij te houden."
         }
@@ -568,6 +647,8 @@
         "provider": "Unknown",
         "firstParty": true,
         "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
         "purpose": {
           "nl": ""
         }
@@ -605,6 +686,40 @@
 
       ],
       "blackList": {
+        "1": [
+
+        ],
+        "2": [
+
+        ],
+        "4": [
+
+        ],
+        "8": [
+
+        ]
+      },
+      "iframesWhiteList": [
+
+      ],
+      "iframesBlackList": {
+        "1": [
+
+        ],
+        "2": [
+
+        ],
+        "4": [
+
+        ],
+        "8": [
+
+        ]
+      },
+      "beaconsWhiteList": [
+
+      ],
+      "beaconsBlackList": {
         "1": [
 
         ],
