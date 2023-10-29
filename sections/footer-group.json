@@ -5,33 +5,35 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "footer-0": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Quick links",
-            "menu": "footer"
-          }
-        },
         "4d842893-d2d6-4fa8-a2c9-340ac7ff90ff": {
           "type": "text",
           "settings": {
             "heading": "Neem contact met ons op",
-            "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
+            "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel/B&B/koffiebar/...? Andere zaken die op je hart liggen?</p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!</a></p>"
           }
         },
-        "5d592fd7-b896-4071-9d51-452ad67c876e": {
+        "4da2da0b-6e8e-401c-b39b-ee32c23d0cad": {
+          "type": "image",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/Guild_for-electronic-publishing_square.png",
+            "image_width": 200,
+            "alignment": "right"
+          }
+        },
+        "c88bc92b-58eb-468d-8692-56c2fb002eb1": {
           "type": "image",
           "settings": {
-            "image": "shopify:\/\/shop_images\/HIB_logo.png",
-            "image_width": 100,
-            "alignment": "center"
+            "image": "shopify://shop_images/HIB_2018_Logo_-_transparent_square.png",
+            "image_width": 200,
+            "alignment": "right"
           }
         }
       },
       "block_order": [
-        "footer-0",
         "4d842893-d2d6-4fa8-a2c9-340ac7ff90ff",
-        "5d592fd7-b896-4071-9d51-452ad67c876e"
+        "4da2da0b-6e8e-401c-b39b-ee32c23d0cad",
+        "c88bc92b-58eb-468d-8692-56c2fb002eb1"
       ],
       "settings": {
         "color_scheme": "background-1",
@@ -42,7 +44,7 @@
         "enable_country_selector": false,
         "enable_language_selector": false,
         "payment_enable": true,
-        "show_policy": false,
+        "show_policy": true,
         "margin_top": 48,
         "padding_top": 36,
         "padding_bottom": 36
