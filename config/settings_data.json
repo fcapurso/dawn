@@ -2,7 +2,9 @@
   "current": {
     "favicon": "shopify:\/\/shop_images\/LogoAloneRound.png",
     "type_header_font": "serif",
+    "heading_scale": 110,
     "type_body_font": "josefin_slab_n4",
+    "body_scale": 110,
     "variant_pills_radius": 14,
     "social_facebook_link": "https:\/\/www.facebook.com\/zogezeept",
     "social_instagram_link": "https:\/\/instagram.com\/zogezeept",

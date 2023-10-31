@@ -9,7 +9,7 @@
           "type": "text",
           "settings": {
             "heading": "Neem contact met ons op",
-            "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
+            "subtext": "<p>Wil je een zeepworkshop organiseren voor je team of je vriendengroep? Zie je Zogezeept graag liggen in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
           }
         },
         "4da2da0b-6e8e-401c-b39b-ee32c23d0cad": {
@@ -36,7 +36,7 @@
         "c88bc92b-58eb-468d-8692-56c2fb002eb1"
       ],
       "settings": {
-        "color_scheme": "background-1",
+        "color_scheme": "background-2",
         "newsletter_enable": true,
         "newsletter_heading": "Blijf op de hoogte",
         "enable_follow_on_shop": false,
