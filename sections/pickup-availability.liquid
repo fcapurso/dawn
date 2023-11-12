@@ -4,7 +4,11 @@
 {%- if pick_up_availabilities.size > 0 -%}
   <pickup-availability-preview class="pickup-availability-preview">
     {%- liquid
-      assign closest_location = pick_up_availabilities.first
+      if pick_up_availabilities.size > 1
+        assign closest_location = pick_up_availabilities[1]
+      else
+        assign closest_location = pick_up_availabilities.first
+      endif
 
       if closest_location.available
         render 'icon-tick'
@@ -90,6 +94,9 @@
               {% render 'icon-tick' %}
               {{ 'products.product.pickup_availability.pick_up_available' | t }},
               {{ availability.pick_up_time | downcase }}
+            {%- else -%}
+              {% render 'icon-unavailable' %}
+              {{ 'products.product.pickup_availability.pick_up_unavailable' | t }}
             {%- endif -%}
           </p>
 

@@ -1,0 +1,165 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {
+          }
+        },
+        "subtitle": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.descriptors.subtitle.value }}",
+            "text_style": "subtitle"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": true
+          }
+        },
+        "product_info": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<h4>Over {{product.title}}<\/h4>"
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+          }
+        },
+        "product_logos": {
+          "type": "custom-product-logos",
+          "settings": {
+            "selected_image_1": "shopify:\/\/shop_images\/vegan_logo.png",
+            "product_tag_1": "vegan",
+            "selected_image_2": "shopify:\/\/shop_images\/vegetarian_logo.png",
+            "product_tag_2": "vegetarian",
+            "selected_image_3": "shopify:\/\/shop_images\/cruelty_free_logo.png",
+            "product_tag_3": "",
+            "selected_image_4": "shopify:\/\/shop_images\/handmade_with_love_logo.png",
+            "product_tag_4": "",
+            "product_tag_5": ""
+          }
+        },
+        "advice_for_use": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Gebruik",
+            "icon": "heart",
+            "content": "",
+            "page": "gebruik-gezichtmaskers"
+          }
+        },
+        "ingredients": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Wat zit er allemaal in?",
+            "icon": "leaf",
+            "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}<\/p>",
+            "page": ""
+          }
+        },
+        "shipping_policy": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Verzendkosten",
+            "icon": "truck",
+            "content": "<p><strong>Binnen België kost verzending €4,95, naar Nederland €5,95.<\/strong><\/p><p>Bestellingen worden met track & trace verzonden. De m\/v\/x van PostNl brengt het zo snel mogelijk naar jouw brievenbus. Reken gemiddeld op 3 werkdagen.<\/p>",
+            "page": ""
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "share_label": "Delen"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "subtitle",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "product_info",
+        "description",
+        "product_logos",
+        "advice_for_use",
+        "ingredients",
+        "shipping_policy",
+        "share"
+      ],
+      "custom_css": [
+
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "",
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail_slider",
+        "media_position": "left",
+        "image_zoom": "hover",
+        "mobile_thumbnails": "hide",
+        "hide_variants": true,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "Ook leuk voor jou?",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "background-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related-products"
+  ]
+}
