@@ -9,20 +9,26 @@
           "type": "announcement",
           "settings": {
             "text": "Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
-            "text_alignment": "center",
-            "color_scheme": "scheme-2",
             "link": "shopify:\/\/policies\/shipping-policy"
+          }
+        },
+        "e250272a-c2ea-4eef-b3d4-db1a830e6c3c": {
+          "type": "announcement",
+          "settings": {
+            "text": "10% korting op alle zepen, badmelk en gezichtsmaskers t.e.m. 15 december!",
+            "link": "https:\/\/www.zogezeept.com\/discount\/AMAIZOSCHOON23"
           }
         }
       },
       "block_order": [
-        "announcement-bar-0"
+        "announcement-bar-0",
+        "e250272a-c2ea-4eef-b3d4-db1a830e6c3c"
       ],
       "settings": {
         "color_scheme": "scheme-2",
         "show_line_separator": true,
         "show_social": false,
-        "auto_rotate": false,
+        "auto_rotate": true,
         "change_slides_speed": 5,
         "enable_country_selector": false,
         "enable_language_selector": false
@@ -31,12 +37,12 @@
     "header": {
       "type": "header",
       "settings": {
-        "color_scheme": "scheme-1",
         "logo_position": "middle-left",
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "on-scroll-up",
         "show_line_separator": true,
+        "color_scheme": "scheme-1",
         "menu_color_scheme": "scheme-1",
         "enable_country_selector": false,
         "enable_language_selector": false,
