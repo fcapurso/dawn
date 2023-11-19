@@ -3,7 +3,7 @@
     "favicon": "shopify:\/\/shop_images\/LogoAloneRound.png",
     "type_header_font": "serif",
     "heading_scale": 110,
-    "type_body_font": "josefin_slab_n4",
+    "type_body_font": "josefin_sans_n3",
     "body_scale": 110,
     "variant_pills_radius": 14,
     "social_facebook_link": "https:\/\/www.facebook.com\/zogezeept",
@@ -113,6 +113,18 @@
         "type": "shopify:\/\/apps\/gdpr-compliance-center\/blocks\/banner\/58c0baa2-6cc1-480c-9ea6-38d6d559556a",
         "disabled": false,
         "settings": {
+        }
+      },
+      "15683396631634586217": {
+        "type": "shopify:\/\/apps\/inbox\/blocks\/chat\/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": true,
+        "settings": {
+          "button_color": "#207567",
+          "button_icon": "chat_bubble",
+          "button_text": "no_text",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "lowest",
+          "greeting_message": "👋 Hallo, stuur ons een bericht als je vragen hebt. We helpen je graag verder."
         }
       }
     },

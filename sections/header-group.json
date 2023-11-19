@@ -12,17 +12,18 @@
             "link": "shopify:\/\/policies\/shipping-policy"
           }
         },
-        "e250272a-c2ea-4eef-b3d4-db1a830e6c3c": {
+        "e8a6d6bb-eceb-46bb-9449-8084818ef22a": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
-            "text": "10% korting op alle zepen, badmelk en gezichtsmaskers t.e.m. 15 december!",
-            "link": "https:\/\/www.zogezeept.com\/discount\/AMAIZOSCHOON23"
+            "text": "Zogezeept is er even tussenuit. Bestellingen worden vanaf 8 januari weer verzonden.",
+            "link": ""
           }
         }
       },
       "block_order": [
         "announcement-bar-0",
-        "e250272a-c2ea-4eef-b3d4-db1a830e6c3c"
+        "e8a6d6bb-eceb-46bb-9449-8084818ef22a"
       ],
       "settings": {
         "color_scheme": "scheme-2",

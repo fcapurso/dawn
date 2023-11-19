@@ -5,7 +5,7 @@
     "primaryLocale": "nl",
     "adminMode": false
   },
-  "tsPublished": 1699305154,
+  "tsPublished": 1702992390,
   "declaration": {
     "showPurpose": false,
     "showProvider": false,
@@ -25,13 +25,13 @@
         "nl": "Wij respecteren uw privacy"
       },
       "consentText": {
-        "nl": "Ook bij Zogezeept gebruiken we cookies om je website ervaring zo goed mogelijk te maken."
+        "nl": "<center>&#x1F36A; <b>Welkom bij Zogezeept!<\/b> &#x1F36A;<br>\n<br><\/center>\nWij gebruiken cookies om jouw bezoek extra speciaal te maken. Door ze te accepteren, geef je ons een duwtje in de rug om onze service nog beter te maken.<br>\n<br>\n&#x1F310; <b>Waarom zou je cookies accepteren?<\/b>\n<ul>\n<li><i>Essentiële cookies<\/i>: Onmisbaar voor het soepel laten verlopen van jouw online avontuur, zoals inloggen en het onthouden van je winkelwagen.<\/li>\n<li><i>Analytische cookies<\/i>: Hiermee blijven we groeien en begrijpen we jouw behoeften beter.<\/li>\n<\/ul>\n&#x2728; <b>Help ons jou de beste ervaring te geven!<\/b><br>\nAccepteer de cookies en draag bij aan een nog betere Zogezeept-beleving. Bedankt voor je steun!<br>\n<br>\n&#x1F512; <b>Jouw privacy is belangrijk voor ons!<\/b>\n<br>Voor alle details, lees onze"
       },
       "dismissButtonText": {
         "nl": "OK"
       },
       "linkText": {
-        "nl": "Kom meer te weten"
+        "nl": "Privacybeleid"
       },
       "imprintText": {
         "nl": "Afdruk"
@@ -40,10 +40,10 @@
         "nl": "Voorkeuren"
       },
       "allowButtonText": {
-        "nl": "Prima, cookie maar raakt!"
+        "nl": "Prima, cookie maar raakt! &#x1F308;"
       },
       "denyButtonText": {
-        "nl": "Nee, ik ben niet zo dol op cookies"
+        "nl": "Ik ben niet zo dol op cookies &#x1F615;"
       },
       "leaveSiteButtonText": {
         "nl": "Verlaat deze site"
@@ -285,12 +285,12 @@
     "dismissOnTimeout": false,
     "palette": {
       "popup": {
-        "background": "#B4D6C1",
+        "background": "#DFEAE2",
         "backgroundForCalculations": {
           "a": 1,
-          "b": 193,
-          "g": 214,
-          "r": 180
+          "b": 226,
+          "g": 234,
+          "r": 223
         },
         "text": "#207567"
       },
@@ -316,10 +316,10 @@
       "href": "https:\/\/zogezeept.myshopify.com\/policies\/privacy-policy",
       "imprintHref": "\/",
       "close": "&#10005;",
-      "target": "",
+      "target": "_blank",
       "logo": ""
     },
-    "window": "<div role=\"dialog\" aria-live=\"polite\" aria-label=\"cookieconsent\" aria-describedby=\"cookieconsent:desc\" id=\"pandectes-banner\" class=\"cc-window-wrapper \"><div class=\"pd-cookie-banner-window cc-window {{classes}}\"><!--googleoff: all-->{{children}}<!--googleon: all--><\/div><\/div>",
+    "window": "<div role=\"dialog\" aria-live=\"polite\" aria-label=\"cookieconsent\" aria-describedby=\"cookieconsent:desc\" id=\"pandectes-banner\" class=\"cc-window-wrapper cc-bottom-center-wrapper\"><div class=\"pd-cookie-banner-window cc-window {{classes}}\"><!--googleoff: all-->{{children}}<!--googleon: all--><\/div><\/div>",
     "compliance": {
       "opt-both": "<div class=\"cc-compliance cc-highlight\">{{deny}}{{allow}}<\/div>"
     },
@@ -327,7 +327,7 @@
     "layouts": {
       "basic": "{{messagelink}}{{compliance}}"
     },
-    "position": "top",
+    "position": "bottom-center",
     "theme": "classic",
     "revokable": false,
     "animateRevokable": false,
@@ -336,7 +336,7 @@
     "revokablePlacement": "bottom-left",
     "revokableMarginHorizontal": 15,
     "revokableMarginVertical": 15,
-    "static": true,
+    "static": false,
     "autoAttach": true,
     "hasTransition": true,
     "blacklistPage": [
@@ -355,14 +355,14 @@
   },
   "banner": {
     "resetTs": 1665258760,
-    "extraCss": "        .cc-banner-logo {max-width: 24em!important;}    @media(min-width: 768px) {.cc-window.cc-floating{max-width: 24em!important;width: 24em!important;}}    .cc-message, .cc-header, .cc-logo {text-align: left}    .cc-window-wrapper{z-index: 2147483647;}    .cc-window{z-index: 2147483647;font-family: inherit;}    .cc-header{font-family: inherit;}    .pd-cp-ui{font-family: inherit; background-color: #B4D6C1;color:#207567;}    button.pd-cp-btn, a.pd-cp-btn{background-color:#207567;color:#FAFAFA!important;}    input + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 0.3)}    .pd-cp-scrolling-section::-webkit-scrollbar{background-color: rgba(32, 117, 103, 0.3)}    input:checked + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 1)}    .pd-cp-scrolling-section::-webkit-scrollbar-thumb {background-color: rgba(32, 117, 103, 1)}    .pd-cp-ui-close{color:#207567;}    .pd-cp-preferences-slider:before{background-color: #B4D6C1}    .pd-cp-title:before {border-color: #207567!important}    .pd-cp-preferences-slider{background-color:#207567}    .pd-cp-toggle{color:#207567!important}    @media(max-width:699px) {.pd-cp-ui-close-top svg {fill: #207567}}    .pd-cp-toggle:hover,.pd-cp-toggle:visited,.pd-cp-toggle:active{color:#207567!important}    .pd-cookie-banner-window {}  ",
+    "extraCss": "        .cc-banner-logo {max-width: 40em!important;}    @media(min-width: 768px) {.cc-window.cc-floating{max-width: 40em!important;width: 40em!important;}}    .cc-message, .cc-header, .cc-logo {text-align: left}    .cc-window-wrapper{z-index: 2147483647;}    .cc-window{z-index: 2147483647;font-family: inherit;}    .cc-header{font-family: inherit;}    .pd-cp-ui{font-family: inherit; background-color: #DFEAE2;color:#207567;}    button.pd-cp-btn, a.pd-cp-btn{background-color:#207567;color:#FAFAFA!important;}    input + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 0.3)}    .pd-cp-scrolling-section::-webkit-scrollbar{background-color: rgba(32, 117, 103, 0.3)}    input:checked + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 1)}    .pd-cp-scrolling-section::-webkit-scrollbar-thumb {background-color: rgba(32, 117, 103, 1)}    .pd-cp-ui-close{color:#207567;}    .pd-cp-preferences-slider:before{background-color: #DFEAE2}    .pd-cp-title:before {border-color: #207567!important}    .pd-cp-preferences-slider{background-color:#207567}    .pd-cp-toggle{color:#207567!important}    @media(max-width:699px) {.pd-cp-ui-close-top svg {fill: #207567}}    .pd-cp-toggle:hover,.pd-cp-toggle:visited,.pd-cp-toggle:active{color:#207567!important}    .pd-cookie-banner-window {box-shadow: 0 0 18px rgb(0 0 0 \/ 20%);}  ",
     "customJavascript": null,
     "showPoweredBy": false,
     "hybridStrict": false,
     "cookiesBlockedByDefault": "7",
     "isActive": true,
     "implicitSavePreferences": false,
-    "cookieIcon": true,
+    "cookieIcon": false,
     "blockBots": false,
     "showCookiesDetails": true,
     "hasTransition": true,

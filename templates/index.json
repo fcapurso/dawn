@@ -7,7 +7,7 @@
           "type": "heading",
           "settings": {
             "heading": "zeep zonder zooi",
-            "heading_size": "h1"
+            "heading_size": "h0"
           }
         },
         "text": {
@@ -28,12 +28,12 @@
       "settings": {
         "image": "shopify:\/\/shop_images\/zozacht-op-marmer-met-calendula.jpg",
         "image_overlay_opacity": 10,
-        "image_height": "medium",
+        "image_height": "large",
         "desktop_content_position": "middle-center",
         "show_text_box": false,
         "desktop_content_alignment": "center",
         "color_scheme": "scheme-5",
-        "image_behavior": "none",
+        "image_behavior": "fixed",
         "mobile_content_alignment": "center",
         "stack_images_on_mobile": true,
         "show_text_below": false
@@ -102,14 +102,90 @@
       "settings": {
         "title": "",
         "heading_size": "h2",
-        "desktop_layout": "left",
-        "mobile_layout": "collage",
-        "color_scheme": "scheme-1",
         "image_ratio": "square",
         "columns_desktop": 3,
+        "color_scheme": "scheme-1",
         "show_view_all": false,
-        "columns_mobile": "2",
-        "swipe_on_mobile": true,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "e9552320-a2d0-4101-b17f-65bc5db3f475": {
+      "type": "multicolumn",
+      "blocks": {
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-1": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Handmade_simple-logo.png",
+            "title": "Handgemaakt",
+            "text": "<p>Ambachtelijke en kleinschalige productie in ons atelier<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-2": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Natural_simple-logo.png",
+            "title": "Natuurlijk",
+            "text": "<p>Met enkel de beste natuurlijke ingrediënten<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-3": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Sustainable_simple_2-logo.png",
+            "title": "Duurzaam",
+            "text": "<p>Verpakt met recycleerbare en herbruikbare materialen<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "438b5808-ffd3-47bc-a86a-546b2b4b3e51": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Skin_care_simple-logo.png",
+            "title": "Mild",
+            "text": "<p>Met zowel hypoallergene als babyvriendelijke recepten<\/p><p><\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "29684ea2-ba43-48c2-981a-bf56da828eb0": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Cruelty_free_simple-logo.png",
+            "title": "Ethisch",
+            "text": "<p>Cruelty free producten, ook met vegan formules<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-1",
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-2",
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-3",
+        "438b5808-ffd3-47bc-a86a-546b2b4b3e51",
+        "29684ea2-ba43-48c2-981a-bf56da828eb0"
+      ],
+      "settings": {
+        "title": "",
+        "heading_size": "h1",
+        "image_width": "third",
+        "image_ratio": "adapt",
+        "columns_desktop": 5,
+        "column_alignment": "center",
+        "background_style": "none",
+        "button_label": "",
+        "button_link": "",
+        "color_scheme": "scheme-1",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -147,16 +223,16 @@
       ],
       "settings": {
         "image": "shopify:\/\/shop_images\/zohippie-gestrooid-met-kornbloem.jpg",
-        "height": "small",
+        "height": "medium",
         "desktop_image_width": "medium",
         "layout": "image_first",
-        "desktop_content_position": "bottom",
-        "desktop_content_alignment": "left",
-        "content_layout": "no-overlap",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "center",
+        "content_layout": "overlap",
         "section_color_scheme": "background-1",
-        "color_scheme": "scheme-1",
-        "image_behavior": "none",
-        "mobile_content_alignment": "right",
+        "color_scheme": "scheme-2",
+        "image_behavior": "zoom-in",
+        "mobile_content_alignment": "center",
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -237,9 +313,9 @@
         "background_style": "none",
         "button_label": "",
         "button_link": "",
-        "swipe_on_mobile": false,
         "color_scheme": "scheme-1",
         "columns_mobile": "1",
+        "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -249,6 +325,7 @@
     "image_banner",
     "rich_text",
     "d8d78412-c262-4fec-a3dc-14f163405130",
+    "e9552320-a2d0-4101-b17f-65bc5db3f475",
     "c8dfa161-8b27-42ea-aa26-c96863fe7f83",
     "featured_collection",
     "multicolumn"
