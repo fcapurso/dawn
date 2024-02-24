@@ -56,6 +56,7 @@
         },
         "custom_liquid_8rVkUx": {
           "type": "custom_liquid",
+          "disabled": true,
           "settings": {
             "custom_liquid": "<div class=\"ultimate-countdown\"><\/div>"
           }
