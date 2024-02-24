@@ -131,6 +131,11 @@
                   {%- endform -%}
                 </div>
               {%- when 'inventory' -%}
+                {%- if block.settings.availability_type == 'items' -%}
+                  {%- assign inventory_status_prefix = 'products.product.inventory.items.' -%}
+                {%- elsif block.settings.availability_type == 'places' -%}
+                  {%- assign inventory_status_prefix = 'products.product.inventory.places.' -%}
+                {%- endif -%}
                 <p
                   class="product__inventory no-js-hidden{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
                   {{ block.shopify_attributes }}
@@ -148,11 +153,12 @@
                         </svg>
                         {%- if block.settings.show_inventory_quantity -%}
                           {{-
-                            'products.product.inventory_low_stock_show_count'
+                            inventory_status_prefix
+                            | append: 'inventory_low_stock_show_count'
                             | t: quantity: product.selected_or_first_available_variant.inventory_quantity
                           -}}
                         {%- else -%}
-                          {{- 'products.product.inventory_low_stock' | t -}}
+                          {{- inventory_status_prefix | append: 'inventory_low_stock' | t -}}
                         {%- endif -%}
                       {%- else -%}
                         <svg width="15" height="15" aria-hidden="true">
@@ -161,11 +167,12 @@
                         </svg>
                         {%- if block.settings.show_inventory_quantity -%}
                           {{-
-                            'products.product.inventory_in_stock_show_count'
+                            inventory_status_prefix
+                            | append: 'inventory_in_stock_show_count'
                             | t: quantity: product.selected_or_first_available_variant.inventory_quantity
                           -}}
                         {%- else -%}
-                          {{- 'products.product.inventory_in_stock' | t -}}
+                          {{- inventory_status_prefix | append: 'inventory_in_stock' | t -}}
                         {%- endif -%}
                       {%- endif -%}
                     {%- else -%}
@@ -174,13 +181,13 @@
                           <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
                           <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
                         </svg>
-                        {{- 'products.product.inventory_out_of_stock_continue_selling' | t -}}
+                        {{- inventory_status_prefix | append: 'inventory_out_of_stock_continue_selling' | t -}}
                       {%- else -%}
                         <svg width="15" height="15" aria-hidden="true">
                           <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(200,200,200, 0.3)"/>
                           <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(200,200,200)"/>
                         </svg>
-                        {{- 'products.product.inventory_out_of_stock' | t -}}
+                        {{- inventory_status_prefix | append: 'inventory_out_of_stock' | t -}}
                       {%- endif -%}
                     {%- endif -%}
                   {%- endif -%}
@@ -647,7 +654,7 @@
                   {% elsif block.settings.product_tag_1 == '' or product.tags contains block.settings.product_tag_1 %}
                     <div class="product-logo">
                       <img
-                        src="{{ block.settings.selected_image_1 | img_url: 'master' }}"
+                        src="{{ block.settings.selected_image_1 | image_url: width: 100 }}"
                         alt="{{ block.settings.selected_image_1.alt }}"
                       >
                       <span class="tooltip-text">{{ block.settings.selected_image_1.alt }}</span>
@@ -658,7 +665,7 @@
                   {% elsif block.settings.product_tag_2 == '' or product.tags contains block.settings.product_tag_2 %}
                     <div class="product-logo">
                       <img
-                        src="{{ block.settings.selected_image_2 | img_url: 'master' }}"
+                        src="{{ block.settings.selected_image_2 | image_url: width: 100 }}"
                         alt="{{ block.settings.selected_image_2.alt }}"
                       >
                       <span class="tooltip-text">{{ block.settings.selected_image_2.alt }}</span>
@@ -669,7 +676,7 @@
                   {% elsif block.settings.product_tag_3 == '' or product.tags contains block.settings.product_tag_3 %}
                     <div class="product-logo">
                       <img
-                        src="{{ block.settings.selected_image_3 | img_url: 'master' }}"
+                        src="{{ block.settings.selected_image_3 | image_url: width: 100 }}"
                         alt="{{ block.settings.selected_image_3.alt }}"
                       >
                       <span class="tooltip-text">{{ block.settings.selected_image_3.alt }}</span>
@@ -680,7 +687,7 @@
                   {% elsif block.settings.product_tag_4 == '' or product.tags contains block.settings.product_tag_4 %}
                     <div class="product-logo">
                       <img
-                        src="{{ block.settings.selected_image_4 | img_url: 'master' }}"
+                        src="{{ block.settings.selected_image_4 | image_url: width: 100 }}"
                         alt="{{ block.settings.selected_image_4.alt }}"
                       >
                       <span class="tooltip-text">{{ block.settings.selected_image_4.alt }}</span>
@@ -691,7 +698,7 @@
                   {% elsif block.settings.product_tag_5 == '' or product.tags contains block.settings.product_tag_5 %}
                     <div class="product-logo">
                       <img
-                        src="{{ block.settings.selected_image_5 | img_url: 'master' }}"
+                        src="{{ block.settings.selected_image_5 | image_url: width: 100 }}"
                         alt="{{ block.settings.selected_image_5.alt }}"
                       >
                       <span class="tooltip-text">{{ block.settings.selected_image_5.alt }}</span>
@@ -952,6 +959,22 @@
           "id": "show_inventory_quantity",
           "label": "t:sections.main-product.blocks.inventory.settings.show_inventory_quantity.label",
           "default": true
+        },
+        {
+          "type": "select",
+          "id": "availability_type",
+          "options": [
+            {
+              "value": "items",
+              "label": "t:sections.main-product.blocks.inventory.settings.availability_type.options__1.label"
+            },
+            {
+              "value": "places",
+              "label": "t:sections.main-product.blocks.inventory.settings.availability_type.options__2.label"
+            }
+          ],
+          "default": "items",
+          "label": "t:sections.main-product.blocks.inventory.settings.availability_type.label"
         }
       ]
     },

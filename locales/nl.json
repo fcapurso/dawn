@@ -160,11 +160,24 @@
       "choose_product_options": "Opties kiezen voor {{ product_name }}",
       "value_unavailable": "{{ option_value }} - Niet beschikbaar",
       "variant_sold_out_or_unavailable": "Variant uitverkocht of niet beschikbaar",
-      "inventory_in_stock": "Op voorraad",
-      "inventory_in_stock_show_count": "{{ quantity }} op voorraad",
-      "inventory_low_stock": "Voorraad laag",
-      "inventory_low_stock_show_count": "Lage voorraad: nog maar {{ quantity }}",
-      "inventory_out_of_stock": "Niet op voorraad",
+      "inventory": {
+        "items": {
+          "inventory_in_stock": "Op voorraad",
+          "inventory_in_stock_show_count": "{{ quantity }} op voorraad",
+          "inventory_low_stock": "Voorraad laag",
+          "inventory_low_stock_show_count": "Lage voorraad: nog maar {{ quantity }}",
+          "inventory_out_of_stock": "Niet op voorraad",
+          "inventory_out_of_stock_continue_selling": "Op voorraad"
+        },
+        "places": {
+          "inventory_in_stock": "Nog plaatsen beschikbaar",
+          "inventory_in_stock_show_count": "Nog {{ quantity }} plaatsen beschikbaar",
+          "inventory_low_stock": "Nog maar enkele plaatsen beschikbaar",
+          "inventory_low_stock_show_count": "Nog maar {{ quantity }} plaatsen beschikbaar",
+          "inventory_out_of_stock": "Volgeboekt",
+          "inventory_out_of_stock_continue_selling": "Nog plaatsen beschikbaar"
+        }
+      },
       "sku": "SKU",
       "inventory_out_of_stock_continue_selling": "Op voorraad",
       "volume_pricing": {

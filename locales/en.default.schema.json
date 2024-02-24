@@ -1976,6 +1976,15 @@
             },
             "show_inventory_quantity": {
               "label": "Show inventory count"
+            },
+            "availability_type": {
+              "label": "Availability type",
+              "options__1": {
+                "label": "Items"
+              },
+              "options__2": {
+                "label": "Places"
+              }
             }
           }
         },
