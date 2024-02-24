@@ -33,17 +33,17 @@
             "picker_type": "dropdown"
           }
         },
+        "custom_liquid_8rVkUx": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<div class=\"ultimate-countdown\"><\/div>"
+          }
+        },
         "1d473aca-7da0-49ae-8743-0fe18be022a1": {
           "type": "custom_liquid",
           "disabled": true,
           "settings": {
             "custom_liquid": "<div class=\"product__tax caption rte\">Gaat door bij: {{ product.selected_or_first_available_variant.metafields.custom.location }}<\/div>"
-          }
-        },
-        "custom_liquid_8rVkUx": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "<div class=\"ultimate-countdown\"><\/div>"
           }
         },
         "8413f971-2164-417d-8d2e-86216bd72bfd": {
@@ -109,8 +109,8 @@
         "subtitle",
         "price",
         "variant_picker",
-        "1d473aca-7da0-49ae-8743-0fe18be022a1",
         "custom_liquid_8rVkUx",
+        "1d473aca-7da0-49ae-8743-0fe18be022a1",
         "8413f971-2164-417d-8d2e-86216bd72bfd",
         "quantity_selector",
         "buy_buttons",
