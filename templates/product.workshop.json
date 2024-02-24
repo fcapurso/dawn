@@ -33,12 +33,6 @@
             "picker_type": "dropdown"
           }
         },
-        "custom_liquid_8rVkUx": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "<div class=\"ultimate-countdown\"><\/div>"
-          }
-        },
         "1d473aca-7da0-49ae-8743-0fe18be022a1": {
           "type": "custom_liquid",
           "disabled": true,
@@ -58,6 +52,12 @@
         "quantity_selector": {
           "type": "quantity_selector",
           "settings": {
+          }
+        },
+        "custom_liquid_8rVkUx": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<div class=\"ultimate-countdown\"><\/div>"
           }
         },
         "buy_buttons": {
@@ -109,10 +109,10 @@
         "subtitle",
         "price",
         "variant_picker",
-        "custom_liquid_8rVkUx",
         "1d473aca-7da0-49ae-8743-0fe18be022a1",
         "8413f971-2164-417d-8d2e-86216bd72bfd",
         "quantity_selector",
+        "custom_liquid_8rVkUx",
         "buy_buttons",
         "product_info",
         "description",
