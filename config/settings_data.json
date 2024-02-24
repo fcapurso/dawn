@@ -1,5 +1,191 @@
 {
-  "current": "Default",
+  "current": {
+    "favicon": "shopify:\/\/shop_images\/LogoAloneRound.png",
+    "type_header_font": "serif",
+    "heading_scale": 110,
+    "type_body_font": "josefin_sans_n3",
+    "body_scale": 110,
+    "variant_pills_radius": 14,
+    "social_facebook_link": "https:\/\/www.facebook.com\/zogezeept",
+    "social_instagram_link": "https:\/\/instagram.com\/zogezeept",
+    "currency_code_enabled": true,
+    "cart_type": "drawer",
+    "show_cart_note": true,
+    "cart_drawer_collection": "spotlight",
+    "checkout_header_image": "shopify:\/\/shop_images\/Zogezeept-359-Edit_ce87f719-1f22-4bcc-8901-3e6f8761893e.jpg",
+    "checkout_logo_image": "shopify:\/\/shop_images\/LogoAloneRound.png",
+    "checkout_logo_position": "center",
+    "checkout_logo_size": "large",
+    "checkout_body_background_color": "#fafafa",
+    "checkout_input_background_color_mode": "white",
+    "checkout_sidebar_background_color": "#fafafa",
+    "checkout_accent_color": "#207567",
+    "checkout_button_color": "#207567",
+    "colors_solid_button_labels": "#207567",
+    "colors_accent_1": "#b4d6c1",
+    "colors_accent_2": "#6baf92",
+    "colors_text": "#207567",
+    "colors_outline_button_labels": "#6baf92",
+    "colors_background_1": "#fafafa",
+    "colors_background_2": "rgba(0,0,0,0)",
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "blocks": {
+          "announcement-bar-0": {
+            "type": "announcement",
+            "settings": {
+              "text": "Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
+              "link": "shopify:\/\/policies\/shipping-policy"
+            }
+          }
+        },
+        "block_order": [
+          "announcement-bar-0"
+        ],
+        "settings": {
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_position": "middle-left",
+          "menu": "main-menu",
+          "menu_type_desktop": "dropdown",
+          "show_line_separator": true,
+          "color_scheme": "background-1",
+          "mobile_logo_position": "center",
+          "margin_bottom": 0,
+          "padding_top": 20,
+          "padding_bottom": 20
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "footer-0": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Quick links",
+              "menu": "footer"
+            }
+          },
+          "footer-1": {
+            "type": "text",
+            "settings": {
+              "heading": "Neem contact met ons op",
+              "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
+            }
+          },
+          "6fda407a-8f93-4102-8403-1541e233696d": {
+            "type": "image",
+            "settings": {
+              "image": "shopify:\/\/shop_images\/HIB_logo.png",
+              "image_width": 100,
+              "alignment": "center"
+            }
+          }
+        },
+        "block_order": [
+          "footer-0",
+          "footer-1",
+          "6fda407a-8f93-4102-8403-1541e233696d"
+        ],
+        "settings": {
+          "color_scheme": "background-1",
+          "newsletter_enable": true,
+          "newsletter_heading": "Blijf op de hoogte",
+          "show_social": true,
+          "enable_country_selector": false,
+          "enable_language_selector": true,
+          "payment_enable": true,
+          "margin_top": 0,
+          "padding_top": 36,
+          "padding_bottom": 36
+        }
+      }
+    },
+    "content_for_index": [
+
+    ],
+    "blocks": {
+      "15351435345818755577": {
+        "type": "shopify:\/\/apps\/gdpr-compliance-center\/blocks\/banner\/58c0baa2-6cc1-480c-9ea6-38d6d559556a",
+        "disabled": false,
+        "settings": {
+        }
+      },
+      "15683396631634586217": {
+        "type": "shopify:\/\/apps\/inbox\/blocks\/chat\/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": true,
+        "settings": {
+          "button_color": "#207567",
+          "button_icon": "chat_bubble",
+          "button_text": "no_text",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "lowest",
+          "greeting_message": "👋 Hallo, stuur ons een bericht als je vragen hebt. We helpen je graag verder."
+        }
+      }
+    },
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#fafafa",
+          "background_gradient": "",
+          "text": "#207567",
+          "button": "#b4d6c1",
+          "button_label": "#207567",
+          "secondary_button_label": "#6baf92",
+          "shadow": "#6baf92"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#dfeae2",
+          "background_gradient": "",
+          "text": "#207567",
+          "button": "#207567",
+          "button_label": "#dfeae2",
+          "secondary_button_label": "#207567",
+          "shadow": "#207567"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#207567",
+          "background_gradient": "",
+          "text": "#fafafa",
+          "button": "#fafafa",
+          "button_label": "rgba(0,0,0,0)",
+          "secondary_button_label": "#fafafa",
+          "shadow": "#207567"
+        }
+      },
+      "scheme-4": {
+        "settings": {
+          "background": "#207567",
+          "background_gradient": "",
+          "text": "#fafafa",
+          "button": "#fafafa",
+          "button_label": "#207567",
+          "secondary_button_label": "#fafafa",
+          "shadow": "#207567"
+        }
+      },
+      "scheme-5": {
+        "settings": {
+          "background": "#6baf92",
+          "background_gradient": "",
+          "text": "#fafafa",
+          "button": "#fafafa",
+          "button_label": "#6baf92",
+          "secondary_button_label": "#fafafa",
+          "shadow": "#207567"
+        }
+      }
+    }
+  },
   "presets": {
     "Default": {
       "logo_width": 90,
@@ -171,6 +357,76 @@
       "show_cart_note": false,
       "cart_drawer_collection": "",
       "sections": {
+        "announcement-bar": {
+          "type": "announcement-bar",
+          "blocks": {
+            "announcement-bar-0": {
+              "type": "announcement",
+              "settings": {
+                "text": "Welcome to our store",
+                "link": ""
+              }
+            }
+          },
+          "block_order": [
+            "announcement-bar-0"
+          ],
+          "settings": {
+          }
+        },
+        "header": {
+          "type": "header",
+          "settings": {
+            "logo_position": "middle-left",
+            "menu": "main-menu",
+            "show_line_separator": true,
+            "color_scheme": "background-1",
+            "margin_bottom": 0
+          }
+        },
+        "footer": {
+          "type": "footer",
+          "blocks": {
+            "footer-0": {
+              "type": "link_list",
+              "settings": {
+                "heading": "Quick links",
+                "menu": "footer"
+              }
+            },
+            "footer-1": {
+              "type": "link_list",
+              "settings": {
+                "heading": "Info",
+                "menu": "footer"
+              }
+            },
+            "footer-2": {
+              "type": "text",
+              "settings": {
+                "heading": "Our mission",
+                "subtext": "<p>Share contact information, store details, and brand content with your customers.<\/p>"
+              }
+            }
+          },
+          "block_order": [
+            "footer-0",
+            "footer-1",
+            "footer-2"
+          ],
+          "settings": {
+            "color_scheme": "background-1",
+            "newsletter_enable": true,
+            "newsletter_heading": "Subscribe to our emails",
+            "show_social": true,
+            "enable_country_selector": false,
+            "enable_language_selector": false,
+            "payment_enable": true,
+            "margin_top": 48,
+            "padding_top": 36,
+            "padding_bottom": 36
+          }
+        },
         "main-password-header": {
           "type": "main-password-header",
           "settings": {

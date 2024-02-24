@@ -8,28 +8,45 @@
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
-            "text": "Welcome to our store",
-            "text_alignment": "center",
-            "color_scheme": "scheme-1",
+            "text": "Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
+            "link": "shopify:\/\/policies\/shipping-policy"
+          }
+        },
+        "e8a6d6bb-eceb-46bb-9449-8084818ef22a": {
+          "type": "announcement",
+          "disabled": true,
+          "settings": {
+            "text": "Zogezeept is er even tussenuit. Bestellingen worden vanaf 8 januari weer verzonden.",
             "link": ""
           }
         }
       },
       "block_order": [
-        "announcement-bar-0"
-      ]
+        "announcement-bar-0",
+        "e8a6d6bb-eceb-46bb-9449-8084818ef22a"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "show_line_separator": true,
+        "show_social": false,
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
     },
     "header": {
       "type": "header",
       "settings": {
-        "color_scheme": "scheme-1",
         "logo_position": "middle-left",
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "on-scroll-up",
         "show_line_separator": true,
-        "enable_country_selector": true,
-        "enable_language_selector": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": false,
+        "enable_language_selector": false,
         "mobile_logo_position": "center",
         "margin_bottom": 0,
         "padding_top": 20,
