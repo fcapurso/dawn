@@ -103,6 +103,18 @@
           "padding_top": 36,
           "padding_bottom": 36
         }
+      },
+      "main-password-header": {
+        "type": "main-password-header",
+        "settings": {
+          "color_scheme": ""
+        }
+      },
+      "main-password-footer": {
+        "type": "main-password-footer",
+        "settings": {
+          "color_scheme": ""
+        }
       }
     },
     "content_for_index": [
@@ -129,7 +141,7 @@
       },
       "5254461746450177899": {
         "type": "shopify:\/\/apps\/ymq-b2b-wholesale-solution\/blocks\/app-embed\/ef8663e7-9d07-4952-bb17-2e62f084164e",
-        "disabled": false,
+        "disabled": true,
         "settings": {
         }
       }
