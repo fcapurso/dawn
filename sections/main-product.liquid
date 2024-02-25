@@ -145,7 +145,7 @@
                   {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
                     {%- if product.selected_or_first_available_variant.inventory_quantity > 0 -%}
                       {%- if product.selected_or_first_available_variant.inventory_quantity
-                          <= block.settings.inventory_threshold
+                          <= block.settings.low_stock_threshold
                       -%}
                         <svg width="15" height="15" aria-hidden="true">
                           <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(238,148,65, 0.3)"/>
@@ -165,7 +165,10 @@
                           <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
                           <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
                         </svg>
-                        {%- if block.settings.show_inventory_quantity -%}
+                        {%- if block.settings.show_inventory_quantity
+                          and product.selected_or_first_available_variant.inventory_quantity
+                            <= block.settings.high_stock_threshold
+                        -%}
                           {{-
                             inventory_status_prefix
                             | append: 'inventory_in_stock_show_count'
@@ -946,12 +949,22 @@
         },
         {
           "type": "range",
-          "id": "inventory_threshold",
-          "label": "t:sections.main-product.blocks.inventory.settings.inventory_threshold.label",
+          "id": "low_stock_threshold",
+          "label": "t:sections.main-product.blocks.inventory.settings.low_stock_threshold.label",
           "min": 0,
           "max": 100,
           "step": 1,
-          "info": "t:sections.main-product.blocks.inventory.settings.inventory_threshold.info",
+          "info": "t:sections.main-product.blocks.inventory.settings.low_stock_threshold.info",
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "high_stock_threshold",
+          "label": "t:sections.main-product.blocks.inventory.settings.high_stock_threshold.label",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "info": "t:sections.main-product.blocks.inventory.settings.high_stock_threshold.info",
           "default": 10
         },
         {
