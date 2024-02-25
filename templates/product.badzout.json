@@ -30,7 +30,18 @@
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
-            "picker_type": "button"
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "inventory_UkBYwf": {
+          "type": "inventory",
+          "settings": {
+            "text_style": "body",
+            "low_stock_threshold": 5,
+            "high_stock_threshold": 5,
+            "show_inventory_quantity": true,
+            "availability_type": "items"
           }
         },
         "quantity_selector": {
@@ -110,6 +121,7 @@
         "subtitle",
         "price",
         "variant_picker",
+        "inventory_UkBYwf",
         "quantity_selector",
         "buy_buttons",
         "product_info",
