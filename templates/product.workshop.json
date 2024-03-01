@@ -22,6 +22,11 @@
             "text_style": "subtitle"
           }
         },
+        "judge_me_reviews_preview_badge_bDLHnp": {
+          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/preview_badge\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+          }
+        },
         "price": {
           "type": "price",
           "settings": {
@@ -97,12 +102,18 @@
           "settings": {
             "share_label": "Delen"
           }
+        },
+        "judge_me_reviews_review_widget_3bdKTe": {
+          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/review_widget\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+          }
         }
       },
       "block_order": [
         "vendor",
         "title",
         "subtitle",
+        "judge_me_reviews_preview_badge_bDLHnp",
         "price",
         "variant_picker",
         "1d473aca-7da0-49ae-8743-0fe18be022a1",
@@ -113,7 +124,8 @@
         "description",
         "ingredients",
         "good_to_know",
-        "share"
+        "share",
+        "judge_me_reviews_review_widget_3bdKTe"
       ],
       "settings": {
         "enable_sticky_info": true,
