@@ -139,9 +139,9 @@
           "greeting_message": "👋 Hallo, stuur ons een bericht als je vragen hebt. We helpen je graag verder."
         }
       },
-      "5254461746450177899": {
-        "type": "shopify:\/\/apps\/ymq-b2b-wholesale-solution\/blocks\/app-embed\/ef8663e7-9d07-4952-bb17-2e62f084164e",
-        "disabled": true,
+      "14060646107696862457": {
+        "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/judgeme_core\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
         "settings": {
         }
       }
