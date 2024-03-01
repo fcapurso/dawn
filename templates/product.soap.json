@@ -128,6 +128,11 @@
           "settings": {
             "share_label": "Delen"
           }
+        },
+        "judge_me_reviews_review_widget_Gd6VCJ": {
+          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/review_widget\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+          }
         }
       },
       "block_order": [
@@ -147,7 +152,8 @@
         "ingredients",
         "good_to_know",
         "shipping_policy",
-        "share"
+        "share",
+        "judge_me_reviews_review_widget_Gd6VCJ"
       ],
       "custom_css": [
 
