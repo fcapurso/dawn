@@ -14,6 +14,7 @@
         },
         "e8a6d6bb-eceb-46bb-9449-8084818ef22a": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
             "text": "Zogezeept is er even tussenuit. Bestellingen worden vanaf 13 april weer verzonden.",
             "link": ""
