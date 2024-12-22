@@ -110,12 +110,24 @@
       "choose_options": "Choose options",
       "choose_product_options": "Choose options for {{ product_name }}",
       "description": "Description",
-      "inventory_in_stock": "In stock",
-      "inventory_in_stock_show_count": "{{ quantity }} in stock",
-      "inventory_low_stock": "Low stock",
-      "inventory_low_stock_show_count": "Low stock: {{ quantity }} left",
-      "inventory_out_of_stock": "Out of stock",
-      "inventory_out_of_stock_continue_selling": "In stock",
+      "inventory": {
+        "items": {
+          "inventory_in_stock": "In stock",
+          "inventory_in_stock_show_count": "{{ quantity }} in stock",
+          "inventory_low_stock": "Low stock",
+          "inventory_low_stock_show_count": "Low stock: {{ quantity }} left",
+          "inventory_out_of_stock": "Out of stock",
+          "inventory_out_of_stock_continue_selling": "In stock"
+        },
+        "places": {
+          "inventory_in_stock": "Places available",
+          "inventory_in_stock_show_count": "Still {{ quantity }} places available",
+          "inventory_low_stock": "Only a few places available",
+          "inventory_low_stock_show_count": "Only {{ quantity }} places left",
+          "inventory_out_of_stock": "Fully booked",
+          "inventory_out_of_stock_continue_selling": "Places available"
+        }
+      },
       "sku": "SKU",
       "on_sale": "Sale",
       "product_variants": "Product variants",
@@ -153,6 +165,7 @@
         "view_store_info": "View store information",
         "check_other_stores": "Check availability at other stores",
         "pick_up_available": "Pickup available",
+        "pick_up_unavailable": "Pickup currently unavailable",
         "pick_up_available_at_html": "Pickup available at <span class=\"color-foreground\">{{ location_name }}</span>",
         "pick_up_unavailable_at_html": "Pickup currently unavailable at <span class=\"color-foreground\">{{ location_name }}</span>",
         "unavailable": "Couldn't load pickup availability",

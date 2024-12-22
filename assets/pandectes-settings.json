@@ -1,0 +1,739 @@
+{
+  "store": {
+    "plan": "basic",
+    "theme": "dawn\/current",
+    "primaryLocale": "nl",
+    "adminMode": false
+  },
+  "tsPublished": 1702992390,
+  "declaration": {
+    "showPurpose": false,
+    "showProvider": false,
+    "showDateGenerated": false
+  },
+  "language": {
+    "languageMode": "Single",
+    "fallbackLanguage": "nl",
+    "languageDetection": "browser",
+    "languagesSupported": [
+
+    ]
+  },
+  "texts": {
+    "managed": {
+      "headerText": {
+        "nl": "Wij respecteren uw privacy"
+      },
+      "consentText": {
+        "nl": "<center>&#x1F36A; <b>Welkom bij Zogezeept!<\/b> &#x1F36A;<br>\n<br><\/center>\nWij gebruiken cookies om jouw bezoek extra speciaal te maken. Door ze te accepteren, geef je ons een duwtje in de rug om onze service nog beter te maken.<br>\n<br>\n&#x1F310; <b>Waarom zou je cookies accepteren?<\/b>\n<ul>\n<li><i>Essentiële cookies<\/i>: Onmisbaar voor het soepel laten verlopen van jouw online avontuur, zoals inloggen en het onthouden van je winkelwagen.<\/li>\n<li><i>Analytische cookies<\/i>: Hiermee blijven we groeien en begrijpen we jouw behoeften beter.<\/li>\n<\/ul>\n&#x2728; <b>Help ons jou de beste ervaring te geven!<\/b><br>\nAccepteer de cookies en draag bij aan een nog betere Zogezeept-beleving. Bedankt voor je steun!<br>\n<br>\n&#x1F512; <b>Jouw privacy is belangrijk voor ons!<\/b>\n<br>Voor alle details, lees onze"
+      },
+      "dismissButtonText": {
+        "nl": "OK"
+      },
+      "linkText": {
+        "nl": "Privacybeleid"
+      },
+      "imprintText": {
+        "nl": "Afdruk"
+      },
+      "preferencesButtonText": {
+        "nl": "Voorkeuren"
+      },
+      "allowButtonText": {
+        "nl": "Prima, cookie maar raakt! &#x1F308;"
+      },
+      "denyButtonText": {
+        "nl": "Ik ben niet zo dol op cookies &#x1F615;"
+      },
+      "leaveSiteButtonText": {
+        "nl": "Verlaat deze site"
+      },
+      "cookiePolicyText": {
+        "nl": "Cookie beleid"
+      },
+      "preferencesPopupTitleText": {
+        "nl": "Toestemmingsvoorkeuren beheren"
+      },
+      "preferencesPopupIntroText": {
+        "nl": "We gebruiken cookies om de functionaliteit van de website te optimaliseren, de prestaties te analyseren en u een gepersonaliseerde ervaring te bieden. Sommige cookies zijn essentieel om de website correct te laten werken en functioneren. Die cookies kunnen niet worden uitgeschakeld. In dit venster kunt u uw voorkeur voor cookies beheren."
+      },
+      "preferencesPopupCloseButtonText": {
+        "nl": "Sluiten"
+      },
+      "preferencesPopupAcceptAllButtonText": {
+        "nl": "Accepteer alles"
+      },
+      "preferencesPopupRejectAllButtonText": {
+        "nl": "Alles afwijzen"
+      },
+      "preferencesPopupSaveButtonText": {
+        "nl": "Voorkeuren opslaan"
+      },
+      "accessSectionTitleText": {
+        "nl": "Gegevensportabiliteit"
+      },
+      "accessSectionParagraphText": {
+        "nl": "U heeft te allen tijde het recht om uw gegevens in te zien."
+      },
+      "rectificationSectionTitleText": {
+        "nl": "Gegevens rectificatie"
+      },
+      "rectificationSectionParagraphText": {
+        "nl": "U hebt het recht om te vragen dat uw gegevens worden bijgewerkt wanneer u dat nodig acht."
+      },
+      "erasureSectionTitleText": {
+        "nl": "Recht om vergeten te worden"
+      },
+      "erasureSectionParagraphText": {
+        "nl": "U heeft het recht om al uw gegevens te laten wissen. Daarna heeft u geen toegang meer tot uw account."
+      },
+      "declIntroText": {
+        "nl": "We gebruiken cookies om de functionaliteit van de website te optimaliseren, de prestaties te analyseren en u een gepersonaliseerde ervaring te bieden. Sommige cookies zijn essentieel om de website goed te laten werken en correct te laten functioneren. Die cookies kunnen niet worden uitgeschakeld. In dit venster kunt u uw voorkeur voor cookies beheren."
+      }
+    },
+    "categories": {
+      "strictlyNecessaryCookiesTitleText": {
+        "nl": "Strikt noodzakelijke cookies"
+      },
+      "functionalityCookiesTitleText": {
+        "nl": "Functionele cookies"
+      },
+      "performanceCookiesTitleText": {
+        "nl": "Prestatiecookies"
+      },
+      "targetingCookiesTitleText": {
+        "nl": "Targeting-cookies"
+      },
+      "unclassifiedCookiesTitleText": {
+        "nl": "Niet-geclassificeerde cookies"
+      },
+      "strictlyNecessaryCookiesDescriptionText": {
+        "nl": "Deze cookies zijn essentieel om u in staat te stellen door de website te navigeren en de functies ervan te gebruiken, zoals toegang tot beveiligde delen van de website. Zonder deze cookies kan de website niet goed functioneren."
+      },
+      "functionalityCookiesDescriptionText": {
+        "nl": "Deze cookies stellen de site in staat om verbeterde functionaliteit en personalisatie te bieden. Ze kunnen worden ingesteld door ons of door externe providers wiens diensten we aan onze pagina's hebben toegevoegd. Als u deze cookies niet toestaat, werken sommige of al deze diensten mogelijk niet correct."
+      },
+      "performanceCookiesDescriptionText": {
+        "nl": "Deze cookies stellen ons in staat om de prestaties van onze website te monitoren en te verbeteren. Ze stellen ons bijvoorbeeld in staat om bezoeken te tellen, verkeersbronnen te identificeren en te zien welke delen van de site het populairst zijn."
+      },
+      "targetingCookiesDescriptionText": {
+        "nl": "Deze cookies kunnen via onze site worden geplaatst door onze advertentiepartners. Ze kunnen door die bedrijven worden gebruikt om een profiel van uw interesses op te bouwen en u relevante advertenties op andere sites te tonen. Ze slaan geen directe persoonlijke informatie op, maar zijn gebaseerd op de unieke identificatie van uw browser en internetapparaat. Als je deze cookies niet toestaat, krijg je minder gerichte advertenties te zien."
+      },
+      "unclassifiedCookiesDescriptionText": {
+        "nl": "Niet-geclassificeerde cookies zijn cookies die we aan het classificeren zijn, samen met de aanbieders van individuele cookies."
+      }
+    },
+    "auto": {
+      "declName": {
+        "nl": "Naam"
+      },
+      "declPath": {
+        "nl": "Pad"
+      },
+      "declType": {
+        "nl": "Type"
+      },
+      "declDomain": {
+        "nl": "Domein"
+      },
+      "declPurpose": {
+        "nl": "Doel"
+      },
+      "declProvider": {
+        "nl": "Aanbieder"
+      },
+      "declRetention": {
+        "nl": "Behoud"
+      },
+      "declFirstParty": {
+        "nl": "First-party"
+      },
+      "declThirdParty": {
+        "nl": "Derde partij"
+      },
+      "declSeconds": {
+        "nl": "seconden"
+      },
+      "declMinutes": {
+        "nl": "minuten"
+      },
+      "declHours": {
+        "nl": "uur"
+      },
+      "declDays": {
+        "nl": "dagen"
+      },
+      "declMonths": {
+        "nl": "maanden"
+      },
+      "declYears": {
+        "nl": "jaren"
+      },
+      "declSession": {
+        "nl": "Sessie"
+      },
+      "cookiesDetailsText": {
+        "nl": "Cookiegegevens"
+      },
+      "preferencesPopupAlwaysAllowedText": {
+        "nl": "altijd toegestaan"
+      },
+      "submitButton": {
+        "nl": "Indienen"
+      },
+      "submittingButton": {
+        "nl": "Verzenden..."
+      },
+      "cancelButton": {
+        "nl": "Annuleren"
+      },
+      "guestsSupportInfoText": {
+        "nl": "Log in met uw klantaccount om verder te gaan."
+      },
+      "guestsSupportEmailPlaceholder": {
+        "nl": "E-mailadres"
+      },
+      "guestsSupportEmailValidationError": {
+        "nl": "E-mail is niet geldig"
+      },
+      "guestsSupportEmailSuccessTitle": {
+        "nl": "dankjewel voor je aanvraag"
+      },
+      "guestsSupportEmailFailureTitle": {
+        "nl": "Er is een probleem opgetreden"
+      },
+      "guestsSupportEmailSuccessMessage": {
+        "nl": "Als je bent geregistreerd als klant van deze winkel, ontvang je binnenkort een e-mail met instructies over hoe je verder kunt gaan."
+      },
+      "guestsSupportEmailFailureMessage": {
+        "nl": "Uw verzoek is niet ingediend. Probeer het opnieuw en als het probleem aanhoudt, neem dan contact op met de winkeleigenaar voor hulp."
+      },
+      "confirmationSuccessTitle": {
+        "nl": "Uw verzoek is geverifieerd"
+      },
+      "confirmationFailureTitle": {
+        "nl": "Er is een probleem opgetreden"
+      },
+      "confirmationSuccessMessage": {
+        "nl": "We zullen spoedig contact met u opnemen over uw verzoek."
+      },
+      "confirmationFailureMessage": {
+        "nl": "Uw verzoek is niet geverifieerd. Probeer het opnieuw en als het probleem aanhoudt, neem dan contact op met de winkeleigenaar voor hulp"
+      },
+      "consentSectionTitleText": {
+        "nl": "Uw toestemming voor cookies"
+      },
+      "consentSectionNoConsentText": {
+        "nl": "U heeft niet ingestemd met het cookiebeleid van deze website."
+      },
+      "consentSectionConsentedText": {
+        "nl": "U heeft ingestemd met het cookiebeleid van deze website op:"
+      },
+      "consentStatus": {
+        "nl": "Toestemmingsvoorkeur"
+      },
+      "consentDate": {
+        "nl": "Toestemmingsdatum"
+      },
+      "consentId": {
+        "nl": "Toestemmings-ID"
+      },
+      "consentSectionChangeConsentActionText": {
+        "nl": "Wijzig de toestemmingsvoorkeur"
+      },
+      "accessSectionGDPRRequestsActionText": {
+        "nl": "Verzoeken van betrokkenen"
+      },
+      "accessSectionAccountInfoActionText": {
+        "nl": "Persoonlijke gegevens"
+      },
+      "accessSectionOrdersRecordsActionText": {
+        "nl": "Bestellingen"
+      },
+      "accessSectionDownloadReportActionText": {
+        "nl": "Download alles"
+      },
+      "rectificationCommentPlaceholder": {
+        "nl": "Beschrijf wat u wilt bijwerken"
+      },
+      "rectificationCommentValidationError": {
+        "nl": "Commentaar is verplicht"
+      },
+      "rectificationSectionEditAccountActionText": {
+        "nl": "Vraag een update aan"
+      },
+      "erasureSectionRequestDeletionActionText": {
+        "nl": "Verzoek om verwijdering van persoonlijke gegevens"
+      }
+    }
+  },
+  "library": {
+    "previewMode": false,
+    "fadeInTimeout": 0,
+    "defaultBlocked": 7,
+    "showLink": true,
+    "showImprintLink": false,
+    "enabled": true,
+    "cookie": {
+      "name": "_pandectes_gdpr",
+      "expiryDays": 365,
+      "secure": true,
+      "domain": ""
+    },
+    "dismissOnScroll": false,
+    "dismissOnWindowClick": false,
+    "dismissOnTimeout": false,
+    "palette": {
+      "popup": {
+        "background": "#DFEAE2",
+        "backgroundForCalculations": {
+          "a": 1,
+          "b": 226,
+          "g": 234,
+          "r": 223
+        },
+        "text": "#207567"
+      },
+      "button": {
+        "background": "#207567",
+        "backgroundForCalculations": {
+          "a": 1,
+          "b": 103,
+          "g": 117,
+          "r": 32
+        },
+        "text": "#FAFAFA",
+        "textForCalculation": {
+          "a": 1,
+          "b": 250,
+          "g": 250,
+          "r": 250
+        },
+        "border": "transparent"
+      }
+    },
+    "content": {
+      "href": "https:\/\/zogezeept.myshopify.com\/policies\/privacy-policy",
+      "imprintHref": "\/",
+      "close": "&#10005;",
+      "target": "_blank",
+      "logo": ""
+    },
+    "window": "<div role=\"dialog\" aria-live=\"polite\" aria-label=\"cookieconsent\" aria-describedby=\"cookieconsent:desc\" id=\"pandectes-banner\" class=\"cc-window-wrapper cc-bottom-center-wrapper\"><div class=\"pd-cookie-banner-window cc-window {{classes}}\"><!--googleoff: all-->{{children}}<!--googleon: all--><\/div><\/div>",
+    "compliance": {
+      "opt-both": "<div class=\"cc-compliance cc-highlight\">{{deny}}{{allow}}<\/div>"
+    },
+    "type": "opt-both",
+    "layouts": {
+      "basic": "{{messagelink}}{{compliance}}"
+    },
+    "position": "bottom-center",
+    "theme": "classic",
+    "revokable": false,
+    "animateRevokable": false,
+    "revokableReset": false,
+    "revokableLogoUrl": "https:\/\/cdn.shopify.com\/s\/files\/1\/0368\/7985\/9845\/t\/30\/assets\/pandectes-reopen-logo.png?v=1698591084",
+    "revokablePlacement": "bottom-left",
+    "revokableMarginHorizontal": 15,
+    "revokableMarginVertical": 15,
+    "static": false,
+    "autoAttach": true,
+    "hasTransition": true,
+    "blacklistPage": [
+      ""
+    ]
+  },
+  "geolocation": {
+    "brOnly": false,
+    "caOnly": false,
+    "euOnly": false,
+    "canadaOnly": false
+  },
+  "dsr": {
+    "guestsSupport": false,
+    "accessSectionDownloadReportAuto": false
+  },
+  "banner": {
+    "resetTs": 1665258760,
+    "extraCss": "        .cc-banner-logo {max-width: 40em!important;}    @media(min-width: 768px) {.cc-window.cc-floating{max-width: 40em!important;width: 40em!important;}}    .cc-message, .cc-header, .cc-logo {text-align: left}    .cc-window-wrapper{z-index: 2147483647;}    .cc-window{z-index: 2147483647;font-family: inherit;}    .cc-header{font-family: inherit;}    .pd-cp-ui{font-family: inherit; background-color: #DFEAE2;color:#207567;}    button.pd-cp-btn, a.pd-cp-btn{background-color:#207567;color:#FAFAFA!important;}    input + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 0.3)}    .pd-cp-scrolling-section::-webkit-scrollbar{background-color: rgba(32, 117, 103, 0.3)}    input:checked + .pd-cp-preferences-slider{background-color: rgba(32, 117, 103, 1)}    .pd-cp-scrolling-section::-webkit-scrollbar-thumb {background-color: rgba(32, 117, 103, 1)}    .pd-cp-ui-close{color:#207567;}    .pd-cp-preferences-slider:before{background-color: #DFEAE2}    .pd-cp-title:before {border-color: #207567!important}    .pd-cp-preferences-slider{background-color:#207567}    .pd-cp-toggle{color:#207567!important}    @media(max-width:699px) {.pd-cp-ui-close-top svg {fill: #207567}}    .pd-cp-toggle:hover,.pd-cp-toggle:visited,.pd-cp-toggle:active{color:#207567!important}    .pd-cookie-banner-window {box-shadow: 0 0 18px rgb(0 0 0 \/ 20%);}  ",
+    "customJavascript": null,
+    "showPoweredBy": false,
+    "hybridStrict": false,
+    "cookiesBlockedByDefault": "7",
+    "isActive": true,
+    "implicitSavePreferences": false,
+    "cookieIcon": false,
+    "blockBots": false,
+    "showCookiesDetails": true,
+    "hasTransition": true,
+    "blockingPage": false,
+    "showOnlyLandingPage": false,
+    "leaveSiteUrl": "https:\/\/www.google.com",
+    "linkRespectStoreLang": false
+  },
+  "cookies": {
+    "0": [
+      {
+        "name": "keep_alive",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
+        "purpose": {
+          "nl": "Gebruikt in verband met lokalisatie van kopers."
+        }
+      },
+      {
+        "name": "secure_customer_sig",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
+        "purpose": {
+          "nl": "Gebruikt in verband met klantenlogin."
+        }
+      },
+      {
+        "name": "localization",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
+        "purpose": {
+          "nl": "Shopify-winkellokalisatie"
+        }
+      },
+      {
+        "name": "cart_currency",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
+        "purpose": {
+          "nl": "De cookie is nodig voor de veilige betaal- en betaalfunctie op de website. Deze functie wordt geleverd door shopify.com."
+        }
+      },
+      {
+        "name": "shopify_pay_redirect",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "60 minute(s)",
+        "expires": 60,
+        "unit": "declMinutes",
+        "purpose": {
+          "nl": "De cookie is nodig voor de veilige betaal- en betaalfunctie op de website. Deze functie wordt geleverd door shopify.com."
+        }
+      },
+      {
+        "name": "cart_sig",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_secure_session_id",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": true,
+        "retention": "24 hour(s)",
+        "expires": 24,
+        "unit": "declHours",
+        "purpose": {
+          "nl": "Gebruikt in verband met navigatie door een winkelpui."
+        }
+      },
+      {
+        "name": "_tracking_consent",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
+        "purpose": {
+          "nl": "Voorkeuren volgen."
+        }
+      }
+    ],
+    "1": [
+      {
+        "name": "_orig_referrer",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
+        "purpose": {
+          "nl": "Volgt bestemmingspagina's."
+        }
+      },
+      {
+        "name": "_landing_page",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "14 day(s)",
+        "expires": 14,
+        "unit": "declSession",
+        "purpose": {
+          "nl": "Volgt bestemmingspagina's."
+        }
+      },
+      {
+        "name": "_y",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_s",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_shopify_y",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_shopify_s",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
+        "purpose": {
+          "nl": "Shopify-analyses."
+        }
+      },
+      {
+        "name": "_shopify_sa_p",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
+        "purpose": {
+          "nl": "Shopify-analyses met betrekking tot marketing en verwijzingen."
+        }
+      },
+      {
+        "name": "_shopify_sa_t",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Shopify",
+        "firstParty": false,
+        "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
+        "purpose": {
+          "nl": "Shopify-analyses met betrekking tot marketing en verwijzingen."
+        }
+      }
+    ],
+    "2": [
+      {
+        "name": "_gid",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Google",
+        "firstParty": false,
+        "retention": "24 hour(s)",
+        "expires": 24,
+        "unit": "declHours",
+        "purpose": {
+          "nl": "Cookie wordt geplaatst door Google Analytics om paginaweergaven te tellen en bij te houden."
+        }
+      },
+      {
+        "name": "_ga",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Google",
+        "firstParty": false,
+        "retention": "1 year(s)",
+        "expires": 1,
+        "unit": "declYears",
+        "purpose": {
+          "nl": "Cookie is ingesteld door Google Analytics met onbekende functionaliteit"
+        }
+      },
+      {
+        "name": "_gat",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Google",
+        "firstParty": false,
+        "retention": "51 second(s)",
+        "expires": 51,
+        "unit": "declSeconds",
+        "purpose": {
+          "nl": "Cookie wordt geplaatst door Google Analytics om verzoeken van bots te filteren."
+        }
+      }
+    ],
+    "4": [
+      {
+        "name": "_fbp",
+        "domain": ".zogezeept.com",
+        "path": "\/",
+        "provider": "Facebook",
+        "firstParty": false,
+        "retention": "90 day(s)",
+        "expires": 90,
+        "unit": "declSession",
+        "purpose": {
+          "nl": "Cookie wordt door Facebook geplaatst om bezoeken aan websites bij te houden."
+        }
+      }
+    ],
+    "8": [
+      {
+        "name": "dynamic_checkout_shown_on_cart",
+        "domain": "www.zogezeept.com",
+        "path": "\/",
+        "provider": "Unknown",
+        "firstParty": true,
+        "retention": "30 minute(s)",
+        "expires": 30,
+        "unit": "declMinutes",
+        "purpose": {
+          "nl": ""
+        }
+      }
+    ]
+  },
+  "blocker": {
+    "isActive": false,
+    "googleConsentMode": {
+      "id": "",
+      "analyticsId": "",
+      "isActive": false,
+      "adStorageCategory": 4,
+      "analyticsStorageCategory": 2,
+      "personalizationStorageCategory": 1,
+      "functionalityStorageCategory": 1,
+      "customEvent": true,
+      "securityStorageCategory": 0,
+      "redactData": true,
+      "urlPassthrough": false
+    },
+    "facebookPixel": {
+      "id": "",
+      "isActive": false,
+      "ldu": false
+    },
+    "rakuten": {
+      "isActive": false,
+      "cmp": false,
+      "ccpa": false
+    },
+    "defaultBlocked": 7,
+    "patterns": {
+      "whiteList": [
+
+      ],
+      "blackList": {
+        "1": [
+
+        ],
+        "2": [
+
+        ],
+        "4": [
+
+        ],
+        "8": [
+
+        ]
+      },
+      "iframesWhiteList": [
+
+      ],
+      "iframesBlackList": {
+        "1": [
+
+        ],
+        "2": [
+
+        ],
+        "4": [
+
+        ],
+        "8": [
+
+        ]
+      },
+      "beaconsWhiteList": [
+
+      ],
+      "beaconsBlackList": {
+        "1": [
+
+        ],
+        "2": [
+
+        ],
+        "4": [
+
+        ],
+        "8": [
+
+        ]
+      }
+    }
+  }
+}

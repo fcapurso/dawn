@@ -6,43 +6,36 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "Image banner",
+            "heading": "zeep zonder zooi",
             "heading_size": "h0"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "Give customers details about the banner image(s) or content on the template.",
+            "text": "ambachtelijk gemaakte zeep met pure ingrediënten, zero-waste verpakt",
             "text_style": "body"
-          }
-        },
-        "button": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
           }
         }
       },
       "block_order": [
         "heading",
-        "text",
-        "button"
+        "text"
+      ],
+      "custom_css": [
+        ".banner__text {color: rgba(var(--color-foreground));}"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
+        "image": "shopify:\/\/shop_images\/zozacht-op-marmer-met-calendula.jpg",
+        "image_overlay_opacity": 10,
         "image_height": "large",
-        "desktop_content_position": "bottom-center",
+        "desktop_content_position": "middle-center",
         "show_text_box": false,
         "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-5",
+        "image_behavior": "fixed",
         "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
+        "stack_images_on_mobile": true,
         "show_text_below": false
       }
     },
@@ -52,14 +45,14 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "Talk about your brand",
+            "heading": "Welkom bij Zogezeept!",
             "heading_size": "h1"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.<\/p>"
+            "text": "<p>Hier vind je zeep met enkel natuurlijke ingrediënten, op ambachtelijke wijze en met veel liefde gemaakt in Antwerpen.<\/p><p>Bij Zogezeept betekent natuurlijk ook ècht natuurlijk. Geen fluogroene zeep of aardbeiengeur. Geen schuimverbeteraars, parabenen of andere ongein.<\/p><p>Wèl pure boters en oliën, kleuren uit bijvoorbeeld wortelsap, actieve kool of koffie en bij sommige zepen subtiele geuren afkomstig van etherische olie. Zeep zonder zooi dus!<\/p>"
           }
         }
       },
@@ -67,82 +60,228 @@
         "heading",
         "text"
       ],
+      "custom_css": [
+
+      ],
       "settings": {
-        "color_scheme": "scheme-1",
+        "desktop_content_position": "center",
+        "content_alignment": "left",
+        "color_scheme": "background-1",
         "full_width": true,
         "padding_top": 40,
-        "padding_bottom": 0
+        "padding_bottom": 52
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
-      "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "show_view_all": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "columns_mobile": "2",
-        "padding_top": 28,
-        "padding_bottom": 36
-      }
-    },
-    "collage": {
-      "type": "collage",
+    "d8d78412-c262-4fec-a3dc-14f163405130": {
+      "type": "collection-list",
       "blocks": {
-        "collection-0": {
-          "type": "collection",
+        "template--14471114227845__d8d78412-c262-4fec-a3dc-14f163405130-featured_collection-1": {
+          "type": "featured_collection",
           "settings": {
-            "collection": ""
+            "collection": "alle-zeep"
           }
         },
-        "product": {
-          "type": "product",
+        "template--14471114227845__d8d78412-c262-4fec-a3dc-14f163405130-featured_collection-2": {
+          "type": "featured_collection",
           "settings": {
-            "product": "",
-            "second_image": false
+            "collection": "badmelk"
           }
         },
-        "collection-1": {
-          "type": "collection",
+        "template--14471114227845__d8d78412-c262-4fec-a3dc-14f163405130-featured_collection-3": {
+          "type": "featured_collection",
           "settings": {
-            "collection": ""
+            "collection": "gezichtsmaskers"
           }
         }
       },
       "block_order": [
-        "collection-0",
-        "product",
-        "collection-1"
+        "template--14471114227845__d8d78412-c262-4fec-a3dc-14f163405130-featured_collection-1",
+        "template--14471114227845__d8d78412-c262-4fec-a3dc-14f163405130-featured_collection-2",
+        "template--14471114227845__d8d78412-c262-4fec-a3dc-14f163405130-featured_collection-3"
       ],
       "settings": {
-        "heading": "Multimedia collage",
+        "title": "",
         "heading_size": "h2",
-        "desktop_layout": "left",
-        "mobile_layout": "collage",
+        "image_ratio": "square",
+        "columns_desktop": 3,
         "color_scheme": "scheme-1",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
       }
     },
-    "video": {
-      "type": "video",
+    "e9552320-a2d0-4101-b17f-65bc5db3f475": {
+      "type": "multicolumn",
+      "blocks": {
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-1": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Handmade_simple-logo.png",
+            "title": "Handgemaakt",
+            "text": "<p>Ambachtelijke en kleinschalige productie in ons atelier<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-2": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Natural_simple-logo.png",
+            "title": "Natuurlijk",
+            "text": "<p>Met enkel de beste natuurlijke ingrediënten<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-3": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Sustainable_simple_2-logo.png",
+            "title": "Duurzaam",
+            "text": "<p>Verpakt met recycleerbare en herbruikbare materialen<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "438b5808-ffd3-47bc-a86a-546b2b4b3e51": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Skin_care_simple-logo.png",
+            "title": "Mild",
+            "text": "<p>Met zowel hypoallergene als babyvriendelijke recepten<\/p><p><\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "29684ea2-ba43-48c2-981a-bf56da828eb0": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Cruelty_free_simple-logo.png",
+            "title": "Ethisch",
+            "text": "<p>Cruelty free producten, ook met vegan formules<\/p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-1",
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-2",
+        "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-3",
+        "438b5808-ffd3-47bc-a86a-546b2b4b3e51",
+        "29684ea2-ba43-48c2-981a-bf56da828eb0"
+      ],
       "settings": {
-        "heading": "",
-        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "title": "",
         "heading_size": "h1",
-        "description": "",
-        "full_width": false,
+        "image_width": "third",
+        "image_ratio": "adapt",
+        "columns_desktop": 5,
+        "column_alignment": "center",
+        "background_style": "none",
+        "button_label": "",
+        "button_link": "",
         "color_scheme": "scheme-1",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
+      }
+    },
+    "c8dfa161-8b27-42ea-aa26-c96863fe7f83": {
+      "type": "image-with-text",
+      "blocks": {
+        "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Zelf zeep maken",
+            "heading_size": "h2"
+          }
+        },
+        "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Wil je graag leren hoe je een eerlijk en natuurlijk product maakt om komaf te maken met die plastic flessen in je badkamer?<\/p>",
+            "text_style": "body"
+          }
+        },
+        "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-button-1": {
+          "type": "button",
+          "settings": {
+            "button_label": "Ontdek de workshop",
+            "button_link": "shopify:\/\/products\/zelf-zeep-maken",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-heading-1",
+        "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-text-1",
+        "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-button-1"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/zohippie-gestrooid-met-kornbloem.jpg",
+        "height": "medium",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "center",
+        "content_layout": "overlap",
+        "section_color_scheme": "background-1",
+        "color_scheme": "scheme-2",
+        "image_behavior": "zoom-in",
+        "mobile_content_alignment": "center",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "disabled": true,
+      "settings": {
+        "title": "In de kijker",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "spotlight",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "full_width": false,
+        "show_view_all": false,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": false,
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "17093076583c397ed2": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_featured_carousel_HiGpAT": {
+          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/featured_carousel\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "disabled": true,
+          "settings": {
+            "maxwidth": 1080
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_featured_carousel_HiGpAT"
+      ],
+      "settings": {
+        "include_margins": true
       }
     },
     "multicolumn": {
@@ -151,8 +290,8 @@
         "column1": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
+            "title": "",
+            "text": "<p>De waaat? <\/p><p>Laat ik het een kwaliteitslabel noemen. Je kunt namelijk alleen maar lid worden van het gilde als je in orde bent met de Europese cosmetica wetgeving.<\/p><p>Dat betekent dat je recepten door een erkende instantie zijn getest en goedgekeurd, dat de registratie van je processen in orde is, evenals je verzekering.<\/p>",
             "link_label": "",
             "link": ""
           }
@@ -160,8 +299,8 @@
         "column2": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
+            "title": "",
+            "text": "<p>Belangrijk voor mij om kwalitatieve producten te bewijzen, belangrijk voor mijn klanten omdat ze weten dat ik niet 'Oeps, dit recept had blijkbaar iets teveel loog' kan voorhebben. Ook de verhoudingen van de essentiële oliën vallen zo gegarandeerd binnen de veiligheidsnormen.<\/p>",
             "link_label": "",
             "link": ""
           }
@@ -169,8 +308,9 @@
         "column3": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
+            "image": "shopify:\/\/shop_images\/Guild_for-electronic-publishing-1024x749.png",
+            "title": "",
+            "text": "",
             "link_label": "",
             "link": ""
           }
@@ -182,18 +322,18 @@
         "column3"
       ],
       "settings": {
-        "title": "",
-        "heading_size": "h1",
-        "image_width": "third",
+        "title": "Trots lid van de Guild of Craft Soap & Toiletry Makers",
+        "heading_size": "h2",
+        "image_width": "full",
         "image_ratio": "adapt",
         "columns_desktop": 3,
-        "column_alignment": "center",
+        "column_alignment": "left",
         "background_style": "none",
         "button_label": "",
         "button_link": "",
-        "swipe_on_mobile": false,
         "color_scheme": "scheme-1",
         "columns_mobile": "1",
+        "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -202,9 +342,11 @@
   "order": [
     "image_banner",
     "rich_text",
+    "d8d78412-c262-4fec-a3dc-14f163405130",
+    "e9552320-a2d0-4101-b17f-65bc5db3f475",
+    "c8dfa161-8b27-42ea-aa26-c96863fe7f83",
     "featured_collection",
-    "collage",
-    "video",
+    "17093076583c397ed2",
     "multicolumn"
   ]
 }

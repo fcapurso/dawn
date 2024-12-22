@@ -24,6 +24,7 @@
   {%- if product.quantity_price_breaks_configured? -%}
     {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
+  {{ 'component-product-logos.css' | asset_url | stylesheet_tag }}
 
   {%- style -%}
     .section-{{ section.id }}-padding {
@@ -141,6 +142,11 @@
                   {%- endform -%}
                 </div>
               {%- when 'inventory' -%}
+                {%- if block.settings.availability_type == 'items' -%}
+                  {%- assign inventory_status_prefix = 'products.product.inventory.items.' -%}
+                {%- elsif block.settings.availability_type == 'places' -%}
+                  {%- assign inventory_status_prefix = 'products.product.inventory.places.' -%}
+                {%- endif -%}
                 <p
                   class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
                   {{ block.shopify_attributes }}
@@ -150,30 +156,35 @@
                   {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
                     {%- if product.selected_or_first_available_variant.inventory_quantity > 0 -%}
                       {%- if product.selected_or_first_available_variant.inventory_quantity
-                          <= block.settings.inventory_threshold
+                          <= block.settings.low_stock_threshold
                       -%}
                         <span class="svg-wrapper" style="color: rgb(238, 148, 65)">
                           {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                         </span>
                         {%- if block.settings.show_inventory_quantity -%}
                           {{-
-                            'products.product.inventory_low_stock_show_count'
+                            inventory_status_prefix
+                            | append: 'inventory_low_stock_show_count'
                             | t: quantity: product.selected_or_first_available_variant.inventory_quantity
                           -}}
                         {%- else -%}
-                          {{- 'products.product.inventory_low_stock' | t -}}
+                          {{- inventory_status_prefix | append: 'inventory_low_stock' | t -}}
                         {%- endif -%}
                       {%- else -%}
                         <span class="svg-wrapper" style="color: rgb(62, 214, 96)">
                           {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                         </span>
-                        {%- if block.settings.show_inventory_quantity -%}
+                        {%- if block.settings.show_inventory_quantity
+                          and product.selected_or_first_available_variant.inventory_quantity
+                            <= block.settings.high_stock_threshold
+                        -%}
                           {{-
-                            'products.product.inventory_in_stock_show_count'
+                            inventory_status_prefix
+                            | append: 'inventory_in_stock_show_count'
                             | t: quantity: product.selected_or_first_available_variant.inventory_quantity
                           -}}
                         {%- else -%}
-                          {{- 'products.product.inventory_in_stock' | t -}}
+                          {{- inventory_status_prefix | append: 'inventory_in_stock' | t -}}
                         {%- endif -%}
                       {%- endif -%}
                     {%- else -%}
@@ -181,12 +192,12 @@
                         <span class="svg-wrapper" style="color: rgb(62, 214, 96)">
                           {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                         </span>
-                        {{- 'products.product.inventory_out_of_stock_continue_selling' | t -}}
+                        {{- inventory_status_prefix | append: 'inventory_out_of_stock_continue_selling' | t -}}
                       {%- else -%}
                         <span class="svg-wrapper" style="color: rgb(200, 200, 200)">
                           {{- 'icon-inventory-status.svg' | inline_asset_content -}}
                         </span>
-                        {{- 'products.product.inventory_out_of_stock' | t -}}
+                        {{- inventory_status_prefix | append: 'inventory_out_of_stock' | t -}}
                       {%- endif -%}
                     {%- endif -%}
                   {%- endif -%}
@@ -660,6 +671,64 @@
                 </product-recommendations>
               {%- when 'icon-with-text' -%}
                 {% render 'icon-with-text', block: block %}
+              {%- when 'custom-product-logos' -%}
+                <div class="product-logo-container">
+                  {% if block.settings.selected_image_1 == null %}
+                    <!-- No image selected -->
+                  {% elsif block.settings.product_tag_1 == '' or product.tags contains block.settings.product_tag_1 %}
+                    <div class="product-logo">
+                      <img
+                        src="{{ block.settings.selected_image_1 | image_url: width: 100 }}"
+                        alt="{{ block.settings.selected_image_1.alt }}"
+                      >
+                      <span class="tooltip-text">{{ block.settings.selected_image_1.alt }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.selected_image_2 == null %}
+                    <!-- No image selected -->
+                  {% elsif block.settings.product_tag_2 == '' or product.tags contains block.settings.product_tag_2 %}
+                    <div class="product-logo">
+                      <img
+                        src="{{ block.settings.selected_image_2 | image_url: width: 100 }}"
+                        alt="{{ block.settings.selected_image_2.alt }}"
+                      >
+                      <span class="tooltip-text">{{ block.settings.selected_image_2.alt }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.selected_image_3 == null %}
+                    <!-- No image selected -->
+                  {% elsif block.settings.product_tag_3 == '' or product.tags contains block.settings.product_tag_3 %}
+                    <div class="product-logo">
+                      <img
+                        src="{{ block.settings.selected_image_3 | image_url: width: 100 }}"
+                        alt="{{ block.settings.selected_image_3.alt }}"
+                      >
+                      <span class="tooltip-text">{{ block.settings.selected_image_3.alt }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.selected_image_4 == null %}
+                    <!-- No image selected -->
+                  {% elsif block.settings.product_tag_4 == '' or product.tags contains block.settings.product_tag_4 %}
+                    <div class="product-logo">
+                      <img
+                        src="{{ block.settings.selected_image_4 | image_url: width: 100 }}"
+                        alt="{{ block.settings.selected_image_4.alt }}"
+                      >
+                      <span class="tooltip-text">{{ block.settings.selected_image_4.alt }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.selected_image_5 == null %}
+                    <!-- No image selected -->
+                  {% elsif block.settings.product_tag_5 == '' or product.tags contains block.settings.product_tag_5 %}
+                    <div class="product-logo">
+                      <img
+                        src="{{ block.settings.selected_image_5 | image_url: width: 100 }}"
+                        alt="{{ block.settings.selected_image_5.alt }}"
+                      >
+                      <span class="tooltip-text">{{ block.settings.selected_image_5.alt }}</span>
+                    </div>
+                  {% endif %}
+                </div>
             {%- endcase -%}
           {%- endfor -%}
           <a href="{{ product.url }}" class="link product__view-details animate-arrow">
@@ -829,12 +898,22 @@
         },
         {
           "type": "range",
-          "id": "inventory_threshold",
-          "label": "t:sections.main-product.blocks.inventory.settings.inventory_threshold.label",
+          "id": "low_stock_threshold",
+          "label": "t:sections.main-product.blocks.inventory.settings.low_stock_threshold.label",
           "min": 0,
           "max": 100,
           "step": 1,
-          "info": "t:sections.main-product.blocks.inventory.settings.inventory_threshold.info",
+          "info": "t:sections.main-product.blocks.inventory.settings.low_stock_threshold.info",
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "high_stock_threshold",
+          "label": "t:sections.main-product.blocks.inventory.settings.high_stock_threshold.label",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "info": "t:sections.main-product.blocks.inventory.settings.high_stock_threshold.info",
           "default": 10
         },
         {
@@ -842,6 +921,22 @@
           "id": "show_inventory_quantity",
           "label": "t:sections.main-product.blocks.inventory.settings.show_inventory_quantity.label",
           "default": true
+        },
+        {
+          "type": "select",
+          "id": "availability_type",
+          "options": [
+            {
+              "value": "items",
+              "label": "t:sections.main-product.blocks.inventory.settings.availability_type.options__1.label"
+            },
+            {
+              "value": "places",
+              "label": "t:sections.main-product.blocks.inventory.settings.availability_type.options__2.label"
+            }
+          ],
+          "default": "items",
+          "label": "t:sections.main-product.blocks.inventory.settings.availability_type.label"
         }
       ]
     },
@@ -2072,6 +2167,62 @@
           "default": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.default",
           "label": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.label",
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        }
+      ]
+    },
+    {
+      "type": "custom-product-logos",
+      "name": "Product logos",
+      "settings": [
+        {
+          "type": "image_picker",
+          "label": "Logo 1 image",
+          "id": "selected_image_1"
+        },
+        {
+          "type": "text",
+          "label": "Logo 1 product tag",
+          "id": "product_tag_1"
+        },
+        {
+          "type": "image_picker",
+          "label": "Logo 2 image",
+          "id": "selected_image_2"
+        },
+        {
+          "type": "text",
+          "label": "Logo 2 product tag",
+          "id": "product_tag_2"
+        },
+        {
+          "type": "image_picker",
+          "label": "Logo 3 image",
+          "id": "selected_image_3"
+        },
+        {
+          "type": "text",
+          "label": "Logo 3 product tag",
+          "id": "product_tag_3"
+        },
+        {
+          "type": "image_picker",
+          "label": "Logo 4 image",
+          "id": "selected_image_4"
+        },
+        {
+          "type": "text",
+          "label": "Logo 4 product tag",
+          "id": "product_tag_4"
+        },
+        {
+          "type": "image_picker",
+          "label": "Logo 5 image",
+          "id": "selected_image_5"
+        },
+        {
+          "type": "text",
+          "label": "Logo 5 product tag",
+          "id": "product_tag_5"
         }
       ]
     }
