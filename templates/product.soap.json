@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -12,8 +21,7 @@
         },
         "title": {
           "type": "title",
-          "settings": {
-          }
+          "settings": {}
         },
         "subtitle": {
           "type": "text",
@@ -22,15 +30,13 @@
             "text_style": "subtitle"
           }
         },
-        "judge_me_reviews_preview_badge_BTFLUH": {
-          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/preview_badge\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-          }
+        "judge_me_reviews_preview_badge_fFk8rH": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         },
         "price": {
           "type": "price",
-          "settings": {
-          }
+          "settings": {}
         },
         "variant_picker": {
           "type": "variant_picker",
@@ -51,8 +57,7 @@
         },
         "quantity_selector": {
           "type": "quantity_selector",
-          "settings": {
-          }
+          "settings": {}
         },
         "buy_buttons": {
           "type": "buy_buttons",
@@ -64,26 +69,25 @@
         "product_info": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "<h4>Over {{product.title}}<\/h4>"
+            "custom_liquid": "<h4>Over {{product.title}}</h4>"
           }
         },
         "description": {
           "type": "description",
-          "settings": {
-          }
+          "settings": {}
         },
         "product_logos": {
           "type": "custom-product-logos",
           "settings": {
-            "selected_image_1": "shopify:\/\/shop_images\/vegan_logo.png",
+            "selected_image_1": "shopify://shop_images/vegan_logo.png",
             "product_tag_1": "vegan",
-            "selected_image_2": "shopify:\/\/shop_images\/vegetarian_logo.png",
+            "selected_image_2": "shopify://shop_images/vegetarian_logo.png",
             "product_tag_2": "vegetarian",
-            "selected_image_3": "shopify:\/\/shop_images\/palm_oil_free_logo.png",
+            "selected_image_3": "shopify://shop_images/palm_oil_free_logo.png",
             "product_tag_3": "",
-            "selected_image_4": "shopify:\/\/shop_images\/cruelty_free_logo.png",
+            "selected_image_4": "shopify://shop_images/cruelty_free_logo.png",
             "product_tag_4": "",
-            "selected_image_5": "shopify:\/\/shop_images\/handmade_with_love_logo.png",
+            "selected_image_5": "shopify://shop_images/handmade_with_love_logo.png",
             "product_tag_5": ""
           }
         },
@@ -92,7 +96,7 @@
           "settings": {
             "heading": "Gebruik",
             "icon": "heart",
-            "content": "<p>{{ product.metafields.my_fields.advice_for_use | metafield_tag }}<\/p>",
+            "content": "<p>{{ product.metafields.my_fields.advice_for_use | metafield_tag }}</p>",
             "page": ""
           }
         },
@@ -101,7 +105,7 @@
           "settings": {
             "heading": "Wat zit er allemaal in?",
             "icon": "leaf",
-            "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}<\/p>",
+            "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}</p>",
             "page": ""
           }
         },
@@ -119,7 +123,7 @@
           "settings": {
             "heading": "Verzendkosten",
             "icon": "truck",
-            "content": "<p><strong>Binnen België kost verzending €4,95, naar Nederland €5,95.<\/strong><\/p><p>Bestellingen worden met track & trace verzonden. De m\/v\/x van PostNl brengt het zo snel mogelijk naar jouw brievenbus. Reken gemiddeld op 3 werkdagen.<\/p>",
+            "content": "<p><strong>Binnen België kost verzending €4,95, naar Nederland €5,95.</strong></p><p>Bestellingen worden met track & trace verzonden. De m/v/x van PostNl brengt het zo snel mogelijk naar jouw brievenbus. Reken gemiddeld op 3 werkdagen.</p>",
             "page": ""
           }
         },
@@ -130,16 +134,15 @@
           }
         },
         "judge_me_reviews_review_widget_Gd6VCJ": {
-          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/review_widget\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-          }
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         }
       },
       "block_order": [
         "vendor",
         "title",
         "subtitle",
-        "judge_me_reviews_preview_badge_BTFLUH",
+        "judge_me_reviews_preview_badge_fFk8rH",
         "price",
         "variant_picker",
         "inventory_KCBGc4",
@@ -155,9 +158,7 @@
         "share",
         "judge_me_reviews_review_widget_Gd6VCJ"
       ],
-      "custom_css": [
-
-      ],
+      "custom_css": [],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "",

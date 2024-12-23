@@ -1,19 +1,28 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
-    "favicon": "shopify:\/\/shop_images\/LogoAloneRound.png",
+    "favicon": "shopify://shop_images/LogoAloneRound.png",
     "type_header_font": "serif",
     "heading_scale": 110,
     "type_body_font": "josefin_sans_n3",
     "body_scale": 110,
     "variant_pills_radius": 14,
-    "social_facebook_link": "https:\/\/www.facebook.com\/zogezeept",
-    "social_instagram_link": "https:\/\/instagram.com\/zogezeept",
+    "social_facebook_link": "https://www.facebook.com/zogezeept",
+    "social_instagram_link": "https://instagram.com/zogezeept",
     "currency_code_enabled": true,
     "cart_type": "drawer",
     "show_cart_note": true,
     "cart_drawer_collection": "spotlight",
-    "checkout_header_image": "shopify:\/\/shop_images\/Zogezeept-359-Edit_ce87f719-1f22-4bcc-8901-3e6f8761893e.jpg",
-    "checkout_logo_image": "shopify:\/\/shop_images\/LogoAloneRound.png",
+    "checkout_header_image": "shopify://shop_images/Zogezeept-359-Edit_ce87f719-1f22-4bcc-8901-3e6f8761893e.jpg",
+    "checkout_logo_image": "shopify://shop_images/LogoAloneRound.png",
     "checkout_logo_position": "center",
     "checkout_logo_size": "large",
     "checkout_body_background_color": "#fafafa",
@@ -36,15 +45,14 @@
             "type": "announcement",
             "settings": {
               "text": "Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
-              "link": "shopify:\/\/policies\/shipping-policy"
+              "link": "shopify://policies/shipping-policy"
             }
           }
         },
         "block_order": [
           "announcement-bar-0"
         ],
-        "settings": {
-        }
+        "settings": {}
       },
       "header": {
         "type": "header",
@@ -74,13 +82,13 @@
             "type": "text",
             "settings": {
               "heading": "Neem contact met ons op",
-              "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel\/B&B\/koffiebar\/...? Andere zaken die op je hart liggen?<\/p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!<\/a><\/p>"
+              "subtext": "<p>Vragen? Suggesties voor nieuwe producten? Zogezeept in jouw winkel/B&B/koffiebar/...? Andere zaken die op je hart liggen?</p><p><a href=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\" target=\"_blank\" title=\"mailto:zogezeept@gmail.com?subject=Een%20bericht%20via%20Zogezeept\">Drop me a line!</a></p>"
             }
           },
           "6fda407a-8f93-4102-8403-1541e233696d": {
             "type": "image",
             "settings": {
-              "image": "shopify:\/\/shop_images\/HIB_logo.png",
+              "image": "shopify://shop_images/HIB_logo.png",
               "image_width": 100,
               "alignment": "center"
             }
@@ -117,18 +125,15 @@
         }
       }
     },
-    "content_for_index": [
-
-    ],
+    "content_for_index": [],
     "blocks": {
       "15351435345818755577": {
-        "type": "shopify:\/\/apps\/gdpr-compliance-center\/blocks\/banner\/58c0baa2-6cc1-480c-9ea6-38d6d559556a",
+        "type": "shopify://apps/gdpr-compliance-center/blocks/banner/58c0baa2-6cc1-480c-9ea6-38d6d559556a",
         "disabled": false,
-        "settings": {
-        }
+        "settings": {}
       },
       "15683396631634586217": {
-        "type": "shopify:\/\/apps\/inbox\/blocks\/chat\/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
         "disabled": true,
         "settings": {
           "button_color": "#207567",
@@ -140,10 +145,9 @@
         }
       },
       "14060646107696862457": {
-        "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/judgeme_core\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
         "disabled": false,
-        "settings": {
-        }
+        "settings": {}
       }
     },
     "color_schemes": {
@@ -389,8 +393,7 @@
           "block_order": [
             "announcement-bar-0"
           ],
-          "settings": {
-          }
+          "settings": {}
         },
         "header": {
           "type": "header",
@@ -423,7 +426,7 @@
               "type": "text",
               "settings": {
                 "heading": "Our mission",
-                "subtext": "<p>Share contact information, store details, and brand content with your customers.<\/p>"
+                "subtext": "<p>Share contact information, store details, and brand content with your customers.</p>"
               }
             }
           },
