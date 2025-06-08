@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "image_banner": {
@@ -26,7 +35,7 @@
         ".banner__text {color: rgba(var(--color-foreground));}"
       ],
       "settings": {
-        "image": "shopify:\/\/shop_images\/zozacht-op-marmer-met-calendula.jpg",
+        "image": "shopify://shop_images/zozacht-op-marmer-met-calendula.jpg",
         "image_overlay_opacity": 10,
         "image_height": "large",
         "desktop_content_position": "middle-center",
@@ -52,7 +61,7 @@
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>Hier vind je zeep met enkel natuurlijke ingrediënten, op ambachtelijke wijze en met veel liefde gemaakt in Antwerpen.<\/p><p>Bij Zogezeept betekent natuurlijk ook ècht natuurlijk. Geen fluogroene zeep of aardbeiengeur. Geen schuimverbeteraars, parabenen of andere ongein.<\/p><p>Wèl pure boters en oliën, kleuren uit bijvoorbeeld wortelsap, actieve kool of koffie en bij sommige zepen subtiele geuren afkomstig van etherische olie. Zeep zonder zooi dus!<\/p>"
+            "text": "<p>Hier vind je zeep met enkel natuurlijke ingrediënten, op ambachtelijke wijze en met veel liefde gemaakt in Antwerpen.</p><p>Bij Zogezeept betekent natuurlijk ook ècht natuurlijk. Geen fluogroene zeep of aardbeiengeur. Geen schuimverbeteraars, parabenen of andere ongein.</p><p>Wèl pure boters en oliën, kleuren uit bijvoorbeeld wortelsap, actieve kool of koffie en bij sommige zepen subtiele geuren afkomstig van etherische olie. Zeep zonder zooi dus!</p>"
           }
         }
       },
@@ -60,9 +69,7 @@
         "heading",
         "text"
       ],
-      "custom_css": [
-
-      ],
+      "custom_css": [],
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "left",
@@ -118,9 +125,9 @@
         "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-1": {
           "type": "column",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Handmade_simple-logo.png",
+            "image": "shopify://shop_images/Handmade_simple-logo.png",
             "title": "Handgemaakt",
-            "text": "<p>Ambachtelijke en kleinschalige productie in ons atelier<\/p>",
+            "text": "<p>Ambachtelijke en kleinschalige productie in ons atelier</p>",
             "link_label": "",
             "link": ""
           }
@@ -128,9 +135,9 @@
         "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-2": {
           "type": "column",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Natural_simple-logo.png",
+            "image": "shopify://shop_images/Natural_simple-logo.png",
             "title": "Natuurlijk",
-            "text": "<p>Met enkel de beste natuurlijke ingrediënten<\/p>",
+            "text": "<p>Met enkel de beste natuurlijke ingrediënten</p>",
             "link_label": "",
             "link": ""
           }
@@ -138,9 +145,9 @@
         "template--20000688734534__e9552320-a2d0-4101-b17f-65bc5db3f475-column-3": {
           "type": "column",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Sustainable_simple_2-logo.png",
+            "image": "shopify://shop_images/Sustainable_simple_2-logo.png",
             "title": "Duurzaam",
-            "text": "<p>Verpakt met recycleerbare en herbruikbare materialen<\/p>",
+            "text": "<p>Verpakt met recycleerbare en herbruikbare materialen</p>",
             "link_label": "",
             "link": ""
           }
@@ -148,9 +155,9 @@
         "438b5808-ffd3-47bc-a86a-546b2b4b3e51": {
           "type": "column",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Skin_care_simple-logo.png",
+            "image": "shopify://shop_images/Skin_care_simple-logo.png",
             "title": "Mild",
-            "text": "<p>Met zowel hypoallergene als babyvriendelijke recepten<\/p><p><\/p>",
+            "text": "<p>Met zowel hypoallergene als babyvriendelijke recepten</p><p></p>",
             "link_label": "",
             "link": ""
           }
@@ -158,9 +165,9 @@
         "29684ea2-ba43-48c2-981a-bf56da828eb0": {
           "type": "column",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Cruelty_free_simple-logo.png",
+            "image": "shopify://shop_images/Cruelty_free_simple-logo.png",
             "title": "Ethisch",
-            "text": "<p>Cruelty free producten, ook met vegan formules<\/p>",
+            "text": "<p>Cruelty free producten, ook met vegan formules</p>",
             "link_label": "",
             "link": ""
           }
@@ -203,7 +210,7 @@
         "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-text-1": {
           "type": "text",
           "settings": {
-            "text": "<p>Wil je graag leren hoe je een eerlijk en natuurlijk product maakt om komaf te maken met die plastic flessen in je badkamer?<\/p>",
+            "text": "<p>Wil je graag leren hoe je een eerlijk en natuurlijk product maakt om komaf te maken met die plastic flessen in je badkamer?</p>",
             "text_style": "body"
           }
         },
@@ -211,7 +218,7 @@
           "type": "button",
           "settings": {
             "button_label": "Ontdek de workshop",
-            "button_link": "shopify:\/\/products\/zelf-zeep-maken",
+            "button_link": "shopify://products/zelf-zeep-maken",
             "button_style_secondary": false
           }
         }
@@ -222,7 +229,7 @@
         "template--14471114227845__c8dfa161-8b27-42ea-aa26-c96863fe7f83-button-1"
       ],
       "settings": {
-        "image": "shopify:\/\/shop_images\/zohippie-gestrooid-met-kornbloem.jpg",
+        "image": "shopify://shop_images/zohippie-gestrooid-met-kornbloem.jpg",
         "height": "medium",
         "desktop_image_width": "medium",
         "layout": "image_first",
@@ -239,7 +246,6 @@
     },
     "featured_collection": {
       "type": "featured-collection",
-      "disabled": true,
       "settings": {
         "title": "In de kijker",
         "heading_size": "h2",
@@ -259,7 +265,6 @@
         "show_secondary_image": true,
         "show_vendor": false,
         "show_rating": false,
-        "enable_quick_add": false,
         "columns_mobile": "2",
         "swipe_on_mobile": true,
         "padding_top": 36,
@@ -270,7 +275,7 @@
       "type": "apps",
       "blocks": {
         "judge_me_reviews_featured_carousel_HiGpAT": {
-          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/featured_carousel\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "type": "shopify://apps/judge-me-reviews/blocks/featured_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "disabled": true,
           "settings": {
             "maxwidth": 1080
@@ -291,7 +296,7 @@
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>De waaat? <\/p><p>Laat ik het een kwaliteitslabel noemen. Je kunt namelijk alleen maar lid worden van het gilde als je in orde bent met de Europese cosmetica wetgeving.<\/p><p>Dat betekent dat je recepten door een erkende instantie zijn getest en goedgekeurd, dat de registratie van je processen in orde is, evenals je verzekering.<\/p>",
+            "text": "<p>De waaat? </p><p>Laat ik het een kwaliteitslabel noemen. Je kunt namelijk alleen maar lid worden van het gilde als je in orde bent met de Europese cosmetica wetgeving.</p><p>Dat betekent dat je recepten door een erkende instantie zijn getest en goedgekeurd, dat de registratie van je processen in orde is, evenals je verzekering.</p>",
             "link_label": "",
             "link": ""
           }
@@ -300,7 +305,7 @@
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>Belangrijk voor mij om kwalitatieve producten te bewijzen, belangrijk voor mijn klanten omdat ze weten dat ik niet 'Oeps, dit recept had blijkbaar iets teveel loog' kan voorhebben. Ook de verhoudingen van de essentiële oliën vallen zo gegarandeerd binnen de veiligheidsnormen.<\/p>",
+            "text": "<p>Belangrijk voor mij om kwalitatieve producten te bewijzen, belangrijk voor mijn klanten omdat ze weten dat ik niet 'Oeps, dit recept had blijkbaar iets teveel loog' kan voorhebben. Ook de verhoudingen van de essentiële oliën vallen zo gegarandeerd binnen de veiligheidsnormen.</p>",
             "link_label": "",
             "link": ""
           }
@@ -308,7 +313,7 @@
         "column3": {
           "type": "column",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Guild_for-electronic-publishing-1024x749.png",
+            "image": "shopify://shop_images/Guild_for-electronic-publishing-1024x749.png",
             "title": "",
             "text": "",
             "link_label": "",
