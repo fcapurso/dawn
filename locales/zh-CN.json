@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "password_page": {
@@ -215,6 +224,10 @@
     }
   },
   "templates": {
+    "404": {
+      "title": "找不到页面",
+      "subtext": "404"
+    },
     "search": {
       "no_results": "未找到“{{ terms }}”的结果。请检查拼写或使用其他词或短语。",
       "results_with_count": {
@@ -258,10 +271,6 @@
         "error_heading": "请调整以下内容：",
         "title": "联系表"
       }
-    },
-    "404": {
-      "title": "找不到页面",
-      "subtext": "404"
     }
   },
   "sections": {

@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "password_page": {
@@ -215,6 +224,10 @@
     }
   },
   "templates": {
+    "404": {
+      "title": "Sayfa bulunamadı",
+      "subtext": "404"
+    },
     "search": {
       "no_results": "\"{{ terms }}\" için sonuç bulunamadı. Yazım hatası olmadığını doğrulayın veya farklı bir kelime ya da ifade kullanın.",
       "results_with_count": {
@@ -258,10 +271,6 @@
         "error_heading": "Lütfen aşağıdakileri düzenleyin:",
         "title": "İletişim formu"
       }
-    },
-    "404": {
-      "title": "Sayfa bulunamadı",
-      "subtext": "404"
     }
   },
   "sections": {
