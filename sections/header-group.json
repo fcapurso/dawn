@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "t:sections.header.name",
   "type": "header",
@@ -9,7 +18,7 @@
           "type": "announcement",
           "settings": {
             "text": "Verzendingen binnen België: €4,95 | Verzendingen naar Nederland: €5,95",
-            "link": "shopify:\/\/policies\/shipping-policy"
+            "link": "shopify://policies/shipping-policy"
           }
         },
         "e8a6d6bb-eceb-46bb-9449-8084818ef22a": {
@@ -25,6 +34,7 @@
         "announcement-bar-0",
         "e8a6d6bb-eceb-46bb-9449-8084818ef22a"
       ],
+      "disabled": true,
       "settings": {
         "color_scheme": "scheme-2",
         "show_line_separator": true,
@@ -37,6 +47,7 @@
     },
     "header": {
       "type": "header",
+      "disabled": true,
       "settings": {
         "logo_position": "middle-left",
         "menu": "main-menu",
@@ -47,6 +58,7 @@
         "menu_color_scheme": "scheme-1",
         "enable_country_selector": false,
         "enable_language_selector": false,
+        "enable_customer_avatar": true,
         "mobile_logo_position": "center",
         "margin_bottom": 0,
         "padding_top": 20,
