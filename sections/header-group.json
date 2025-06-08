@@ -34,7 +34,6 @@
         "announcement-bar-0",
         "e8a6d6bb-eceb-46bb-9449-8084818ef22a"
       ],
-      "disabled": true,
       "settings": {
         "color_scheme": "scheme-2",
         "show_line_separator": true,
@@ -47,7 +46,6 @@
     },
     "header": {
       "type": "header",
-      "disabled": true,
       "settings": {
         "logo_position": "middle-left",
         "menu": "main-menu",
