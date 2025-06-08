@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "password_page": {
@@ -219,6 +228,10 @@
     }
   },
   "templates": {
+    "404": {
+      "title": "Page non trouvée",
+      "subtext": "404"
+    },
     "search": {
       "no_results": "Aucun résultat trouvé pour « {{ terms }} ». Vérifiez l'orthographe ou utilisez un autre mot ou une autre expression.",
       "results_with_count": {
@@ -267,10 +280,6 @@
         "error_heading": "Veuillez ajuster les éléments suivants :",
         "title": "Formulaire de contact"
       }
-    },
-    "404": {
-      "title": "Page non trouvée",
-      "subtext": "404"
     }
   },
   "sections": {
