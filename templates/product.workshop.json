@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -12,8 +21,7 @@
         },
         "title": {
           "type": "title",
-          "settings": {
-          }
+          "settings": {}
         },
         "subtitle": {
           "type": "text",
@@ -23,14 +31,12 @@
           }
         },
         "judge_me_reviews_preview_badge_bDLHnp": {
-          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/preview_badge\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-          }
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         },
         "price": {
           "type": "price",
-          "settings": {
-          }
+          "settings": {}
         },
         "variant_picker": {
           "type": "variant_picker",
@@ -41,9 +47,8 @@
         },
         "1d473aca-7da0-49ae-8743-0fe18be022a1": {
           "type": "custom_liquid",
-          "disabled": true,
           "settings": {
-            "custom_liquid": "<div class=\"product__tax caption rte\">Gaat door bij: {{ product.selected_or_first_available_variant.metafields.custom.location }}<\/div>"
+            "custom_liquid": "{% assign current_variant = product.selected_or_first_available_variant %}\n{% assign location_prefix = '<h4 class=\"variant-location-label\">Gaat door bij:</h4>' %}\n\n<div id=\"variant-location-{{ block.id }}\" class=\"variant-location\">\n  {% if current_variant.metafields.custom.location != blank %}\n    {{ location_prefix }}{{ current_variant.metafields.custom.location.value }}\n  {% endif %}\n</div>\n\n<style>\n  .variant-location-label {\n    display: block;       /* creates the \"newline\" effect */\n    font-weight: 600;     /* optional styling */\n    margin-bottom: 2px;   /* small spacing */\n  }\n</style>\n\n<script>\n(() => {\n  const blockId = 'variant-location-{{ block.id }}';\n  const productSectionId = 'MainProduct-{{ section.id }}';\n  const prefix = {{ location_prefix | json }};\n\n  const locationByVariantId = {\n    {% for variant in product.variants %}\n      \"{{ variant.id }}\":\n        {% if variant.metafields.custom.location != blank %}\n          {{ variant.metafields.custom.location.value | json }}\n        {% else %}\n          \"\"\n        {% endif %}\n        {% unless forloop.last %},{% endunless %}\n    {% endfor %}\n  };\n\n  function updateVariantLocation() {\n    const container = document.getElementById(blockId);\n    const productSection = document.getElementById(productSectionId);\n    if (!container || !productSection) return;\n\n    const variantIdInput = productSection.querySelector('form [name=\"id\"]');\n    if (!variantIdInput) return;\n\n    const value = locationByVariantId[variantIdInput.value];\n\n    container.innerHTML = value ? prefix + value : '';\n  }\n\n  document.addEventListener('change', (event) => {\n    const productSection = document.getElementById(productSectionId);\n    if (!productSection) return;\n    if (!event.target.closest('#' + productSectionId)) return;\n\n    requestAnimationFrame(updateVariantLocation);\n    setTimeout(updateVariantLocation, 50);\n  });\n\n  document.addEventListener('DOMContentLoaded', updateVariantLocation);\n  updateVariantLocation();\n})();\n</script>"
           }
         },
         "8413f971-2164-417d-8d2e-86216bd72bfd": {
@@ -58,8 +63,7 @@
         },
         "quantity_selector": {
           "type": "quantity_selector",
-          "settings": {
-          }
+          "settings": {}
         },
         "buy_buttons": {
           "type": "buy_buttons",
@@ -71,20 +75,19 @@
         "product_info": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "<h4>Over {{product.title}}<\/h4>"
+            "custom_liquid": "<h4>Over {{product.title}}</h4>"
           }
         },
         "description": {
           "type": "description",
-          "settings": {
-          }
+          "settings": {}
         },
         "ingredients": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Wat gaan we allemaal doen?",
             "icon": "serving_dish",
-            "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}<\/p>",
+            "content": "<p>{{ product.metafields.my_fields.ingredients | metafield_tag }}</p>",
             "page": ""
           }
         },
@@ -93,7 +96,7 @@
           "settings": {
             "heading": "Praktische info",
             "icon": "star",
-            "content": "<p>{{ product.metafields.my_fields.advice_for_use | metafield_tag }}<\/p>",
+            "content": "<p>{{ product.metafields.my_fields.advice_for_use | metafield_tag }}</p>",
             "page": ""
           }
         },
@@ -104,8 +107,12 @@
           }
         },
         "judge_me_reviews_review_widget_3bdKTe": {
-          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/review_widget\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
+            "review_data": "sample_data",
+            "max_width": 1200,
+            "show_shop_reviews": false,
+            "empty_state": "empty_widget"
           }
         }
       },
