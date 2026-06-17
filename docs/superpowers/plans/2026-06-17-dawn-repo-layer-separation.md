@@ -216,22 +216,32 @@ user has ruled on every file. Record their rulings back into the document and re
 
 - [ ] **Step 2: From the approved inventory, write one manifest file per layer**
 
-Manually populate four newline-separated path lists from the **approved** rulings:
+Manually populate newline-separated path lists from the **approved** rulings:
 - `manifest-L1.txt` — files (or files needing per-hunk extraction) ruled L1.
 - `manifest-L2a.txt` — added/custom store files ruled L2a (incl. app-residue the user wants to keep).
 - `manifest-L2b.txt` — config-snapshot files (settings_data, *-group.json, template *.json).
-- `manifest-locale-drift.txt` — locale-drift, release-notes, L0-noise: preserved losslessly, dropped at next Dawn upgrade.
 - `manifest-drop-candidates.txt` — files to be removed in Task 7b (orphaned/unused app residue); included in staging v1 for the lossless test, then removed with documented justification.
 
-- [ ] **Step 3: Verify the manifests partition ALL 101 changed files exactly once**
+Locale files (58), `translation.yml`, and `release-notes.md` are **omitted from all manifests** —
+their changes are attributable to verified upstream commits (same SHA in `upstream/main`) and
+require no classification. They are pulled from `origin/current` into staging v1 verbatim for the
+lossless test, and automatically reconcile when `dawn-vanilla` is ff'd past those commits.
+
+- [ ] **Step 3: Verify the manifests + upstream files partition ALL 101 changed files exactly once**
 
 Run:
 ```bash
+# Upstream-attributed files (no manifest needed)
+git log v15.1.0..origin/current --author="translation-platform" --format="" --name-only | grep -v '^$' | sort -u > /tmp/upstream-files.txt
+git diff --name-only v15.1.0..origin/current -- release-notes.md translation.yml >> /tmp/upstream-files.txt
+sort -u /tmp/upstream-files.txt -o /tmp/upstream-files.txt
+
+# All manifests + upstream
 cat docs/superpowers/inventory/manifest-L1.txt \
     docs/superpowers/inventory/manifest-L2a.txt \
     docs/superpowers/inventory/manifest-L2b.txt \
-    docs/superpowers/inventory/manifest-locale-drift.txt \
     docs/superpowers/inventory/manifest-drop-candidates.txt \
+    /tmp/upstream-files.txt \
   | sort -u > /tmp/classified.txt
 git diff --name-only v15.1.0..origin/current | sort -u > /tmp/changed.txt
 diff /tmp/changed.txt /tmp/classified.txt && echo "OK: every changed file is classified exactly once"
@@ -379,12 +389,14 @@ git commit -m "L2: per-hunk remainder for <file>"
 ```
 After all per-hunk files, every such file matches current exactly.
 
-- [ ] **Step 6: Apply locale-drift + L0-noise as ONE flagged, droppable commit**
+- [ ] **Step 6: Pull upstream-attributed files for the lossless acceptance test**
 
+Locale files, `translation.yml`, and `release-notes.md` carry verified upstream content.
+Include them now so the acceptance test can pass, with no special labelling:
 ```bash
-while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-locale-drift.txt
+git checkout origin/current -- locales/ translation.yml release-notes.md
 git add locales/ translation.yml release-notes.md
-git commit -m "locale-drift: translation-bot churn + release-notes — DROP at next Dawn upgrade (do not carry forward)"
+git commit -m "staging-lossless: upstream-attributed locale + release-notes from current (auto-reconcile on dawn-vanilla ff)"
 ```
 
 ---

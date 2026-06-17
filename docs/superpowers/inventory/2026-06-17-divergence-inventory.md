@@ -17,13 +17,17 @@ For files marked **per-hunk**, the file mixes layers; the ruling should say whic
 (or confirm the proposal).
 
 **Layers:**
+- **upstream** — genuine upstream Dawn commit (same SHA in `upstream/main`); these files are already recovered by `git merge --ff-only` on `dawn-vanilla` — no separate handling needed
 - **L1** — generic, upstream-shaped customization (rebases onto each new Dawn release)
 - **L2a** — authored store asset (custom file, cherry-pickable, curated commit)
 - **L2b** — config snapshot (settings_data.json, section/template JSON — one evolving commit)
-- **app-residue (keep)** — app-injected file, active reference found → goes to L2a on staging permanently
-- **app-residue (drop)** — app-injected file, no active reference → included in staging v1 for the lossless acceptance test, then removed in a documented curation commit (Task 7b). The `drops.md` file records every removal so any future delta vs `current` is explained.
-- **locale-drift** — translation-bot churn (preserved in staging v1 for lossless test; flagged droppable commit; replaced by upstream locales at first Dawn upgrade)
-- **L0-noise** — follows upstream (release-notes, etc.) — same treatment as locale-drift
+- **app-residue (keep)** — app-injected file, active reference found → goes into L2a on staging permanently
+- **app-residue (drop)** — app-injected file, no active reference → included in staging v1 for the lossless acceptance test, then removed in a documented curation commit (Task 7b); the `drops.md` file records every removal so any future delta vs `current` is explained
+
+**Verified upstream commits in the divergence (same SHA as upstream/main — automatically recovered by ff):**
+- 8 × `translation-platform[bot]` commits (`#3612`, `#3643`, `#3645`, `#3654`, `#3662`, `#3665`, `#3669`, `#3670`) — locale files
+- ~19 × PR-numbered upstream commits including `a55d1f70 Update main with v15.2.0 (#3638)` — touches `release-notes.md`, `translation.yml`, and various `.liquid`/`.css`/`.js` files
+- These 27 commits are **not yours to classify** — they collapse into `upstream` and disappear from the divergence when `dawn-vanilla` is ff'd past them.
 
 **Strict L1 test:** "Could a stranger drop this file into vanilla Dawn and have it work with zero
 edits?" If no → L2a minimum. On the fence → L2a (tiebreaker).
@@ -113,20 +117,17 @@ edits?" If no → L2a minimum. On the fence → L2a (tiebreaker).
 
 ---
 
-## Locales (58 files)
+## Locales (58 files), translation.yml, release-notes.md
 
-| Files | A/M | Proposed | Conf | Reasoning | User ruling |
-|---|---|---|---|---|---|
-| `locales/*.json` and `locales/*.schema.json` (58 files) | M | locale-drift | high | Translation-bot churn on top of v15.1.0. These are upstream changes that didn't make it into the v15.1.0 tag but arrived via "Update from Shopify" auto-syncs. Policy: preserve in a flagged droppable commit now; replace with the full upstream locale set at the first Dawn upgrade. | |
-| `translation.yml` | M | locale-drift | med | Translation config churn. Same policy as locales. | |
+All changes to these files in the divergence are attributable to **verified upstream commits**
+(same SHA as `upstream/main` — confirmed by `git merge-base --is-ancestor` check):
+- Locale files → 8 × `translation-platform[bot]` commits, all `UPSTREAM ✓`
+- `translation.yml` + `release-notes.md` → `a55d1f70 Update main with v15.2.0`, `UPSTREAM ✓`
 
----
-
-## Other
-
-| File | A/M | Proposed | Conf | Reasoning | User ruling |
-|---|---|---|---|---|---|
-| `release-notes.md` | M | L0-noise | high | Dawn release notes — follows upstream, not yours. Carry as locale-drift-style droppable alongside the locale commit. | |
+**Classification: upstream — no user ruling needed.** These files will be at the correct state
+automatically once `dawn-vanilla` is ff'd to any tag that contains those commits (≥ v15.2.0).
+They are included in staging v1 (for the lossless acceptance test) by pulling them from
+`origin/current`, but require no special manifest or handling.
 
 ---
 
@@ -148,14 +149,13 @@ edits?" If no → L2a minimum. On the fence → L2a (tiebreaker).
 
 ## Summary counts (proposed, before your rulings)
 
-| Layer | Count |
-|---|---|
-| L1 (whole-file) | ~9 |
-| L1 (per-hunk, mixed) | ~5 files |
-| L2a | ~9 |
-| L2b | ~12 |
-| app-residue (keep proposed) | ~5 |
-| app-residue (drop proposed) | ~1 |
-| locale-drift | ~59 |
-| L0-noise | 1 |
-| **Total** | **101** |
+| Layer | Count | Notes |
+|---|---|---|
+| upstream (no ruling needed) | ~61 | 58 locale files + translation.yml + release-notes.md; recovered by dawn-vanilla ff |
+| L1 (whole-file) | ~9 | needs your ruling |
+| L1 (per-hunk, mixed) | ~5 files | needs your ruling per hunk |
+| L2a | ~9 | needs your ruling |
+| L2b | ~12 | needs your ruling |
+| app-residue (keep proposed) | ~4 | needs your ruling |
+| app-residue (drop proposed) | ~1 | needs your ruling |
+| **Total** | **101** | |
