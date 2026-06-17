@@ -4,7 +4,7 @@
 
 **Goal:** Restructure the `fcapurso/dawn` fork into clean, layered branches (`dawn-vanilla` → `customizations` → `staging` → `current`) so vanilla Dawn, generic customizations, authored store assets, and config churn are cleanly separated and Dawn upgrades become a repeatable rebase.
 
-**Architecture:** Reconstruct today's `current` tree as a stack of layered commits on top of pinned vanilla Dawn (v15.1.0). A human-ruled inventory assigns every changed file to a layer (L0/L1/L2a/L2b/locale-drift/app-residue). Branches are built from the approved inventory and validated by a byte-for-byte tree comparison against today's `current`. Nothing is built until the inventory is approved; `current` and the live theme are never touched until a separately-chosen cutover.
+**Architecture:** Reconstruct today's `current` tree as a stack of layered commits on top of pinned vanilla Dawn (v15.1.0). A human-ruled inventory assigns every changed file to **L0 / L1 / L2 / drop / upstream-reconcile**. Within L2 (store-specific), commit hygiene splits *discrete store files* (their own logical commits) from the *config blob* (`settings_data.json` + layout JSON, one snapshot commit). Branches are built from the approved inventory and validated by a byte-for-byte tree comparison against today's `current`. Nothing is built until the inventory is approved; `current` and the live theme are never touched until a separately-chosen cutover.
 
 **Tech Stack:** git, Shopify GitHub theme integration, Dawn (Liquid theme). No build/test runner — "tests" are git verification commands with expected output; the master check is an empty `git diff` between the rebuilt `staging` tree and today's `current` tree.
 
@@ -103,95 +103,57 @@ Expected: empty output (zero changes).
 **Files:**
 - Create: `docs/superpowers/inventory/2026-06-17-divergence-inventory.md`
 
-This task produces a *proposed* classification of every changed file. The user rules on each
-before any branch is built. The proposed defaults below come from file analysis; the strict L1
-test (a stranger could drop the file into vanilla Dawn unchanged) and the L2a tiebreaker apply.
+**STATUS: COMPLETED LIVE in the design session (2026-06-17).** The inventory was built, the app
+audit drove an app-uninstall cleanup (Pandectes, Booster, YMQ B2B, popup, PageFly all removed from
+the theme — see app audit below), the baseline was re-pinned (`clean-baseline` tag), and every file
+in the net delta was reviewed with the user. The final agreed classification is recorded below and
+in `docs/superpowers/inventory/2026-06-17-divergence-inventory.md`. Task 3 builds the manifests
+directly from this.
 
-- [ ] **Step 1: Generate the raw changed-file list with status**
+- [ ] **Step 1: Confirm the net-delta baseline (already done)**
 
-Run:
 ```bash
-git diff --name-status v15.1.0..origin/current > /tmp/divergence.txt
-wc -l /tmp/divergence.txt
+MB=$(git merge-base upstream/main origin/current)   # = d2612f03 at clean-baseline
+git diff --name-only $MB..origin/current | wc -l     # ~60 files, 0 upstream commits after MB
 ```
-Expected: 101 lines.
 
-- [ ] **Step 2: Write the inventory document with a proposed ruling per file**
+- [ ] **Step 2: Final agreed classification (the ruling)**
 
-Create `docs/superpowers/inventory/2026-06-17-divergence-inventory.md` containing the table below.
-Columns: File · Status (A/M) · Proposed layer · Confidence · Reasoning · **User ruling (blank)**.
+| File(s) | Layer | Notes |
+|---|---|---|
+| `sections/pickup-availability.liquid` | **L1** | generic pickup "unavailable" state |
+| `sections/main-product.liquid` | **L1** | both hunks: inventory-status options + tag-based product-logos block (settings-driven, no store data) |
+| `assets/component-product-logos.css` | **L1** | styling for the product-logos block |
+| `layout/theme.liquid` | **L2** (discrete) | per-hunk: GTM tracking ID + UnlimitedFonts metafield (store-specific) |
+| `templates/page.store_finder.liquid` | **L2** (discrete) | custom page; Simple Store Finder metafields |
+| `templates/product.{workshop,soap,geurblokje,badzout,facialmask,3rd-party-product}.json` | **L2** (discrete) | custom product templates — store metafields + Judge.me app-instance UUID |
+| `config/settings_data.json` | **L2** (config snapshot) | master config blob |
+| `sections/header-group.json`, `sections/footer-group.json` | **L2** (config snapshot) | real store config (Dutch announcements, footer images) |
+| `templates/{index,cart,collection,article,blog,product}.json` | **L2** (config snapshot) | layout config with real settings |
+| `templates/password.json` | **drop** | pure churn (banner+escaping+empty settings); revert to vanilla in Task 7b |
+| `config/settings_schema.json`, `locales/*`, `translation.yml`, `release-notes.md` | **upstream-reconcile** | recovered when `dawn-vanilla` ffs to 15.2.0 |
+| L1-feature locale keys (e.g. Dutch `pick_up_unavailable`, inventory items/places) | **ride with L1** | added in Task 4 so the L1 features work |
 
-Proposed classification (starting point — user edits the "User ruling" column):
+> **Open question still owned by the user:** whether languages beyond Dutch/English are actively
+> maintained (affects how much locale content is "real" vs churn). Does not block the build —
+> locales are upstream-reconcile regardless; only the L1-feature keys ride with L1.
 
-| File | A/M | Proposed | Conf | Reasoning |
-|---|---|---|---|---|
-| `assets/base.css` | M | L1 | med | core Dawn stylesheet; per-hunk split likely (generic tweaks vs store) |
-| `assets/global.js` | M | L1 | med | core Dawn JS; per-hunk review needed |
-| `assets/quick-add.css` | M | L1 | high | generic Dawn component CSS |
-| `assets/theme-editor.js` | M | L1 | high | generic Dawn editor JS |
-| `assets/component-cart.css` | M | L1 | high | generic Dawn component CSS |
-| `assets/component-facets.css` | M | L1 | high | generic Dawn component CSS |
-| `assets/component-localization-form.css` | M | L1 | high | generic Dawn component CSS |
-| `assets/component-product-logos.css` | A | L2a | med | "product/HiB logos" custom feature; may be generic → user rules |
-| `assets/pandectes-reopen-logo.png` | A | app-residue | high | Pandectes cookie-consent app asset |
-| `assets/pandectes-rules.min.js` | A | app-residue | high | Pandectes app asset |
-| `assets/pandectes-settings.json` | A | app-residue | high | Pandectes app config |
-| `assets/pop_36879859845.js` | A | app-residue | high | popup-app asset (numeric id) |
-| `snippets/pandectes-rules.liquid` | A | app-residue | high | Pandectes app snippet |
-| `snippets/booster-apps-common.liquid` | A | app-residue | high | Booster Apps shared snippet |
-| `templates/search.ymq.b2b.liquid` | A | app-residue | high | YMQ B2B app search template |
-| `templates/page.store_finder.liquid` | A | L2a | med | store-finder page template; app-or-custom → user rules |
-| `layout/theme.liquid` | M | L1+app | low | core layout; likely mixes generic edits + injected app `<script>`/`<link>` → per-hunk |
-| `layout/password.liquid` | M | L1 | med | core layout; per-hunk review |
-| `sections/header.liquid` | M | L1 | med | core section; per-hunk review |
-| `sections/main-product.liquid` | M | L1+L2a | low | inventory-status feature (generic?) vs store specifics → per-hunk |
-| `sections/pickup-availability.liquid` | M | L1 | med | "pickup for items in 1 location" — likely generic enhancement |
-| `sections/email-signup-banner.liquid` | M | L1 | med | core section; per-hunk review |
-| `snippets/facets.liquid` | M | L1 | med | core snippet; per-hunk review |
-| `snippets/header-drawer.liquid` | M | L1 | med | core snippet; per-hunk review |
-| `sections/header-group.json` | M | L2b | high | section/block placement = config snapshot |
-| `sections/footer-group.json` | M | L2b | high | section/block placement = config snapshot |
-| `config/settings_data.json` | M | L2b | high | the config snapshot |
-| `config/settings_schema.json` | M | L1+L2b | low | schema edits may be generic; store color schemes = config → per-hunk |
-| `templates/index.json` | M | L2b | high | homepage layout = config snapshot |
-| `templates/cart.json` | M | L2b | high | template layout config |
-| `templates/collection.json` | M | L2b | high | template layout config |
-| `templates/article.json` | M | L2b | high | template layout config |
-| `templates/blog.json` | M | L2b | high | template layout config |
-| `templates/password.json` | M | L2b | high | template layout config |
-| `templates/product.json` | M | L2b | high | default product layout config |
-| `templates/product.workshop.json` | A | L2a | high | custom store product template |
-| `templates/product.soap.json` | A | L2a | high | custom store product template |
-| `templates/product.geurblokje.json` | A | L2a | high | custom store product template |
-| `templates/product.badzout.json` | A | L2a | high | custom store product template |
-| `templates/product.facialmask.json` | A | L2a | high | custom store product template |
-| `templates/product.3rd-party-product.json` | A | L2a | high | custom store product template |
-| `locales/*` (58 files) | M | locale-drift | high | translation-bot churn; preserved now, dropped at next Dawn upgrade |
-| `translation.yml` | M | locale-drift | med | translation config churn |
-| `release-notes.md` | M | L0-noise | high | Dawn release notes; follow upstream |
-
-- [ ] **Step 3: Append the app audit section to the inventory document**
-
-Add a section listing each detected app, its theme footprint, and a "likely unused?" flag for
-the user to confirm in admin:
+- [ ] **Step 3: App audit (COMPLETED — all flagged apps were uninstalled & cleaned)**
 
 ```markdown
-## App audit (code+config inference — confirm in admin)
-| App | Footprint (files) | Notes |
+## App audit result (confirmed by user, cleaned via admin)
+| App | Prior footprint | Outcome |
 |---|---|---|
-| Pandectes (cookie consent) | pandectes-*.{png,js,json}, snippets/pandectes-rules.liquid | active footprint present |
-| Booster Apps | snippets/booster-apps-common.liquid | shared snippet; check which Booster app still installed |
-| YMQ B2B | templates/search.ymq.b2b.liquid | B2B search; confirm still used |
-| Popup app | assets/pop_36879859845.js | numeric-id asset; identify & confirm |
-| PageFly (page builder) | NONE (removed) | `pagefly-main-css.liquid` in history, not tracked → likely uninstalled/unused |
+| Pandectes (cookie consent) | pandectes-*.{png,js,json}, snippet, theme.liquid render | UNINSTALLED — files + injections removed |
+| Booster Apps | booster-apps-common.liquid, theme.liquid include | UNINSTALLED — removed |
+| YMQ B2B | templates/search.ymq.b2b.liquid | UNINSTALLED — removed |
+| Popup (pop_36879859845.js) | orphaned asset, no references | REMOVED |
+| PageFly | (already gone) | confirmed uninstalled |
+| Judge.me, Shopify Inbox, gdpr-cookie-consent | settings_data app blocks | KEPT (still in use) |
+| UnlimitedFonts | theme.liquid metafield render | KEPT (still in use) |
 ```
 
-Also grep `layout/theme.liquid` and `config/settings_data.json` for app references to enrich the audit:
-```bash
-grep -nE 'pandectes|booster|ymq|pagefly|app-block|shopify-app|\.apps\.' layout/theme.liquid config/settings_data.json | head -40
-```
-
-- [ ] **Step 4: Commit the proposed inventory**
+- [ ] **Step 4: Inventory committed (done)**
 
 ```bash
 test "$(git branch --show-current)" = "current" && exit 1
@@ -210,43 +172,46 @@ user has ruled on every file. Record their rulings back into the document and re
 ## Task 3: Derive the per-layer file/hunk manifests from approved rulings
 
 **Files:**
-- Create: `docs/superpowers/inventory/manifest-L1.txt`, `manifest-L2a.txt`, `manifest-L2b.txt`, `manifest-drop.txt`
+- Create: `docs/superpowers/inventory/manifest-L1.txt`, `manifest-L2-files.txt`, `manifest-L2-config.txt`, `manifest-drop.txt`
 
 - [ ] **Step 1: Guard** — `test "$(git branch --show-current)" != "current" && echo OK || exit 1` → `OK`
 
-- [ ] **Step 2: From the approved inventory, write one manifest file per layer**
+- [ ] **Step 2: From the approved inventory, write one manifest file per bucket**
 
 Manually populate newline-separated path lists from the **approved** rulings:
-- `manifest-L1.txt` — files (or files needing per-hunk extraction) ruled L1.
-- `manifest-L2a.txt` — added/custom store files ruled L2a (incl. app-residue the user wants to keep).
-- `manifest-L2b.txt` — config-snapshot files (settings_data, *-group.json, template *.json).
-- `manifest-drop-candidates.txt` — files to be removed in Task 7b (orphaned/unused app residue); included in staging v1 for the lossless test, then removed with documented justification.
+- `manifest-L1.txt` — generic code (or files needing per-hunk L1 extraction) ruled L1.
+- `manifest-L2-files.txt` — **discrete** store files (custom `product.*.json` templates,
+  `page.store_finder.liquid`, `theme.liquid` tracking, etc.) → each gets its **own logical commit**
+  (commit hygiene). These stay recognizable in history.
+- `manifest-L2-config.txt` — the **config blob**: `settings_data.json` + the layout JSON it
+  co-evolves with (`sections/*-group.json`, stock `templates/*.json`) → **one snapshot commit**.
+- `manifest-drop.txt` — files to revert-to-vanilla / remove in Task 7b (e.g. `templates/password.json`
+  pure churn); included in staging v1 for the lossless test, then removed with documented justification.
 
-Locale files (58), `translation.yml`, and `release-notes.md` are **omitted from all manifests** —
-their changes are attributable to verified upstream commits (same SHA in `upstream/main`) and
-require no classification. They are pulled from `origin/current` into staging v1 verbatim for the
-lossless test, and automatically reconcile when `dawn-vanilla` is ff'd past those commits.
+Locale files, `translation.yml`, `release-notes.md`, and `config/settings_schema.json` are
+**omitted from all manifests** (upstream-reconcile): pulled from `origin/current` into staging v1
+verbatim for the lossless test, and reconciled when `dawn-vanilla` is ff'd to 15.2.0.
+**Exception:** any locale *keys* that exist only to support an L1 feature (e.g. `pick_up_unavailable`)
+ride with L1 — note these in the inventory and add them in Task 4.
 
-- [ ] **Step 3: Verify the manifests + upstream files partition ALL 101 changed files exactly once**
+- [ ] **Step 3: Verify the manifests + upstream-reconcile files partition the net delta exactly once**
 
 Run:
 ```bash
-# Upstream-attributed files (no manifest needed)
-git log v15.1.0..origin/current --author="translation-platform" --format="" --name-only | grep -v '^$' | sort -u > /tmp/upstream-files.txt
-git diff --name-only v15.1.0..origin/current -- release-notes.md translation.yml >> /tmp/upstream-files.txt
-sort -u /tmp/upstream-files.txt -o /tmp/upstream-files.txt
-
-# All manifests + upstream
+MB=$(git merge-base upstream/main origin/current)
+# upstream-reconcile files (no manifest)
+{ git diff --name-only $MB..origin/current -- 'locales/*' translation.yml release-notes.md config/settings_schema.json; } | sort -u > /tmp/upstream-reconcile.txt
+# all manifests + upstream-reconcile
 cat docs/superpowers/inventory/manifest-L1.txt \
-    docs/superpowers/inventory/manifest-L2a.txt \
-    docs/superpowers/inventory/manifest-L2b.txt \
-    docs/superpowers/inventory/manifest-drop-candidates.txt \
-    /tmp/upstream-files.txt \
+    docs/superpowers/inventory/manifest-L2-files.txt \
+    docs/superpowers/inventory/manifest-L2-config.txt \
+    docs/superpowers/inventory/manifest-drop.txt \
+    /tmp/upstream-reconcile.txt \
   | sort -u > /tmp/classified.txt
-git diff --name-only v15.1.0..origin/current | sort -u > /tmp/changed.txt
-diff /tmp/changed.txt /tmp/classified.txt && echo "OK: every changed file is classified exactly once"
+git diff --name-only $MB..origin/current | sort -u > /tmp/changed.txt
+diff /tmp/changed.txt /tmp/classified.txt && echo "OK: every net-delta file is classified exactly once"
 ```
-Expected: `OK: every changed file is classified exactly once`. Any diff = a file missed or double-counted; fix the manifests.
+Expected: `OK: every net-delta file is classified exactly once`. Any diff = a file missed or double-counted; fix the manifests.
 
 - [ ] **Step 4: Commit the manifests**
 
@@ -290,25 +255,26 @@ git reset -q HEAD <file>                       # unstage
 git restore --source=dawn-vanilla --worktree <file>  # back to vanilla in worktree, then re-add L1 hunks:
 git checkout -p origin/current -- <file>       # choose only the generic (L1) hunks; leave store/app hunks out
 ```
-Expected: only generic hunks present in the worktree copy. Store/app hunks for these files are
-deferred to L2a/L2b in later tasks.
+Expected: only generic hunks present in the worktree copy. Store hunks for these files are
+deferred to L2 in later tasks.
 
 - [ ] **Step 4: Commit L1 as feature-grouped commits**
 
-Group related files into meaningful commits (not one giant commit). Example grouping:
+Group related files into meaningful commits (not one giant commit). For this store, L1 is small —
+e.g.:
 ```bash
-git add assets/quick-add.css assets/component-*.css
-git commit -m "L1: generic component CSS tweaks"
 git add sections/pickup-availability.liquid
-git commit -m "L1: pickup availability for single-location items"
-# ...repeat per feature group per the inventory...
+git commit -m "L1: pickup availability unavailable-state"
+git add sections/main-product.liquid assets/component-product-logos.css
+git commit -m "L1: inventory-status options + tag-based product-logos block"
+# + add any L1-feature locale keys (e.g. pick_up_unavailable) per the inventory
 ```
 
-- [ ] **Step 5: Verify `customizations` carries NO L2a/L2b/app files**
+- [ ] **Step 5: Verify `customizations` carries NO L2/drop files**
 
 Run:
 ```bash
-git diff --name-only dawn-vanilla..customizations | grep -Ef <(sed 's/[.[]/\\&/g' docs/superpowers/inventory/manifest-L2a.txt docs/superpowers/inventory/manifest-L2b.txt) && echo "LEAK: L2 file in customizations" || echo "OK: customizations is L1-only"
+git diff --name-only dawn-vanilla..customizations | grep -Ef <(sed 's/[.[]/\\&/g' docs/superpowers/inventory/manifest-L2-files.txt docs/superpowers/inventory/manifest-L2-config.txt docs/superpowers/inventory/manifest-drop.txt) && echo "LEAK: L2 file in customizations" || echo "OK: customizations is L1-only"
 ```
 Expected: `OK: customizations is L1-only`.
 
@@ -325,13 +291,13 @@ Expected: `OK: customizations is L1-only`.
 Run:
 ```bash
 git diff --name-only customizations..origin/current | sort -u > /tmp/remaining.txt
-cat docs/superpowers/inventory/manifest-L2a.txt docs/superpowers/inventory/manifest-L2b.txt docs/superpowers/inventory/manifest-drop.txt | sort -u > /tmp/expected-remaining.txt
-diff /tmp/remaining.txt /tmp/expected-remaining.txt && echo "OK: remaining delta == L2a+L2b+drop" || echo "MISMATCH: investigate per-hunk leakage"
+cat docs/superpowers/inventory/manifest-L2-files.txt docs/superpowers/inventory/manifest-L2-config.txt docs/superpowers/inventory/manifest-drop.txt /tmp/upstream-reconcile.txt | sort -u > /tmp/expected-remaining.txt
+diff /tmp/remaining.txt /tmp/expected-remaining.txt && echo "OK: remaining delta == L2-files+L2-config+drop+upstream-reconcile" || echo "MISMATCH: investigate per-hunk leakage"
 ```
-Expected: `OK: remaining delta == L2a+L2b+drop`. A mismatch means a per-hunk L1 file still
-differs from current in non-L1 ways (expected for per-hunk files) OR a misclassification — review.
-Note: per-hunk files legitimately appear in `remaining` (their L2 hunks aren't applied yet); they
-should also be listed in L2a/L2b manifests. Reconcile until the diff is clean.
+Expected: `OK`. A mismatch means a per-hunk L1 file still differs from current in non-L1 ways
+(expected for per-hunk files) OR a misclassification — review. Note: per-hunk files legitimately
+appear in `remaining` (their L2 hunks aren't applied yet); they should also be listed in an L2
+manifest. Reconcile until the diff is clean.
 
 ---
 
@@ -349,35 +315,35 @@ git branch staging customizations
 git checkout staging
 ```
 
-- [ ] **Step 2: Apply L2a authored store assets as feature-grouped commits**
+- [ ] **Step 2: Apply L2 discrete store files — each as its OWN logical commit (commit hygiene)**
 
 ```bash
-while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-L2a.txt
-git add templates/product.*.json
-git commit -m "L2a: custom store product templates (workshop, soap, geurblokje, badzout, facialmask, 3rd-party)"
-git add templates/page.store_finder.liquid assets/component-product-logos.css
-git commit -m "L2a: store-finder page + product logos"
-# app-residue the user chose to KEEP:
-git add snippets/pandectes-rules.liquid assets/pandectes-* snippets/booster-apps-common.liquid templates/search.ymq.b2b.liquid
-git commit -m "L2a: app-injected files retained (Pandectes, Booster, YMQ B2B)"
+while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-L2-files.txt
+# one logical commit per recognizable unit — do NOT lump these together:
+git add templates/product.workshop.json templates/product.soap.json templates/product.geurblokje.json \
+        templates/product.badzout.json templates/product.facialmask.json templates/product.3rd-party-product.json
+git commit -m "L2: custom store product templates (workshop, soap, geurblokje, badzout, facialmask, 3rd-party)"
+git add templates/page.store_finder.liquid
+git commit -m "L2: store-finder custom page template"
+# theme.liquid store hunks (GTM + UnlimitedFonts) applied via per-hunk in Step 4
 ```
 
 - [ ] **Step 3: Apply files earmarked for dropping — INCLUDED HERE for lossless test**
 
 ```bash
-while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-drop-candidates.txt
+while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-drop.txt
 git add --all
-git commit -m "staging-lossless: include all drop-candidates for acceptance test (removed in next commit)"
+git commit -m "staging-lossless: include all drop-targets for acceptance test (removed/reverted in Task 7b)"
 ```
-`manifest-drop-candidates.txt` lists every file ruled `drop` by the user (e.g.
-`assets/pop_36879859845.js`). They land here so the tree matches `current` exactly.
+`manifest-drop.txt` lists every file ruled `drop` (e.g. `templates/password.json`, reverted to
+vanilla later). They land here so the tree matches `current` exactly.
 
-- [ ] **Step 4: Apply L2b config snapshot as ONE commit**
+- [ ] **Step 4: Apply the L2 config blob as ONE snapshot commit**
 
 ```bash
-while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-L2b.txt
-git add config/settings_data.json config/settings_schema.json sections/*-group.json templates/*.json
-git commit -m "L2b: store config snapshot (settings_data, section groups, template layouts)"
+while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-L2-config.txt
+git add config/settings_data.json sections/*-group.json templates/*.json
+git commit -m "L2: store config snapshot (settings_data, section groups, stock template layouts)"
 ```
 
 - [ ] **Step 5: Apply remaining per-hunk L2 hunks for per-hunk files**
@@ -389,15 +355,18 @@ git commit -m "L2: per-hunk remainder for <file>"
 ```
 After all per-hunk files, every such file matches current exactly.
 
-- [ ] **Step 6: Pull upstream-attributed files for the lossless acceptance test**
+- [ ] **Step 6: Pull upstream-reconcile files for the lossless acceptance test**
 
-Locale files, `translation.yml`, and `release-notes.md` carry verified upstream content.
-Include them now so the acceptance test can pass, with no special labelling:
+Locales, `translation.yml`, `release-notes.md`, and `config/settings_schema.json` carry upstream
+content. Include them now so the acceptance test can pass, with no special labelling:
 ```bash
-git checkout origin/current -- locales/ translation.yml release-notes.md
-git add locales/ translation.yml release-notes.md
-git commit -m "staging-lossless: upstream-attributed locale + release-notes from current (auto-reconcile on dawn-vanilla ff)"
+git checkout origin/current -- locales/ translation.yml release-notes.md config/settings_schema.json
+git add locales/ translation.yml release-notes.md config/settings_schema.json
+git commit -m "staging-lossless: upstream-reconcile files from current (auto-reconcile on dawn-vanilla ff to 15.2.0)"
 ```
+Note: L1-feature locale keys already added in Task 4 will be overwritten here by current's full
+locale files — that's fine for the lossless test; at the next Dawn ff, re-apply the L1 keys on top
+of the new upstream locales (runbook covers this).
 
 ---
 
@@ -508,7 +477,7 @@ Expected: `PASS: all deltas are documented drops`.
 
 - [ ] **Step 2: Write the runbook** covering exactly these procedures, with copy-paste commands:
 
-1. **Backflow** (capture live admin edits): `git checkout staging && git merge origin/current` — resolve so config lands in the L2b snapshot; harvest any new generic edit to `customizations`, any new file to L2a.
+1. **Backflow** (capture live admin edits): `git checkout staging && git merge origin/current` — resolve so config lands in the config-snapshot commit; harvest any new generic edit to `customizations`, any new discrete store file into its own L2 commit.
 2. **Promote to live** (only after a fresh backflow): set `current` to `staging`'s tree and push.
    Document this as the *single* sanctioned way `current` is ever updated, with the backflow-first
    invariant in bold and a pre-flight checklist.
@@ -562,6 +531,6 @@ explicit user authorization.
 
 ## Self-review notes
 
-- **Spec coverage:** L0 (Task 1), L1 (Task 4), L2a (Task 6 Step 2), L2b (Task 6 Step 4), inventory+app-audit (Task 2), per-file user ruling (Task 2 Step 5 gate), strict L1 test (Task 2), byte-for-byte acceptance (Task 7 — runs before drops), documented drops (Task 7b — runs after, with drops.md justifying all deltas), runbook incl. backflow/promote/upgrade/harvest (Task 8), branch triage (Task 9), `current` never touched (guards in every task). All spec sections map to tasks.
+- **Spec coverage:** L0 (Task 1), L1 (Task 4), L2 discrete-file commits (Task 6 Step 2, commit hygiene), L2 config-snapshot commit (Task 6 Step 4), inventory+app-audit (Task 2), per-file user ruling (Task 2 Step 5 gate), strict L1 test (Task 2), byte-for-byte acceptance (Task 7 — runs before drops), documented drops (Task 7b — runs after, with drops.md justifying all deltas), runbook incl. backflow/promote/upgrade/harvest (Task 8), branch triage (Task 9), `current` never touched (guards in every task). All spec sections map to tasks.
 - **Locale reconciliation:** spec's "locales follow upstream" is a forward policy; the initial lossless rebuild preserves them in a flagged droppable commit (Task 6 Step 5), dropped at first upgrade (Task 8 Step 2 procedure 3).
 - **Deferred:** squash-on-backflow churn-control mechanics (spec deferred phase) are referenced in the runbook but not mechanized here.
