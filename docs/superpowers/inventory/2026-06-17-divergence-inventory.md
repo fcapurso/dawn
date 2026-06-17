@@ -20,9 +20,10 @@ For files marked **per-hunk**, the file mixes layers; the ruling should say whic
 - **L1** — generic, upstream-shaped customization (rebases onto each new Dawn release)
 - **L2a** — authored store asset (custom file, cherry-pickable, curated commit)
 - **L2b** — config snapshot (settings_data.json, section/template JSON — one evolving commit)
-- **app-residue** — app-injected file (propose keep or drop)
-- **locale-drift** — translation-bot churn (preserved now, dropped at first Dawn upgrade)
-- **L0-noise** — follows upstream (release-notes, etc.)
+- **app-residue (keep)** — app-injected file, active reference found → goes to L2a on staging permanently
+- **app-residue (drop)** — app-injected file, no active reference → included in staging v1 for the lossless acceptance test, then removed in a documented curation commit (Task 7b). The `drops.md` file records every removal so any future delta vs `current` is explained.
+- **locale-drift** — translation-bot churn (preserved in staging v1 for lossless test; flagged droppable commit; replaced by upstream locales at first Dawn upgrade)
+- **L0-noise** — follows upstream (release-notes, etc.) — same treatment as locale-drift
 
 **Strict L1 test:** "Could a stranger drop this file into vanilla Dawn and have it work with zero
 edits?" If no → L2a minimum. On the fence → L2a (tiebreaker).

@@ -220,13 +220,19 @@ Manually populate four newline-separated path lists from the **approved** ruling
 - `manifest-L1.txt` — files (or files needing per-hunk extraction) ruled L1.
 - `manifest-L2a.txt` — added/custom store files ruled L2a (incl. app-residue the user wants to keep).
 - `manifest-L2b.txt` — config-snapshot files (settings_data, *-group.json, template *.json).
-- `manifest-drop.txt` — locale-drift, release-notes, and any app-residue the user wants gone.
+- `manifest-locale-drift.txt` — locale-drift, release-notes, L0-noise: preserved losslessly, dropped at next Dawn upgrade.
+- `manifest-drop-candidates.txt` — files to be removed in Task 7b (orphaned/unused app residue); included in staging v1 for the lossless test, then removed with documented justification.
 
 - [ ] **Step 3: Verify the manifests partition ALL 101 changed files exactly once**
 
 Run:
 ```bash
-cat docs/superpowers/inventory/manifest-*.txt | sort -u > /tmp/classified.txt
+cat docs/superpowers/inventory/manifest-L1.txt \
+    docs/superpowers/inventory/manifest-L2a.txt \
+    docs/superpowers/inventory/manifest-L2b.txt \
+    docs/superpowers/inventory/manifest-locale-drift.txt \
+    docs/superpowers/inventory/manifest-drop-candidates.txt \
+  | sort -u > /tmp/classified.txt
 git diff --name-only v15.1.0..origin/current | sort -u > /tmp/changed.txt
 diff /tmp/changed.txt /tmp/classified.txt && echo "OK: every changed file is classified exactly once"
 ```
@@ -319,9 +325,11 @@ should also be listed in L2a/L2b manifests. Reconcile until the diff is clean.
 
 ---
 
-## Task 6: Build `staging` (L2a curated + L2b snapshot + locale-drift)
+## Task 6: Build `staging` v1 — lossless (everything from current, including future drops)
 
-**Files:** branch `staging`; content = `customizations` + every remaining file from current.
+**Files:** branch `staging`; content = `customizations` + every remaining file from current,
+**including** files earmarked for dropping. Drops happen only in Task 7 (after the acceptance
+test passes). This guarantees the restructure is lossless before any curation.
 
 - [ ] **Step 1: Guard + create `staging` from `customizations`**
 
@@ -340,11 +348,21 @@ git commit -m "L2a: custom store product templates (workshop, soap, geurblokje, 
 git add templates/page.store_finder.liquid assets/component-product-logos.css
 git commit -m "L2a: store-finder page + product logos"
 # app-residue the user chose to KEEP:
-git add snippets/pandectes-rules.liquid assets/pandectes-* snippets/booster-apps-common.liquid templates/search.ymq.b2b.liquid assets/pop_36879859845.js
-git commit -m "L2a: app-injected files (Pandectes, Booster, YMQ B2B, popup) — retained app residue"
+git add snippets/pandectes-rules.liquid assets/pandectes-* snippets/booster-apps-common.liquid templates/search.ymq.b2b.liquid
+git commit -m "L2a: app-injected files retained (Pandectes, Booster, YMQ B2B)"
 ```
 
-- [ ] **Step 3: Apply L2b config snapshot as ONE commit**
+- [ ] **Step 3: Apply files earmarked for dropping — INCLUDED HERE for lossless test**
+
+```bash
+while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-drop-candidates.txt
+git add --all
+git commit -m "staging-lossless: include all drop-candidates for acceptance test (removed in next commit)"
+```
+`manifest-drop-candidates.txt` lists every file ruled `drop` by the user (e.g.
+`assets/pop_36879859845.js`). They land here so the tree matches `current` exactly.
+
+- [ ] **Step 4: Apply L2b config snapshot as ONE commit**
 
 ```bash
 while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-L2b.txt
@@ -352,44 +370,44 @@ git add config/settings_data.json config/settings_schema.json sections/*-group.j
 git commit -m "L2b: store config snapshot (settings_data, section groups, template layouts)"
 ```
 
-- [ ] **Step 4: Apply remaining per-hunk L2 hunks for L1 files**
+- [ ] **Step 5: Apply remaining per-hunk L2 hunks for per-hunk files**
 
-For each per-hunk file, now add the store/app hunks that were excluded from L1:
+For each per-hunk file, bring it fully to current's version (the L2/app hunks missing from L1):
 ```bash
-git checkout origin/current -- <file>   # bring file fully to current's version
+git checkout origin/current -- <file>
+git commit -m "L2: per-hunk remainder for <file>"
 ```
 After all per-hunk files, every such file matches current exactly.
 
-- [ ] **Step 5: Apply locale-drift as ONE flagged, droppable commit**
+- [ ] **Step 6: Apply locale-drift + L0-noise as ONE flagged, droppable commit**
 
 ```bash
-while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-drop.txt
+while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-locale-drift.txt
 git add locales/ translation.yml release-notes.md
-git commit -m "locale-drift: translation-bot churn — DROP at next Dawn upgrade (do not carry forward)"
+git commit -m "locale-drift: translation-bot churn + release-notes — DROP at next Dawn upgrade (do not carry forward)"
 ```
 
 ---
 
-## Task 7: ACCEPTANCE TEST — staging reproduces current byte-for-byte
+## Task 7: ACCEPTANCE TEST — staging v1 reproduces current byte-for-byte
 
-**Files:** none (the master verification)
+**Files:** none (the master verification — runs before any drops are applied)
 
 - [ ] **Step 1: Guard** — `test "$(git branch --show-current)" != "current" && echo OK || exit 1`
 
 - [ ] **Step 2: Compare the full `staging` tree against today's `current` tree**
 
-Run:
 ```bash
 git diff --stat staging origin/current -- . ':(exclude)docs/'
 ```
-Expected: **empty output** (no differences outside the `docs/` planning dir, which exists only on
-the cleanup line). Empty = the restructure is provably lossless.
+Expected: **empty output**. Empty = the restructure is provably lossless.
 
-- [ ] **Step 3: Hard tree-hash equality check (excluding docs/)**
+- [ ] **Step 3: Hard tree-hash equality check**
 
-Run:
 ```bash
-git diff --quiet staging origin/current -- . ':(exclude)docs/' && echo "PASS: staging tree == current tree" || echo "FAIL: trees differ — DO NOT promote"
+git diff --quiet staging origin/current -- . ':(exclude)docs/' && \
+  echo "PASS: staging tree == current tree" || \
+  echo "FAIL: trees differ — DO NOT proceed"
 ```
 Expected: `PASS: staging tree == current tree`.
 
@@ -398,17 +416,74 @@ Expected: `PASS: staging tree == current tree`.
 ```bash
 git diff --name-only staging origin/current -- . ':(exclude)docs/'
 ```
-For each listed file, identify which manifest it belongs to and fix the corresponding build task.
-Re-run Step 3 until PASS. Today's `current` and the live theme remain untouched throughout.
+For each listed file, identify which manifest it belongs to and fix the corresponding build step.
+Re-run Step 3 until PASS.
 
-- [ ] **Step 5: Commit a verification record**
+- [ ] **Step 5: Record the lossless-pass in the anchors file**
 
 ```bash
 git checkout repo-cleanup
-echo "Acceptance test PASS $(date -u +%FT%TZ): staging tree == origin/current (excl docs/)" >> docs/superpowers/inventory/.anchors.txt
+echo "Lossless acceptance test PASS $(date -u +%FT%TZ): staging tree == origin/current (excl docs/)" >> docs/superpowers/inventory/.anchors.txt
 git add docs/superpowers/inventory/.anchors.txt
-git commit -m "chore: record acceptance-test pass (staging == current byte-for-byte)"
+git commit -m "chore: record lossless acceptance-test pass (staging v1 == current byte-for-byte)"
 ```
+
+---
+
+## Task 7b: Apply curation — remove drop-candidates with documented justification
+
+**Files:**
+- Create: `docs/superpowers/inventory/drops.md`
+
+This task runs **only after Task 7 passes**. It produces the single named commit that explains
+every delta between final `staging` and `current`. Future `git diff current..staging` is fully
+explained by `git show` on this commit.
+
+- [ ] **Step 1: Guard + switch to staging**
+
+```bash
+test "$(git branch --show-current)" != "current" && echo OK || exit 1
+git checkout staging
+```
+
+- [ ] **Step 2: Write the drops record**
+
+Create `docs/superpowers/inventory/drops.md` listing every file being removed, the reason, and
+the admin-confirmation note. Example:
+
+```markdown
+# Curated drops from staging
+
+These files exist in `current` (and passed the lossless acceptance test in Task 7) but are
+removed from `staging` because they are orphaned or unused. Any `git diff current..staging`
+showing these files absent is expected and intentional.
+
+| File | Reason | Admin confirmed? |
+|---|---|---|
+| `assets/pop_36879859845.js` | No active reference in theme.liquid or settings_data; numeric-ID popup asset, likely orphaned | (fill in) |
+```
+
+- [ ] **Step 3: Remove the drop-candidate files and commit with the record**
+
+```bash
+while read f; do git rm --force "$f"; done < docs/superpowers/inventory/manifest-drop-candidates.txt
+git add docs/superpowers/inventory/drops.md
+git commit -m "chore: remove orphaned/unused files — see docs/superpowers/inventory/drops.md"
+```
+
+- [ ] **Step 4: Verify the final staging state is clean**
+
+```bash
+# The only diff vs current should be: docs/ additions + the dropped files (all documented)
+git diff --name-only staging origin/current -- . ':(exclude)docs/' | sort -u
+# Cross-check: every file listed here must appear in manifest-drop-candidates.txt
+diff \
+  <(git diff --name-only staging origin/current -- . ':(exclude)docs/' | sort -u) \
+  <(sort -u docs/superpowers/inventory/manifest-drop-candidates.txt) \
+  && echo "PASS: all deltas are documented drops" \
+  || echo "FAIL: unexpected delta — investigate"
+```
+Expected: `PASS: all deltas are documented drops`.
 
 ---
 
@@ -475,6 +550,6 @@ explicit user authorization.
 
 ## Self-review notes
 
-- **Spec coverage:** L0 (Task 1), L1 (Task 4), L2a (Task 6 Step 2), L2b (Task 6 Step 3), inventory+app-audit (Task 2), per-file user ruling (Task 2 Step 5 gate), strict L1 test (Task 2), byte-for-byte acceptance (Task 7), runbook incl. backflow/promote/upgrade/harvest (Task 8), branch triage (Task 9), `current` never touched (guards in every task). All spec sections map to tasks.
+- **Spec coverage:** L0 (Task 1), L1 (Task 4), L2a (Task 6 Step 2), L2b (Task 6 Step 4), inventory+app-audit (Task 2), per-file user ruling (Task 2 Step 5 gate), strict L1 test (Task 2), byte-for-byte acceptance (Task 7 — runs before drops), documented drops (Task 7b — runs after, with drops.md justifying all deltas), runbook incl. backflow/promote/upgrade/harvest (Task 8), branch triage (Task 9), `current` never touched (guards in every task). All spec sections map to tasks.
 - **Locale reconciliation:** spec's "locales follow upstream" is a forward policy; the initial lossless rebuild preserves them in a flagged droppable commit (Task 6 Step 5), dropped at first upgrade (Task 8 Step 2 procedure 3).
 - **Deferred:** squash-on-backflow churn-control mechanics (spec deferred phase) are referenced in the runbook but not mechanized here.
