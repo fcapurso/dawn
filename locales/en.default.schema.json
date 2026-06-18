@@ -2010,12 +2010,25 @@
                 "label": "Uppercase"
               }
             },
-            "inventory_threshold": {
+            "low_stock_threshold": {
               "label": "Low inventory threshold",
               "info": "Choose 0 to always show in stock if available."
             },
+            "high_stock_threshold": {
+              "label": "High inventory threshold",
+              "info": "Only show inventory count below this threshold."
+            },
             "show_inventory_quantity": {
               "label": "Show inventory count"
+            },
+            "availability_type": {
+              "label": "Availability type",
+              "options__1": {
+                "label": "Items"
+              },
+              "options__2": {
+                "label": "Places"
+              }
             }
           }
         },
