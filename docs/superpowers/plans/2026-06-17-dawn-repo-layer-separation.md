@@ -134,9 +134,10 @@ git diff --name-only $MB..origin/current | wc -l     # ~60 files, 0 upstream com
 | `config/settings_schema.json`, `locales/*`, `translation.yml`, `release-notes.md` | **upstream-reconcile** | recovered when `dawn-vanilla` ffs to 15.2.0 |
 | L1-feature locale keys (e.g. Dutch `pick_up_unavailable`, inventory items/places) | **ride with L1** | added in Task 4 so the L1 features work |
 
-> **Open question still owned by the user:** whether languages beyond Dutch/English are actively
-> maintained (affects how much locale content is "real" vs churn). Does not block the build —
-> locales are upstream-reconcile regardless; only the L1-feature keys ride with L1.
+> **Resolved (2026-06-17):** only **Dutch (`nl`) and English (`en.default`)** are actively
+> maintained; expansion possible later. So only those two locale files carry real custom strings;
+> the other ~36 are pure upstream churn. All locales remain upstream-reconcile; only the L1-feature
+> keys (e.g. `pick_up_unavailable`) ride with L1. Future languages are added when needed, not now.
 
 - [ ] **Step 3: App audit (COMPLETED — all flagged apps were uninstalled & cleaned)**
 
