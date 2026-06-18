@@ -29,7 +29,7 @@ bash .claude/skills/dawn-harvest/harvest.sh <path> [--hunks]
 |------|---------|--------------|
 | 0 (`DAWN_OK`) | Success | Confirm: the L1 commit landed on `customizations` and `staging`'s tip is still the config snapshot. |
 | 10 (`DAWN_GUARD`) | Guard tripped | Report the reason (config/L2 file not harvestable to L1; or dirty working tree). Do not retry without resolving the guard. |
-| 21 (`DAWN_STOP_JUDGMENT`) | Needs human judgment | Either the file mixes generic + store-specific lines (`--hunks` path): **STOP**, work with the user to isolate the generic hunks into a separate trimmed file, then re-run on that file. Or a rebase conflict occurred: report the conflict to the user and resolve it together before retrying. |
+| 21 (`DAWN_STOP_JUDGMENT`) | Needs human judgment | Either the file mixes generic + store-specific lines (`--hunks` path): **STOP**, work with the user to isolate the generic hunks into a separate trimmed file, then re-run on that file. Or a rebase conflict occurred: you are left **on `staging` with a rebase in progress** (branch-restore does not apply mid-rebase) — resolve it with the user then `git rebase --continue`, or `git rebase --abort` to back out cleanly. |
 
 ## L1 "stranger test"
 
