@@ -243,39 +243,48 @@ git checkout customizations
 ```
 Expected: `OK`, then on branch `customizations`.
 
-- [ ] **Step 2: Apply whole-file L1 changes**
+**Base = `dawn-vanilla` (d2612f03, the true divergence point).** Because the base is the divergence
+point, taking `current`'s version of a modified file yields a commit whose **diff is purely the
+user's patch** (no upstream pollution) — verified for all modified L1 files. So commits read as clean
+patches, not full-file replacements.
 
-For each file in `manifest-L1.txt` that is L1 *in full*, take `current`'s version:
+**L1 commits are per-FEATURE, not per-file** (main-product.liquid spans two features). Each feature
+commit bundles its code + its locale keys (from `manifest-L1-locale.md`) so the feature is portable.
+
+- [ ] **Step 2: Feature commit — pickup availability**
+
 ```bash
-while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-L1.txt
-git status --short
+git checkout origin/current -- sections/pickup-availability.liquid      # whole file = 1 feature, clean patch
+# add pick_up_unavailable to dawn-vanilla's clean en.default.json + nl.json (surgical — see manifest-L1-locale.md)
+git add sections/pickup-availability.liquid locales/en.default.json locales/nl.json
+git commit -m "L1: pickup availability — unavailable state + en/nl strings"
 ```
-Expected: the L1 files staged as modified/added.
 
-- [ ] **Step 3: For per-hunk files, keep ONLY the L1 hunks**
+- [ ] **Step 3: Feature commit — configurable inventory status (items/places, thresholds)**
 
-For each file flagged per-hunk (e.g. `layout/theme.liquid`, `sections/main-product.liquid`,
-`config/settings_schema.json`), interactively select hunks:
+main-product.liquid inventory hunks only (`@@ -141`, `-150`, `-181`, `-829`, `-842`). Apply via
+`git checkout -p origin/current -- sections/main-product.liquid` selecting the inventory hunks, OR
+build a filtered patch. Then add the inventory locale keys (restructure flat→items/places) per
+`manifest-L1-locale.md`, plus the en schema labels.
 ```bash
-git checkout origin/current -- <file>        # bring full change in
-git reset -q HEAD <file>                       # unstage
-git restore --source=dawn-vanilla --worktree <file>  # back to vanilla in worktree, then re-add L1 hunks:
-git checkout -p origin/current -- <file>       # choose only the generic (L1) hunks; leave store/app hunks out
+git checkout -p origin/current -- sections/main-product.liquid   # pick the 5 inventory hunks
+# surgically add inventory.items/places keys to en.default.json + nl.json; add schema labels to en.default.schema.json
+git add sections/main-product.liquid locales/en.default.json locales/nl.json locales/en.default.schema.json
+git commit -m "L1: configurable inventory status (items/places availability, high/low thresholds) + en/nl strings"
 ```
-Expected: only generic hunks present in the worktree copy. Store hunks for these files are
-deferred to L2 in later tasks.
 
-- [ ] **Step 4: Commit L1 as feature-grouped commits**
+- [ ] **Step 4: Feature commit — tag-based product logos**
 
-Group related files into meaningful commits (not one giant commit). For this store, L1 is small —
-e.g.:
+main-product.liquid product-logos hunks only (`@@ -24`, `-660`, `-2074`) + the whole new CSS file.
 ```bash
-git add sections/pickup-availability.liquid
-git commit -m "L1: pickup availability unavailable-state"
+git checkout -p origin/current -- sections/main-product.liquid   # pick the 3 product-logos hunks
+git checkout origin/current -- assets/component-product-logos.css
 git add sections/main-product.liquid assets/component-product-logos.css
-git commit -m "L1: inventory-status options + tag-based product-logos block"
-# + add any L1-feature locale keys (e.g. pick_up_unavailable) per the inventory
+git commit -m "L1: tag-based product-logos block + styling"
 ```
+After Steps 3–4, `git diff dawn-vanilla..customizations -- sections/main-product.liquid` must equal
+`git diff dawn-vanilla..origin/current -- sections/main-product.liquid` (all 8 hunks present, split
+across the two feature commits).
 
 - [ ] **Step 5: Verify `customizations` carries NO L2/drop files**
 
@@ -332,7 +341,11 @@ git add templates/product.workshop.json templates/product.soap.json templates/pr
 git commit -m "L2: custom store product templates (workshop, soap, geurblokje, badzout, facialmask, 3rd-party)"
 git add templates/page.store_finder.liquid
 git commit -m "L2: store-finder custom page template"
-# theme.liquid store hunks (GTM + UnlimitedFonts) applied via per-hunk in Step 4
+# theme.liquid has TWO independent integrations (2 hunks) — commit separately for hygiene:
+git checkout -p origin/current -- layout/theme.liquid    # pick the GTM hunk (@@ -1)
+git add layout/theme.liquid && git commit -m "L2: Google Tag Manager snippet"
+git checkout origin/current -- layout/theme.liquid       # remainder = UnlimitedFonts hunk (@@ -41)
+git add layout/theme.liquid && git commit -m "L2: UnlimitedFonts stylesheet integration"
 ```
 
 - [ ] **Step 3: Apply files earmarked for dropping — INCLUDED HERE for lossless test**
