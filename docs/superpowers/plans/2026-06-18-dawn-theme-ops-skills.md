@@ -231,11 +231,14 @@ dawn::config_files(){
   local p; while IFS= read -r p; do [ -z "$p" ] && continue
     git ls-files -- "$p"; done < "$DAWN_LIB_DIR/config-paths.txt" | sort -u; }
 
-# rc 0 if origin/current has commits not in staging (backflow needed), else rc 1.
+# rc 0 if origin/current has config content not yet in staging (backflow needed), else rc 1.
+# NOTE: content-diff on config paths, NOT commit-ancestry — `current` is never an ancestor of
+# `staging` in this model (staging is rebuilt; current is force-pushed from staging), so a commit
+# count would always report "pending". Content equality is the correct "is it synced" signal.
 dawn::backflow_pending(){
-  local n; n="$(git rev-list --count staging..refs/remotes/origin/current 2>/dev/null \
-    || git rev-list --count staging..origin/current)"
-  [ "${n:-0}" -gt 0 ]; }
+  local ref="refs/remotes/origin/current"
+  git rev-parse --verify "$ref" &>/dev/null || ref="origin/current"
+  ! git diff --quiet staging "$ref" -- $(grep -v '^$' "$DAWN_LIB_DIR/config-paths.txt" | tr '\n' ' '); }
 
 # rc 0 if trees equal (excl docs/ + .claude/), rc 30 with a summary if not.
 dawn::verify_tree_equal(){
