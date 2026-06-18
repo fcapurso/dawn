@@ -53,20 +53,20 @@ git checkout origin/current -- config/settings_data.json sections/*-group.json t
 git commit --amend --no-edit          # ONE config commit, forever — never appended
 ```
 
-**Case B — a new enrichment / new generic feature** (config would no longer be the tip).
-Because the config commit is regenerable, **drop it, add your real commit(s), recreate config at the
-tip**:
+**Case B — a new store-specific enrichment** (template/page/integration; config would no longer be
+the tip). Because the config commit is regenerable, **drop it, add the enrichment commit, recreate
+config at the tip**:
 ```bash
 git checkout staging
 git reset --hard HEAD~1                # drop the config snapshot (regenerable — loses nothing)
-# add the real work as its own commit(s):
+# add the enrichment as its own commit:
 git checkout origin/current -- templates/product.newtype.json
 git commit -m "L2 enrichment: product.newtype template" -m "Prereqs: <metafields/app/suffix>"
-#   (a generic feature instead? commit it on customizations via §4, then re-tip config here)
 # recreate the config snapshot back at the tip:
 git checkout origin/current -- config/settings_data.json sections/*-group.json templates/*.json
 git commit -m "L2: store config snapshot"
 ```
+(For a *generic* feature, don't use Case B — route it to §4, whose rebase keeps config at the tip.)
 
 Invariant after either case: **N stable enrichment commits + exactly one config-snapshot commit at
 the tip.** The 62-commit mess cannot reaccumulate because config is overwritten, never appended.
@@ -137,19 +137,22 @@ L1-feature keys. The 6 regional locales return automatically if the new Dawn shi
 
 ---
 
-## 4. Harvest — move a bundled change to its proper layer
+## 4. Harvest — lift a *generic* change up into `customizations` (L1)
 
-A generic improvement you made (or that landed via admin) should live in `customizations`, not
-drown in config. To lift file `X`:
+Use this **only** for a generic improvement that belongs in the upstream-shaped L1 layer. (For a
+new **store-specific** enrichment — template/page/integration — do **not** use this; use §1 Case B,
+which preserves the config-at-tip invariant.)
+
+To lift file `X` into `customizations`:
 ```bash
 git checkout customizations
 git checkout staging -- X        # or: git checkout origin/current -- X
 # trim to only the generic hunks if X also has store-specific parts (git checkout -p)
 git add X && git commit -m "L1: <feature>"
-git checkout staging && git rebase customizations   # bring the harvested change down into staging
+git checkout staging && git rebase customizations   # replay staging onto new L1; config stays at the tip
 ```
-New discrete enrichment (template/page/integration)? Same idea, but commit it on `staging` as its
-own "L2 enrichment: …" commit with prereqs, rather than on `customizations`.
+The rebase replays `staging`'s enrichment commits + the config snapshot in order, so the config
+snapshot remains the tip automatically — no manual re-tip needed.
 
 ---
 
