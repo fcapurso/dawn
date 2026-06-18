@@ -131,8 +131,11 @@ git diff --name-only $MB..origin/current | wc -l     # ~60 files, 0 upstream com
 | `sections/header-group.json`, `sections/footer-group.json` | **L2** (config snapshot) | real store config (Dutch announcements, footer images) |
 | `templates/{index,cart,collection,article,blog,product}.json` | **L2** (config snapshot) | layout config with real settings |
 | `templates/password.json` | **drop** | pure churn (banner+escaping+empty settings); revert to vanilla in Task 7b |
-| `config/settings_schema.json`, `locales/*`, `translation.yml`, `release-notes.md` | **upstream-reconcile** | recovered when `dawn-vanilla` ffs to 15.2.0 |
-| L1-feature locale keys (e.g. Dutch `pick_up_unavailable`, inventory items/places) | **ride with L1** | added in Task 4 so the L1 features work |
+| `config/settings_schema.json`, `locales/*` (incl. `*.schema.json`), `translation.yml`, `release-notes.md` | **upstream-reconcile** | recovered when `dawn-vanilla` ffs to 15.2.0 |
+| L1-feature keys in locale **and schema-locale** files (Dutch `pick_up_unavailable` in `nl.json`; `availability_type`/`high_stock_threshold`/`low_stock_threshold`/Items/Places in `en.default.schema.json`) | **ride with L1** | added in Task 4 so the L1 features render with proper labels/strings |
+
+> Note: `nl.schema.json` was *not* modified — the Dutch theme editor currently shows fallback
+> labels for the inventory-status settings. Pre-existing gap; preserved as-is (not introduced by us).
 
 > **Resolved (2026-06-17):** only **Dutch (`nl`) and English (`en.default`)** are actively
 > maintained; expansion possible later. So only those two locale files carry real custom strings;
