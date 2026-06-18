@@ -31,20 +31,47 @@ Shopify auto-commits those to `current` as "Update from Shopify…". Pull them i
 git fetch origin current
 git log --oneline staging..origin/current        # inspect what the bot/admin changed
 ```
-For each changed file, route it to the right layer:
-- **config** (`settings_data.json`, `*-group.json`, stock `templates/*.json`) → fold into `staging`'s
-  config-snapshot commit (amend or new "config snapshot" commit on `staging`).
-- **a brand-new template/page/integration** → its **own** L2 enrichment commit on `staging`
-  (document prereqs in the message — see `manifest-L2-features.md`).
-- **a generic code change** you'd want on bare Dawn → **harvest to `customizations`** (section 4).
-- **locale/cosmetic churn** → ignore; it's Shopify re-serialization (see `drops.md`).
 
-Practical recipe (config edits, the common case):
+### The config-snapshot invariant (this is what keeps history from re-rotting)
+
+**`staging` always ends in exactly ONE config-snapshot commit, kept at the tip, and that commit is
+regenerable — its content is *always* just "whatever `current`'s config files are right now."**
+You never hand-author it, so you can drop and recreate it freely; the real content lives on
+`current`. The config files are: `config/settings_data.json`, `sections/*-group.json`, and the
+stock `templates/*.json`.
+
+Route each backflowed change by type:
+
+- **a generic code change** you'd want on bare Dawn → **harvest to `customizations`** (§4).
+- **locale / cosmetic churn** → ignore; it's Shopify re-serialization (see `drops.md`).
+- **config churn** (settings/layout edits, app blocks) and **new enrichments** → two cases below.
+
+**Case A — config churn only** (no new feature; config is already the tip → just refresh & amend):
 ```bash
 git checkout staging
-for f in <changed-config-files>; do git checkout origin/current -- "$f"; done
-git add -A && git commit -m "config snapshot: <what changed in admin>"
+git checkout origin/current -- config/settings_data.json sections/*-group.json templates/*.json
+git commit --amend --no-edit          # ONE config commit, forever — never appended
 ```
+
+**Case B — a new enrichment / new generic feature** (config would no longer be the tip).
+Because the config commit is regenerable, **drop it, add your real commit(s), recreate config at the
+tip**:
+```bash
+git checkout staging
+git reset --hard HEAD~1                # drop the config snapshot (regenerable — loses nothing)
+# add the real work as its own commit(s):
+git checkout origin/current -- templates/product.newtype.json
+git commit -m "L2 enrichment: product.newtype template" -m "Prereqs: <metafields/app/suffix>"
+#   (a generic feature instead? commit it on customizations via §4, then re-tip config here)
+# recreate the config snapshot back at the tip:
+git checkout origin/current -- config/settings_data.json sections/*-group.json templates/*.json
+git commit -m "L2: store config snapshot"
+```
+
+Invariant after either case: **N stable enrichment commits + exactly one config-snapshot commit at
+the tip.** The 62-commit mess cannot reaccumulate because config is overwritten, never appended.
+Rewriting `staging`'s tip is safe — `staging` is force-pushed to `current` on promote and rebuilt on
+upgrades, so its history is a working artifact (unlike `customizations`, which is pristine).
 
 ---
 
@@ -53,12 +80,26 @@ git add -A && git commit -m "config snapshot: <what changed in admin>"
 **Pre-flight (all must be true):**
 - [ ] Backflow done (section 1) — no un-captured admin edits remain on `current`.
 - [ ] `staging` tested on the preview theme.
+- [ ] `config-archive/<date>` tag pushed (preserves pre-promote settings history — below).
 - [ ] You accept the first-promote consequence (locale reformat + 6 unused regional locales removed —
       see `drops.md`; harmless for NL/EN).
 
 **Promote = make `current` match `staging`, then let Shopify publish.** Because `staging` has
-rewritten history, this is a force-update of `current`. Do it via the remote so the GitHub
-integration picks it up:
+rewritten history, this is a force-update of `current`.
+
+**First, archive `current`'s pre-promote state** — the promote force-pushes `current`, which would
+otherwise discard the granular "Update from Shopify" settings history accumulated since the last
+promote. Tagging preserves it forever (your config audit trail / rewind points):
+```bash
+git fetch origin current
+git tag config-archive/$(date +%Y-%m-%d) origin/current
+git push origin config-archive/$(date +%Y-%m-%d)
+```
+> To revisit a past settings state later (e.g. "what I had when app X was installed"):
+> `git show config-archive/<date>:config/settings_data.json` — view it, restore it wholesale, or
+> cherry-pick just the block you want out of it.
+
+Then promote via the remote so the GitHub integration picks it up:
 ```bash
 git push origin staging                              # ensure origin/staging is current
 git push --force-with-lease origin staging:current   # set origin/current to staging's tree
@@ -124,8 +165,9 @@ the **`staging`** branch. It installs as an **unpublished** theme. Preview it; n
 
 | Goal | Command summary |
 |---|---|
-| Capture live edits | `git fetch origin current` → route files into `staging` (§1) |
-| Go live | backflow → `git push --force-with-lease origin staging:current` (§2) |
+| Capture live edits | `git fetch origin current` → amend config tip / drop-recreate for new work (§1) |
+| Go live | backflow → tag `config-archive/<date>` → `git push --force-with-lease origin staging:current` (§2) |
+| Recover a past settings state | `git show config-archive/<date>:config/settings_data.json` |
 | New Dawn version | ff `dawn-vanilla` → rebase `customizations` → rebase `staging` → test → promote (§3) |
 | Promote rollback | `git push --force-with-lease origin pre-cleanup-backup:current` |
 | Never | hand-edit / commit / push to `current` |
