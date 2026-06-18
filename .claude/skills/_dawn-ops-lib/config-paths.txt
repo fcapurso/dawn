@@ -1,0 +1,11 @@
+config/settings_data.json
+config/settings_schema.json
+sections/header-group.json
+sections/footer-group.json
+templates/index.json
+templates/cart.json
+templates/collection.json
+templates/article.json
+templates/blog.json
+templates/password.json
+templates/product.json
