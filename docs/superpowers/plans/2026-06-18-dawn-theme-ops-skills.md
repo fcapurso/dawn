@@ -78,6 +78,7 @@ seed config/settings_data.json '{"current":{"blocks":{}}}'
 seed sections/header-group.json '{"name":"header"}'
 seed templates/index.json '{"sections":{}}'
 seed assets/base.css '/* vanilla */'
+seed assets/component-new.css ''   # pre-tracked so the upgrade test's `commit -am` can modify it
 seed sections/main-product.liquid 'VANILLA'
 git add -A; git commit -qm "vanilla"; git branch dawn-vanilla
 git update-ref refs/remotes/upstream/main HEAD
