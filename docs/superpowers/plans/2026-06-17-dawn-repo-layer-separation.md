@@ -331,21 +331,42 @@ git branch staging customizations
 git checkout staging
 ```
 
-- [ ] **Step 2: Apply L2 discrete store files — each as its OWN logical commit (commit hygiene)**
+- [ ] **Step 2: Apply L2 portable enrichments — one self-describing commit each (prereqs in message)**
 
+Each discrete L2 file is a portable enrichment; its commit message lists the prerequisites from
+`manifest-L2-features.md` so a reader knows what admin config is needed to apply it. Example
+messages (use a body for the prereq checklist):
 ```bash
-while read f; do git checkout origin/current -- "$f"; done < docs/superpowers/inventory/manifest-L2-files.txt
-# one logical commit per recognizable unit — do NOT lump these together:
-git add templates/product.workshop.json templates/product.soap.json templates/product.geurblokje.json \
-        templates/product.badzout.json templates/product.facialmask.json templates/product.3rd-party-product.json
-git commit -m "L2: custom store product templates (workshop, soap, geurblokje, badzout, facialmask, 3rd-party)"
+# --- custom product templates (one commit each; all need the `subtitle` metafield + suffix assigned) ---
+git checkout origin/current -- templates/product.workshop.json
+git add templates/product.workshop.json
+git commit -m "L2 enrichment: product.workshop template" -m "Prereqs: metafields descriptors.subtitle, custom.location, my_fields.advice_for_use, my_fields.ingredients; Judge.me app; uses 'places' availability; assign 'workshop' suffix to products."
+git checkout origin/current -- templates/product.soap.json
+git add templates/product.soap.json
+git commit -m "L2 enrichment: product.soap template" -m "Prereqs: metafields descriptors.subtitle, my_fields.advice_for_use, my_fields.ingredients; Judge.me app; assign 'soap' suffix."
+git checkout origin/current -- templates/product.geurblokje.json
+git add templates/product.geurblokje.json
+git commit -m "L2 enrichment: product.geurblokje template" -m "Prereqs: metafields descriptors.subtitle, my_fields.brand_info, my_fields.discounts, my_fields.ingredients; assign 'geurblokje' suffix."
+git checkout origin/current -- templates/product.badzout.json
+git add templates/product.badzout.json
+git commit -m "L2 enrichment: product.badzout template" -m "Prereqs: metafields descriptors.subtitle, my_fields.ingredients; assign 'badzout' suffix."
+git checkout origin/current -- templates/product.facialmask.json
+git add templates/product.facialmask.json
+git commit -m "L2 enrichment: product.facialmask template" -m "Prereqs: metafields descriptors.subtitle, my_fields.ingredients; assign 'facialmask' suffix."
+git checkout origin/current -- templates/product.3rd-party-product.json
+git add templates/product.3rd-party-product.json
+git commit -m "L2 enrichment: product.3rd-party-product template" -m "Prereqs: metafields descriptors.subtitle, my_fields.brand_info; assign '3rd-party-product' suffix."
+# --- store-finder page ---
+git checkout origin/current -- templates/page.store_finder.liquid
 git add templates/page.store_finder.liquid
-git commit -m "L2: store-finder custom page template"
-# theme.liquid has TWO independent integrations (2 hunks) — commit separately for hygiene:
-git checkout -p origin/current -- layout/theme.liquid    # pick the GTM hunk (@@ -1)
-git add layout/theme.liquid && git commit -m "L2: Google Tag Manager snippet"
+git commit -m "L2 enrichment: store-finder page template" -m "Prereqs: Simple Store Finder app; metafields shop.metafields.simple_store_finder.stores_css + .stores_text; create a Page using the 'store_finder' suffix."
+# --- theme.liquid: two independent integrations, separate commits ---
+git checkout -p origin/current -- layout/theme.liquid    # GTM hunk (@@ -1)
+git add layout/theme.liquid
+git commit -m "L2 enrichment: Google Tag Manager" -m "Prereq: a GTM container id (currently GTM-PF8JBN6S)."
 git checkout origin/current -- layout/theme.liquid       # remainder = UnlimitedFonts hunk (@@ -41)
-git add layout/theme.liquid && git commit -m "L2: UnlimitedFonts stylesheet integration"
+git add layout/theme.liquid
+git commit -m "L2 enrichment: UnlimitedFonts stylesheet" -m "Prereqs: UnlimitedFonts app; shop.metafields.UnlimitedFonts.stylesheet."
 ```
 
 - [ ] **Step 3: Apply files earmarked for dropping — INCLUDED HERE for lossless test**
