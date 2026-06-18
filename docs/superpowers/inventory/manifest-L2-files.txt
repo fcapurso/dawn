@@ -1,0 +1,8 @@
+layout/theme.liquid
+templates/page.store_finder.liquid
+templates/product.workshop.json
+templates/product.soap.json
+templates/product.geurblokje.json
+templates/product.badzout.json
+templates/product.facialmask.json
+templates/product.3rd-party-product.json

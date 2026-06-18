@@ -1,0 +1,3 @@
+sections/pickup-availability.liquid
+sections/main-product.liquid
+assets/component-product-logos.css
