@@ -13,7 +13,7 @@ dawn::assert_not_current(){
     echo "GUARD: refusing to operate on 'current' (the live shop)" >&2; return $DAWN_GUARD; fi; }
 
 dawn::assert_clean_tree(){
-  if [ -n "$(git status --porcelain)" ]; then
+  if [ -n "$(git status --porcelain | grep -v '^?')" ]; then
     echo "GUARD: working tree not clean — commit or stash first" >&2; return $DAWN_GUARD; fi; }
 
 # Checkout target and restore the original branch when the *script* exits (success or failure).
