@@ -11,6 +11,8 @@
 ---
 
 ## Conventions for every task
+- **Target bash 3.2** (macOS default). No `mapfile`/`readarray`, no `declare -A`, no `${x,,}`. Use
+  `while IFS= read -r line; do arr+=("$line"); done < <(...)` to collect into arrays.
 - All work happens on the **`ops`** branch (`git branch --show-current` must print `ops`; never `current`).
 - Commit after each task. Scripts are `chmod +x`. Shebang `#!/usr/bin/env bash`; `set -uo pipefail` (NOT `-e` — we manage exit codes explicitly).
 - Exit-code contract (defined once in the lib, used everywhere):
@@ -431,13 +433,16 @@ dawn::assert_not_current || exit $DAWN_GUARD
 dawn::assert_clean_tree  || exit $DAWN_GUARD
 git fetch origin current --quiet 2>/dev/null || true
 
-# Files changed on current since staging.
-mapfile -t changed < <(git diff --name-only staging refs/remotes/origin/current 2>/dev/null \
-  || git diff --name-only staging origin/current)
+# Files changed on current since staging. (bash 3.2: no mapfile)
+changed=()
+while IFS= read -r line; do changed+=("$line"); done < <(
+  git diff --name-only staging refs/remotes/origin/current 2>/dev/null \
+    || git diff --name-only staging origin/current)
 [ "${#changed[@]}" -eq 0 ] && { echo "Nothing to backflow."; exit $DAWN_OK; }
 
 # Partition: config vs non-config. Non-config requires human judgment (enrichment vs generic).
-mapfile -t cfg < <(dawn::config_files)
+cfg=()
+while IFS= read -r line; do cfg+=("$line"); done < <(dawn::config_files)
 noncfg=()
 for f in "${changed[@]}"; do
   case " ${cfg[*]} " in *" $f "*) : ;; *) noncfg+=("$f");; esac
