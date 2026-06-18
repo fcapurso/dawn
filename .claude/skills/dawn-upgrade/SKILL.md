@@ -9,13 +9,23 @@ Operate from the `ops` branch (never `current`). See `../_dawn-ops-lib/conventio
 
 ## Usage
 
+The script folds in its own prerequisites — it fetches upstream tags and checks the working tree
+itself. You do **not** need to `git fetch` or pass a tag manually.
+
+**Recommended — let it offer the choices:**
 ```bash
-bash .claude/skills/dawn-upgrade/upgrade.sh <tag>
-# e.g. bash .claude/skills/dawn-upgrade/upgrade.sh v15.4.1
+bash .claude/skills/dawn-upgrade/upgrade.sh
+```
+With no tag, it fetches upstream tags, lists the releases **newer than `dawn-vanilla`**, and STOPs
+(exit 21). **Show the user that list and ask which release to bump to**, then re-run with their pick.
+
+**Direct (when the user already named a release):**
+```bash
+bash .claude/skills/dawn-upgrade/upgrade.sh v15.4.1
 ```
 
-The script:
-1. Fast-forwards `dawn-vanilla` to `<tag>` (must be a descendant — no force-push).
+Either way the script then:
+1. Fast-forwards `dawn-vanilla` to the tag (must be a descendant — no force-push).
 2. Rebases `customizations` onto `dawn-vanilla`.
 3. Rebases `staging` onto `customizations`.
 
@@ -23,9 +33,9 @@ The script:
 
 | Code | Meaning | What to do |
 |------|---------|-----------|
-| 0 | Success | Test on the preview theme, then run `dawn-promote`. |
-| 10 | Guard triggered | Report the guard message: tag not ahead of `dawn-vanilla`, or working tree has staged/modified tracked files. |
-| 21 | STOP — judgment required | Rebase conflict. See below. |
+| 0 | Success (or "already at latest — nothing to upgrade") | Read the message. If upgraded: test on the preview theme, then run `dawn-promote`. |
+| 10 | Guard triggered | Report the guard message: unknown tag, tag not ahead of `dawn-vanilla`, or dirty working tree. |
+| 21 | STOP — judgment required | Either **release selection** (no tag given → show the printed candidate list and ask the user which to pick, then re-run with that tag), or a **rebase conflict** (see below). The stderr message says which. |
 
 ## On exit 21 (conflict — STOP)
 
