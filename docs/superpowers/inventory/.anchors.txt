@@ -7,3 +7,4 @@ divergence: 129 commits, 93 files, 0 app-residue
 Lossless acceptance test PASS 2026-06-18T10:17:17Z: staging tree == origin/current (excl docs/)
 Task 7b curation: staging vs current now differs ONLY by templates/password.json (documented churn drop)
 Branches built: dawn-vanilla=d2612f03 customizations=4c625045 staging=47334e73
+Preview-theme test PASS 2026-06-18: clean staging renders flawlessly (NL/EN + custom templates/features); no bot commits from browsing. Upstream-reconcile commit (4d8fc47f) intentionally dropped; preserved at tag staging-byte-for-byte-proof.
