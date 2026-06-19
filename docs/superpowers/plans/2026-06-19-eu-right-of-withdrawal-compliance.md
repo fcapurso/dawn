@@ -14,6 +14,50 @@
 
 ---
 
+## Layer-ops workflow (how this lands safely)
+
+Per `.claude/skills/_dawn-ops-lib/conventions.md`:
+
+- **`current` is the LIVE storefront — never edited by hand.** It changes only via Shopify
+  auto-commits or the gated `dawn-promote`.
+- **All theme work is developed on a scratch branch off `staging`** and validated on the
+  **preview/test theme** linked to staging — *not* on current.
+- The theme changes here (`withdrawal-notice.liquid`, the `withdrawal` locale strings, and the
+  `main-product.liquid` render) are **generic L1**: once validated they are lifted into
+  `customizations` via **`dawn-harvest`**, then `staging` is rebuilt, then `dawn-promote`
+  publishes `staging` → `current` with explicit live confirmation.
+- **Shop-level admin config** (app install, metafield *definition + values*, return rules,
+  Policies, model-form page, order email, translations) is **not theme code** — it is set in the
+  Shopify admin and affects the shop directly. Where it must be visible/tested without going
+  live, use draft/unpublished states (unpublished page, test orders).
+
+**Promotion sequence (after Phase 2 validates on the test theme):**
+1. `dawn-harvest` — lift snippet + locales + section render into `customizations` (L1).
+2. Rebuild `staging` on top of `customizations` (keep the config snapshot at the tip).
+3. `dawn-promote` — publish `staging` → `current` (gated; you confirm live).
+
+## Ownership & validation (who does what)
+
+| Task | Who executes | Who validates |
+|---|---|---|
+| 1 App free-tier gate | **You** (install/inspect) | You confirm the 5 requirements; report back |
+| 2 Button wording/placement | **You** (app + theme app block) | You (incognito flow + ack email) |
+| 3 Return rules | **You** (admin) | You (test workshop vs soap order) |
+| 4 Metafield definition + values | **You** (admin) | You (spot-check 2 products) |
+| 5 Locale strings | **Claude** | Claude (JSON lint) |
+| 6 Snippet | **Claude** | Claude (`shopify theme check`) |
+| 7 Render in section + preview | **Claude** writes; **you** preview | **You** (NL/EN render on test theme — needs your Task 4 metafields) |
+| 8 Model form / withdrawal page | **You** (admin pages) | You |
+| 9 Policies + order email | **You** (admin) | You (test order email) |
+| 10 Translation pass | **You** (Translate & Adapt) | You |
+| 11 E2E walkthrough | **You** (live-ish test orders) | You |
+| Harvest + promote | **Claude** runs skills; **you** confirm live | You (final live check) |
+
+> Phases 1, 3, 4 are Shopify-admin actions only you can perform. Claude executes **Phase 2**
+> (the theme code) and drives the harvest/promote skills (you confirm the live step).
+
+---
+
 ## File structure
 
 | File | Responsibility | Phase |
