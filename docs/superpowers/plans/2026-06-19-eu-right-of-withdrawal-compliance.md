@@ -20,8 +20,11 @@ Per `.claude/skills/_dawn-ops-lib/conventions.md`:
 
 - **`current` is the LIVE storefront — never edited by hand.** It changes only via Shopify
   auto-commits or the gated `dawn-promote`.
-- **All theme work is developed on a scratch branch off `staging`** and validated on the
-  **preview/test theme** linked to staging — *not* on current.
+- **Preview is via the Shopify ↔ GitHub integration.** The non-live preview theme tracks the
+  `staging` branch: pushing commits to `staging` (`git push origin staging`) auto-updates the
+  preview theme. We do **not** use `shopify theme push` / `shopify theme dev`.
+- **Theme work is developed on a scratch branch off `staging`**, then landed on `staging` to
+  preview on the linked theme — *never* on current.
 - The theme changes here (`withdrawal-notice.liquid`, the `withdrawal` locale strings, and the
   `main-product.liquid` render) are **generic L1**: once validated they are lifted into
   `customizations` via **`dawn-harvest`**, then `staging` is rebuilt, then `dawn-promote`
@@ -31,10 +34,13 @@ Per `.claude/skills/_dawn-ops-lib/conventions.md`:
   Shopify admin and affects the shop directly. Where it must be visible/tested without going
   live, use draft/unpublished states (unpublished page, test orders).
 
-**Promotion sequence (after Phase 2 validates on the test theme):**
-1. `dawn-harvest` — lift snippet + locales + section render into `customizations` (L1).
-2. Rebuild `staging` on top of `customizations` (keep the config snapshot at the tip).
-3. `dawn-promote` — publish `staging` → `current` (gated; you confirm live).
+**Dev → preview → promote sequence:**
+1. Develop on the scratch branch off `staging` (done: `feat/withdrawal-notice`).
+2. Land the change on `staging` and `git push origin staging` → preview theme auto-updates.
+3. **Validate on the preview theme** (NL/EN render; needs the Task 4 metafields set first).
+4. `dawn-harvest` — lift the generic snippet + locales + section render into `customizations` (L1).
+5. Rebuild `staging` on top of `customizations` (config snapshot stays at the tip); push again.
+6. `dawn-promote` — publish `staging` → `current` (gated; you confirm live).
 
 ## Ownership & validation (who does what)
 
@@ -298,7 +304,10 @@ Expected: no new errors introduced by the added line.
 
 - [ ] **Step 4: Preview render — physical good**
 
-Run: `shopify theme dev` (or push to an unpublished theme: `shopify theme push --unpublished`). Open a **soap** product page in NL and EN.
+Preview is via the **Shopify ↔ GitHub integration**: the non-live preview theme tracks the
+`staging` branch. To preview, land these commits on `staging` and push:
+`git push origin staging` → the linked preview theme auto-updates (no `shopify theme push`).
+Then open a **soap** product page in NL and EN on the preview theme.
 Expected: the "Herroepingsrecht / Right of withdrawal" notice appears with the 14-day + diminished-value text and the withdrawal link.
 
 - [ ] **Step 5: Preview render — workshop**
