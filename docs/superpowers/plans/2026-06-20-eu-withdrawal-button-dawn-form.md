@@ -329,27 +329,35 @@ Expected: the body contains stable lines including `Order number: <value>`, `Req
 
 ### Task 8: Gmail filter + labels
 
-- [ ] **Step 1:** In Gmail (the store-notification mailbox) create labels `withdrawal`, `withdrawal-done`, `withdrawal-review`, `withdrawal-error`.
-- [ ] **Step 2:** Create a filter — **Has the words:** `withdrawal_request` (matches the hidden `Request type` field) → **Apply label:** `withdrawal` (and optionally "Skip Inbox" off, so you still see them).
-- [ ] **Step 3 (verify):** the Task-4 test email is now labelled `withdrawal`.
+- [ ] **Step 1:** In Gmail (the store-notification mailbox) create labels `withdrawal`, `withdrawal-done`, `withdrawal-review`, `withdrawal-error`. **Note:** these may be created **nested** under an existing parent (e.g. `Shopify/withdrawal`). That is fine — but the Apps Script's `LABEL_PREFIX` (Task 9) **must match** the real names (Gmail search needs the full path, e.g. `label:Shopify/withdrawal`). *Verified 2026-06-20: nested under `Shopify/` works once the prefix matches.*
+- [ ] **Step 2:** Create a filter — **Has the words:** `withdrawal_request` (matches the hidden `Request type` field) → **Apply label:** the `…/withdrawal` label. When creating it, tick **"Also apply to matching conversations"** so existing test mail gets labelled too.
+- [ ] **Step 3 (verify):** the test email shows the `…/withdrawal` label.
 
 ### Task 9: Apps Script acknowledgement
 
-- [ ] **Step 1:** Go to script.google.com → New project → paste the script below. Adjust `ORDER_RE` only if Task 4 Step 4 showed a different `Order number:` line format.
+- [ ] **Step 1:** Go to script.google.com → New project → paste the script below. **Set `LABEL_PREFIX`** to match your actual label names (e.g. `'Shopify/'` if nested, `''` if flat). Adjust `ORDER_RE` only if Task 4 Step 4 showed a different `Order number:` line format. *(Reality-checked 2026-06-20 with `LABEL_PREFIX='Shopify/'`.)*
 
 ```javascript
 // Auto-acknowledges withdrawal requests (Art. 11a receipt). Idempotent via labels.
+// ---- Config: match your actual (possibly nested) Gmail label names ----
+var LABEL_PREFIX = 'Shopify/';          // set to '' if your labels are not nested
+var L_NEW    = LABEL_PREFIX + 'withdrawal';
+var L_DONE   = LABEL_PREFIX + 'withdrawal-done';
+var L_REVIEW = LABEL_PREFIX + 'withdrawal-review';
+var L_ERROR  = LABEL_PREFIX + 'withdrawal-error';
+
 var SENDER_NAME = 'Zo Gezeept';
 var ORDER_RE = /Order number:\s*#?\s*([A-Za-z0-9\-]+)/i;
 var LOCALE_RE = /Locale:\s*([a-z]{2})/i;
 var HONEYPOT_RE = /Website:\s*(\S.*)/i;
 
 function processWithdrawals() {
-  var src = GmailApp.getUserLabelByName('withdrawal');
-  var done = GmailApp.getUserLabelByName('withdrawal-done');
-  var review = GmailApp.getUserLabelByName('withdrawal-review');
-  var errLabel = GmailApp.getUserLabelByName('withdrawal-error');
-  var threads = GmailApp.search('label:withdrawal -label:withdrawal-done -label:withdrawal-review -label:withdrawal-error', 0, 50);
+  var done = GmailApp.getUserLabelByName(L_DONE);
+  var review = GmailApp.getUserLabelByName(L_REVIEW);
+  var errLabel = GmailApp.getUserLabelByName(L_ERROR);
+  var query = 'label:' + L_NEW + ' -label:' + L_DONE + ' -label:' + L_REVIEW + ' -label:' + L_ERROR;
+  var threads = GmailApp.search(query, 0, 50);
+  Logger.log('Processing ' + threads.length + ' thread(s)');
 
   threads.forEach(function (thread) {
     try {
@@ -362,6 +370,7 @@ function processWithdrawals() {
       if (!to || !order) { thread.addLabel(review); return; } // needs manual handling
       sendAck(to, order, loc);
       thread.addLabel(done);
+      Logger.log('Acknowledged ' + to + ' for order ' + order);
     } catch (e) {
       thread.addLabel(errLabel);
       GmailApp.sendEmail(Session.getActiveUser().getEmail(), 'Withdrawal ack error', String(e));
@@ -376,19 +385,19 @@ function sendAck(to, order, loc) {
     : 'Withdrawal request received — order #' + order;
   var html = nl
     ? '<p>Beste klant,</p><p>We hebben je herroepingsverzoek voor bestelling <strong>#' + order +
-      '</strong> ontvangen op ' + nowStr('nl') + '. Dit is een ontvangstbevestiging; we verwerken je verzoek en nemen contact op als we iets moeten verduidelijken.</p><p>Met vriendelijke groet,<br>' + SENDER_NAME + '</p>'
+      '</strong> ontvangen op ' + nowStr() + '. Dit is een ontvangstbevestiging; we verwerken je verzoek en nemen contact op als we iets moeten verduidelijken.</p><p>Met vriendelijke groet,<br>' + SENDER_NAME + '</p>'
     : '<p>Dear customer,</p><p>We have received your withdrawal request for order <strong>#' + order +
-      '</strong> on ' + nowStr('en') + '. This is a confirmation of receipt; we will process your request and contact you if anything needs clarifying.</p><p>Kind regards,<br>' + SENDER_NAME + '</p>';
+      '</strong> on ' + nowStr() + '. This is a confirmation of receipt; we will process your request and contact you if anything needs clarifying.</p><p>Kind regards,<br>' + SENDER_NAME + '</p>';
   GmailApp.sendEmail(to, subject, html.replace(/<[^>]+>/g, ''), { htmlBody: html, name: SENDER_NAME });
 }
 
-function nowStr(loc) {
+function nowStr() {
   var tz = Session.getScriptTimeZone();
   return Utilities.formatDate(new Date(), tz, "yyyy-MM-dd HH:mm '(" + tz + ")'");
 }
 ```
 
-- [ ] **Step 2:** Run `processWithdrawals` once manually → approve the GmailApp permission scopes.
+- [ ] **Step 2:** Run `processWithdrawals` once manually → approve the GmailApp permission scopes. (Check the execution **Logs** — expect `Processing N thread(s)` / `Acknowledged …`.)
 - [ ] **Step 3:** Triggers (clock icon) → Add trigger → `processWithdrawals`, **Time-driven → Minutes timer → Every minute**.
 - [ ] **Step 4 (verify):** with the Task-4 test thread labelled `withdrawal`, run once → the test thread gets `withdrawal-done` and the **submitted email address receives the acknowledgement** (NL or EN per locale), containing the order # + timestamp, worded as *receipt* (not acceptance).
 
