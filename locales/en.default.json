@@ -1,4 +1,16 @@
 {
+  "withdrawal_form": {
+    "name_label": "Name",
+    "email_label": "Email",
+    "order_number_label": "Order number",
+    "order_number_help": "You can find this in your order confirmation email, e.g. #1234.",
+    "statement_label": "Your withdrawal statement (optional)",
+    "submit": "Withdraw from contract here",
+    "confirm_title": "Confirm your withdrawal",
+    "confirm_body": "Confirm you want to withdraw order [order]?",
+    "confirm_ok": "Confirm withdrawal",
+    "confirm_cancel": "Go back"
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Enter store using password:",

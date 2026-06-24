@@ -1,4 +1,16 @@
 {
+  "withdrawal_form": {
+    "name_label": "Naam",
+    "email_label": "E-mail",
+    "order_number_label": "Bestelnummer",
+    "order_number_help": "Dit vind je in je orderbevestiging, bv. #1234.",
+    "statement_label": "Je herroepingsverklaring (optioneel)",
+    "submit": "Herroep hier uw contract",
+    "confirm_title": "Bevestig je herroeping",
+    "confirm_body": "Bevestig dat je bestelling [order] wilt herroepen?",
+    "confirm_ok": "Herroeping bevestigen",
+    "confirm_cancel": "Terug"
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Ga winkel binnen met wachtwoord:",

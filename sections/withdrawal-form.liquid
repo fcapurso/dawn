@@ -1,0 +1,206 @@
+{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- form 'contact', id: 'WithdrawalForm', class: 'isolate' -%}
+      {%- liquid
+        assign show_success = false
+        if form.posted_successfully?
+          assign show_success = true
+        elsif request.design_mode and section.settings.preview_success
+          assign show_success = true
+        endif
+      -%}
+      {%- if show_success -%}
+        <h2 class="form-status form-status-list form__message" tabindex="-1"{% if form.posted_successfully? %} autofocus{% endif %}>
+          {{- 'icon-success.svg' | inline_asset_content -}}
+          <span>{{ section.settings.success_message }}</span>
+        </h2>
+      {%- else -%}
+        {%- if form.errors -%}
+          <div class="form__message">
+            <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+              {{- 'icon-error.svg' | inline_asset_content -}}
+              {{ 'templates.contact.form.error_heading' | t }}
+            </h2>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.intro != blank -%}
+          <div class="withdrawal-form__intro rte">{{ section.settings.intro }}</div>
+        {%- endif -%}
+
+      {%- comment -%} Stable, NON-localized field names so the notification email is parseable. {%- endcomment -%}
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          id="WithdrawalForm-name"
+          name="contact[Name]"
+          value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+          placeholder="{{ 'withdrawal_form.name_label' | t }}"
+          autocomplete="name"
+        >
+        <label class="field__label" for="WithdrawalForm-name">{{ 'withdrawal_form.name_label' | t }}</label>
+      </div>
+
+      <div class="field">
+        <input
+          class="field__input"
+          type="email"
+          id="WithdrawalForm-email"
+          name="contact[email]"
+          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="email"
+          aria-required="true"
+          required
+          placeholder="{{ 'withdrawal_form.email_label' | t }}"
+        >
+        <label class="field__label" for="WithdrawalForm-email">
+          {{- 'withdrawal_form.email_label' | t }} <span aria-hidden="true">*</span></label
+        >
+      </div>
+
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          id="WithdrawalForm-order"
+          name="contact[Order number]"
+          aria-required="true"
+          required
+          placeholder="{{ 'withdrawal_form.order_number_label' | t }}"
+        >
+        <label class="field__label" for="WithdrawalForm-order">
+          {{- 'withdrawal_form.order_number_label' | t }} <span aria-hidden="true">*</span></label
+        >
+        <small class="withdrawal-form__help">{{ 'withdrawal_form.order_number_help' | t }}</small>
+      </div>
+
+      <div class="field">
+        <textarea
+          rows="5"
+          class="text-area field__input"
+          id="WithdrawalForm-statement"
+          name="contact[Withdrawal statement]"
+          placeholder="{{ 'withdrawal_form.statement_label' | t }}"
+        ></textarea>
+        <label class="form__label field__label" for="WithdrawalForm-statement">
+          {{- 'withdrawal_form.statement_label' | t -}}
+        </label>
+      </div>
+
+      {%- comment -%} Hidden machine fields: marker for the Gmail filter + locale for the script. {%- endcomment -%}
+      <input type="hidden" name="contact[Request type]" value="withdrawal_request">
+      <input type="hidden" name="contact[Locale]" value="{{ request.locale.iso_code }}">
+
+      {%- comment -%} Honeypot: bots fill it; humans never see it. {%- endcomment -%}
+      <div class="withdrawal-form__hp" aria-hidden="true">
+        <label>Website<input type="text" name="contact[Website]" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <div class="contact__button">
+        <button
+          type="button"
+          class="button"
+          data-withdrawal-submit
+          data-confirm-title="{{ 'withdrawal_form.confirm_title' | t | escape }}"
+          data-confirm-body="{{ 'withdrawal_form.confirm_body' | t | escape }}"
+          data-confirm-ok="{{ 'withdrawal_form.confirm_ok' | t | escape }}"
+          data-confirm-cancel="{{ 'withdrawal_form.confirm_cancel' | t | escape }}"
+        >
+          {{ 'withdrawal_form.submit' | t }}
+        </button>
+      </div>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  .withdrawal-form__hp {
+    position: absolute !important;
+    left: -9999px !important;
+    height: 0;
+    overflow: hidden;
+  }
+  .withdrawal-form__help {
+    display: block;
+    margin-top: 0.4rem;
+    opacity: 0.75;
+  }
+  .withdrawal-modal[hidden] {
+    display: none;
+  }
+  .withdrawal-modal {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+  .withdrawal-modal__box {
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    max-width: 30rem;
+    margin: 1rem;
+    padding: 2rem;
+    border-radius: var(--popup-corner-radius, 8px);
+  }
+  .withdrawal-modal__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+</style>
+
+<script src="{{ 'withdrawal-form.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Withdrawal form",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "default": "Withdraw from contract", "label": "Heading" },
+    { "type": "richtext", "id": "intro", "label": "Intro text", "default": "<p>Use this form to withdraw from your purchase within the 14-day withdrawal period. Enter your order details below and confirm.</p>" },
+    { "type": "text", "id": "success_message", "label": "Confirmation message (after submit)", "info": "Plain text. You can add an email link with raw HTML, e.g. <a href=...>.", "default": "Thanks. We have received your withdrawal request and emailed you a confirmation of receipt. It should arrive within a few minutes. If you do not see it, check your spam folder or contact us." },
+    { "type": "checkbox", "id": "preview_success", "label": "Preview confirmation message in the editor", "default": false, "info": "Preview only. Has no effect on the live page." },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Medium" },
+        { "value": "h1", "label": "Large" },
+        { "value": "h0", "label": "Extra large" }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 36 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 36 }
+  ],
+  "presets": [{ "name": "Withdrawal form" }]
+}
+{% endschema %}
