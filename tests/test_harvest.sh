@@ -14,4 +14,24 @@ git checkout -q staging
 assert_contains "config tip preserved" "$(git log -1 --format=%s)" "config snapshot"
 # guard: refuse a config file (not harvestable to L1)
 assert_rc "harvest refuses config file" 10 bash "$SH" config/settings_data.json
+
+# --- Trailer tests (fresh fixture) ---
+FIX2=$(bash "$HERE/tests/fixture.sh"); cd "$FIX2"
+
+# Harvest an orphan file (sections/new-widget.liquid is not in the reachable set) → Inert: yes
+git checkout -q staging
+echo '<div>new widget</div>' > sections/new-widget.liquid
+git add sections/new-widget.liquid; git commit -qm "add new-widget on staging"
+bash "$SH" sections/new-widget.liquid
+trailer=$(git log -1 --format=%B customizations | grep '^Inert:')
+assert_eq "orphan harvest trailer Inert: yes" "$trailer" "Inert: yes"
+
+# Harvest a suffix template (templates/page.foo.json) → Inert: needs_judgment
+git checkout -q staging
+echo '{}' > templates/page.foo.json
+git add templates/page.foo.json; git commit -qm "add page.foo template on staging"
+bash "$SH" templates/page.foo.json
+trailer=$(git log -1 --format=%B customizations | grep '^Inert:')
+assert_eq "suffix template harvest trailer Inert: needs_judgment" "$trailer" "Inert: needs_judgment"
+
 finish
