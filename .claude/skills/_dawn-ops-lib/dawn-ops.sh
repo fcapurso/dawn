@@ -95,3 +95,54 @@ dawn::assert_staging_clean(){
        return $DAWN_GUARD ;;
   esac
 }
+
+# Classify changes in a commit ref or range (base..tip).
+# Stdout: one "<label> <path>" per changed file, then "VERDICT <ALL_INERT|HAS_ACTIVE|NEEDS_JUDGMENT>".
+# Stderr: human-readable explanation for each classification decision.
+dawn::classify_changes(){
+  local range="${1:?usage: dawn::classify_changes <ref-or-range>}"
+  # Normalize single ref to parent..ref
+  case "$range" in *..*) ;; *) range="${range}^..${range}" ;; esac
+
+  local reachable; reachable=$(dawn::reachable_files | sort -u)
+
+  local verdict="ALL_INERT" path label
+  while IFS= read -r path; do
+    [ -z "$path" ] && continue
+
+    # Rule 1: new suffix template → NEEDS_JUDGMENT
+    # Matches page.<something>.json or product.<something>.json but NOT page.json / product.json
+    if echo "$path" | grep -qE '^templates/[a-z]+\..+\.json$'; then
+      label="needs_judgment"
+      echo "NEEDS_JUDGMENT: $path — new suffix template; confirm no resource is bound to it in admin" >&2
+      verdict="NEEDS_JUDGMENT"
+
+    # Rule 2: locale file — check for removed/changed lines (not purely additive)
+    elif echo "$path" | grep -qE '^locales/'; then
+      local removed; removed=$(git diff "$range" -- "$path" | grep -c '^-[^-]' || true)
+      if [ "$removed" = "0" ]; then
+        label="inert"
+        echo "inert: $path — locale addition only (no changed/removed keys)" >&2
+      else
+        label="active"
+        echo "active: $path — locale value changed or key removed" >&2
+        [ "$verdict" = "ALL_INERT" ] && verdict="HAS_ACTIVE"
+      fi
+
+    # Rule 3: in always-reachable set → active
+    elif echo "$reachable" | grep -qxF "$path"; then
+      label="active"
+      echo "active: $path — in reachable render graph" >&2
+      [ "$verdict" = "ALL_INERT" ] && verdict="HAS_ACTIVE"
+
+    # Rule 4: not reachable → inert orphan
+    else
+      label="inert"
+      echo "inert: $path — not reachable from any live render root" >&2
+    fi
+
+    echo "$label $path"
+  done < <(git diff --name-only "$range")
+
+  echo "VERDICT $verdict"
+}
