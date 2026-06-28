@@ -78,6 +78,13 @@ activation like a page binding) and tested-active pieces as they land.
 - Churn-free because it touches **code only**, disjoint from the bot's config churn.
 - **Only cherry-picks from `customizations`**, never from `staging`. So a messy `staging` is
   irrelevant to shipping inert pieces.
+- **Mandatory pre-ship review (the human safety net).** Before anything is appended to `current`,
+  `dawn-ship` prints the **exact set of files and the full diff** that will be shipped, plus the
+  classifier report (per-path inert/active and any NEEDS_JUDGMENT). The operator must explicitly
+  confirm. This review is what covers the shop-global gap: if a "new" template is in fact bound to
+  a page, the operator sees exactly what is going live and can abort. No Admin-API binding check is
+  needed; the reviewable shipment is the safeguard. The operator can also **select** which
+  commit(s) to ship, so nothing reaches `current` without being named and seen.
 
 ### 3.2 `dawn-promote` — reset, authoritative, release (REVISED)
 
@@ -110,7 +117,9 @@ So you get **incremental shipping between releases** and a clean **`current == s
 - **Output:** per-path label (`inert` / `active`), plus an overall verdict
   `ALL_INERT` / `HAS_ACTIVE` / `NEEDS_JUDGMENT`, and a human-readable report (which paths and why).
 - **Static reachability:** parse theme files for references to build the reachable set; classify
-  each changed path against §2.1. Git-only (no Admin API).
+  each changed path against §2.1. **Git-only by design; querying the Admin API for live bindings is
+  explicitly out of scope.** The shop-global gap is handled by NEEDS_JUDGMENT plus the mandatory
+  pre-ship review (§3.1), not by automation.
 - **Conservative default:** anything not provably inert is **active**; a new template is
   **NEEDS_JUDGMENT**. Never silently call something inert.
 - The classifier verdict on the **actual diff** is always authoritative; the harvest commit-trailer
@@ -177,6 +186,8 @@ Follow the existing dependency-free fixture harness (`tests/harness.sh`, `tests/
 - An inert orphan (e.g. a new unbound template plus its section/asset) can be shipped to `current`
   with **no churn** and **no live render change**, verified by the classifier and a clean diff.
 - Active changes are **gated** (full confirm + smoke test + rollback).
+- Before anything reaches `current`, the operator sees the **exact files and full diff** to be
+  shipped and must confirm; nothing is shipped that was not named and reviewed.
 - `dawn-promote` (reset) runs **only** from a clean rebuilt `staging` and yields `current == staging`.
 - **No force-push to a bot-linked branch** except the deliberate guarded reset.
 - A fresh operator can read the runbook and know **which skill to run, when, and in what order**.
