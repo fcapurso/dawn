@@ -117,24 +117,10 @@ dawn::classify_changes(){
       echo "NEEDS_JUDGMENT: $path — new suffix template; confirm no resource is bound to it in admin" >&2
       verdict="NEEDS_JUDGMENT"
 
-    # Rule 2: locale file — check for removed or changed keys (new keys are OK, additive-only is inert)
+    # Rule 2: locale file — check for removed/changed lines (not purely additive)
     elif echo "$path" | grep -qE '^locales/'; then
-      local old_json new_json changed base_ref
-      base_ref="${range%%\.\.*}"  # everything before the first ".."
-      base_ref="${base_ref:-$range^}"  # fallback if range is a single ref
-      old_json=$(git show "$base_ref:$path" 2>/dev/null || echo '{}')
-      new_json=$(git show "${range##*\.\.}:$path" 2>/dev/null || git show "$range:$path" 2>/dev/null || echo '{}')
-      # Check if any old keys are missing (removed) or if any common keys have different values
-      changed=$(echo "$old_json" | jq -r 'to_entries | map(.key) | .[]' 2>/dev/null | while read k; do
-        if echo "$new_json" | jq -e ".\"$k\"" >/dev/null 2>&1; then
-          o=$(echo "$old_json" | jq -r ".\"$k\"" 2>/dev/null)
-          n=$(echo "$new_json" | jq -r ".\"$k\"" 2>/dev/null)
-          [ "$o" != "$n" ] && echo "1"
-        else
-          echo "1"  # key was removed
-        fi
-      done | head -1)
-      if [ -z "$changed" ]; then
+      local removed; removed=$(git diff "$range" -- "$path" | grep -c '^-[^-]' || true)
+      if [ "$removed" = "0" ]; then
         label="inert"
         echo "inert: $path — locale addition only (no changed/removed keys)" >&2
       else

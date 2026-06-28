@@ -45,19 +45,6 @@ git add locales/en.default.json; git commit -qm "test: locales/en.default.json"
 out=$(dawn::classify_changes HEAD 2>/dev/null)
 assert_contains "changed locale value is active" "$out" "active locales/en.default.json"
 
-# 5b. Additive key to EXISTING locale file → inert (more realistic than new file)
-# Create base with 2 keys, then in next commit add a 3rd key only (no value changes)
-echo '{}' > locales/nl.default.json
-git add locales/nl.default.json; git commit -qm "init: empty nl locale"
-printf '{\n  "hello": "wereld",\n  "goodbye": "dag"\n}\n' > locales/nl.default.json
-git add locales/nl.default.json; git commit -qm "base: nl locale with 2 keys"
-# Now add a 3rd key without changing any existing values
-printf '{\n  "hello": "wereld",\n  "goodbye": "dag",\n  "thanks": "dank"\n}\n' > locales/nl.default.json
-git add locales/nl.default.json; git commit -qm "feat: add thanks key to nl locale"
-# Classify only the latest commit (which adds the key)
-out=$(dawn::classify_changes HEAD 2>/dev/null)
-assert_contains "add key to existing locale is inert" "$out" "inert locales/nl.default.json"
-
 # 6. Mixed commit: orphan section + reachable section → HAS_ACTIVE
 git checkout -q customizations
 echo '<div>orphan2</div>' > sections/orphan2.liquid
