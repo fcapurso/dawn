@@ -42,3 +42,58 @@ dawn::verify_tree_equal(){
   if git diff --quiet "$a" "$b" -- . ':(exclude)docs/' ':(exclude).claude/'; then return $DAWN_OK; fi
   echo "VERIFY FAIL: $a vs $b differ:" >&2
   git diff --stat "$a" "$b" -- . ':(exclude)docs/' ':(exclude).claude/' >&2; return $DAWN_VERIFY; }
+
+# --- Inert/active classifier helpers ---
+
+# Print the set of template JSON basenames that are always reachable (not suffix templates).
+# Suffix templates (page.foo.json, product.foo.json) are NEEDS_JUDGMENT because
+# whether a resource is bound to them is shop-global admin state, not in git.
+dawn::_default_templates(){
+  echo "index.json cart.json search.json 404.json gift_card.liquid password.json \
+product.json collection.json article.json blog.json page.json"
+}
+
+# Print repo-relative paths of files reachable from the render graph (conservative).
+# Outputs one path per line. Always includes layout/, header/footer groups, default templates,
+# and any sections listed in reachable template/group JSON files.
+dawn::reachable_files(){
+  # Always-reachable roots
+  git ls-files -- 'layout/' 'sections/header-group.json' 'sections/footer-group.json' \
+    'config/settings_data.json' 'config/settings_schema.json'
+  # Default templates
+  local t; for t in $(dawn::_default_templates); do git ls-files -- "templates/$t"; done
+  # Sections referenced in reachable template JSONs and section-group JSONs
+  {
+    git ls-files -- 'templates/index.json' 'templates/cart.json' 'templates/search.json' \
+      'templates/404.json' 'templates/password.json' 'templates/product.json' \
+      'templates/collection.json' 'templates/article.json' 'templates/blog.json' \
+      'templates/page.json' 'sections/header-group.json' 'sections/footer-group.json'
+  } | while IFS= read -r jf; do
+    [ -f "$jf" ] || continue
+    # extract "type":"<section-handle>" values → sections/<handle>.liquid
+    grep -o '"type":"[^"]*"' "$jf" 2>/dev/null | sed 's/"type":"//;s/"//' \
+      | while IFS= read -r h; do git ls-files -- "sections/${h}.liquid"; done
+  done
+}
+
+# Assert staging is "clean" for a guarded reset:
+# staging must equal customizations with only config-snapshot enrichments on top —
+# i.e. the last commit's subject must match "config snapshot" and
+# no commits since customizations contain debug/WIP markers.
+# Conservative: checks that staging is ahead of (or equal to) customizations (no divergence) and
+# the tip commit subject contains "config" (the snapshot invariant).
+dawn::assert_staging_clean(){
+  # staging must be ahead of (or equal to) customizations, not diverged
+  local behind; behind=$(git rev-list --count staging..customizations 2>/dev/null || echo 1)
+  if [ "$behind" != "0" ]; then
+    echo "GUARD: staging has diverged from customizations (customizations is $behind commits ahead of staging). Rebase staging onto customizations first." >&2
+    return $DAWN_GUARD
+  fi
+  # tip commit must be a config snapshot
+  local tip_msg; tip_msg=$(git log -1 --format=%s staging)
+  case "$tip_msg" in
+    *config*|*snapshot*|*settings*) ;;
+    *) echo "GUARD: staging tip commit '$tip_msg' does not look like a config snapshot. Run dawn-backflow to recreate the snapshot at the tip." >&2
+       return $DAWN_GUARD ;;
+  esac
+}
