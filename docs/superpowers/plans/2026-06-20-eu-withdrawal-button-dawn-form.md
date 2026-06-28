@@ -346,7 +346,7 @@ var L_DONE   = LABEL_PREFIX + 'withdrawal-done';
 var L_REVIEW = LABEL_PREFIX + 'withdrawal-review';
 var L_ERROR  = LABEL_PREFIX + 'withdrawal-error';
 
-var SENDER_NAME = 'Zo Gezeept';
+var SENDER_NAME = 'Zogezeept';
 var ORDER_RE = /Order number:\s*#?\s*([A-Za-z0-9\-]+)/i;
 var LOCALE_RE = /Locale:\s*([a-z]{2})/i;
 var HONEYPOT_RE = /Website:\s*(\S.*)/i;

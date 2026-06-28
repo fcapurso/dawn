@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make Zo Gezeept compliant with the EU "withdrawal button" obligation (Dir. (EU) 2023/2673, in force 19 Jun 2026) and CRD pre-contractual disclosure, at zero recurring cost, with partial/mixed-order support and no manual order re-keying.
+**Goal:** Make Zogezeept compliant with the EU "withdrawal button" obligation (Dir. (EU) 2023/2673, in force 19 Jun 2026) and CRD pre-contractual disclosure, at zero recurring cost, with partial/mixed-order support and no manual order re-keying.
 
 **Architecture:** Offload the mandatory two-step withdrawal button to a free, order-integrated app (Retractly) for physical goods; exclude fixed-date workshops via native Shopify return rules; add a single locale-keyed L1 theme snippet for per-product pre-contractual notices; carry the legal text in native Policies + Translate & Adapt + the order-confirmation email.
 

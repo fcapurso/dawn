@@ -1,7 +1,7 @@
 # Dawn-ops: inert shipping + guarded reset — Design
 
 **Date:** 2026-06-28
-**Repo:** Dawn / Zo Gezeept (operated from `ops`)
+**Repo:** Dawn / Zogezeept (operated from `ops`)
 **Status:** Approved design, pending spec review → implementation plan
 **Revises:** the dawn-ops model in `.claude/skills/_dawn-ops-lib/conventions.md` and the
 `dawn-harvest` / `dawn-promote` skills. Adds a new `dawn-ship` skill, a classifier in the lib,

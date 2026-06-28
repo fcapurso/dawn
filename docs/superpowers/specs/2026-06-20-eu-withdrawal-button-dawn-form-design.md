@@ -1,7 +1,7 @@
 # EU Withdrawal Button — Dawn Form + Apps Script Design
 
 **Date:** 2026-06-20
-**Shop:** Zo Gezeept (www.zogezeept.com) — Dawn theme + customizations (L0/L1/L2)
+**Shop:** Zogezeept (www.zogezeept.com) — Dawn theme + customizations (L0/L1/L2)
 **Status:** Approved design, pending spec review → implementation plan
 **Supersedes:** the *withdrawal-button* portion (Layer 1) and the *product-page disclosure block* (Layer 3) of
 [2026-06-19-eu-right-of-withdrawal-compliance-design.md](2026-06-19-eu-right-of-withdrawal-compliance-design.md).

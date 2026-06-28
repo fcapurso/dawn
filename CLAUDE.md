@@ -1,4 +1,4 @@
-# Dawn / Zo Gezeept — project context
+# Dawn / Zogezeept — project context
 
 > Operated from the `ops` branch (skills + docs live here). Theme branches stay pure;
 > this file is intentionally only on `ops` and is never deployed.

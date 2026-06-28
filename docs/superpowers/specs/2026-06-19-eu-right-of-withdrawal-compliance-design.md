@@ -1,7 +1,7 @@
 # EU Right of Withdrawal Compliance — Design
 
 **Date:** 2026-06-19
-**Shop:** Zo Gezeept (www.zogezeept.com) — Dawn theme + customizations (L0/L1/L2 layer model)
+**Shop:** Zogezeept (www.zogezeept.com) — Dawn theme + customizations (L0/L1/L2 layer model)
 **Status:** Approved design, pending spec review → implementation plan
 
 > **Disclaimer:** This document is informed input, not legal advice. The author is not
