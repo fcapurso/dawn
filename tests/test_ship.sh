@@ -18,7 +18,7 @@ ACTIVE_COMMIT=$(git rev-parse HEAD)
 
 git checkout -q staging
 
-# 1. NEEDS_JUDGMENT: commit with a suffix template → rc 21
+# 1. NEEDS_JUDGMENT: commit with a suffix template → rc 21 without --confirm-live
 git checkout -q customizations
 mkdir -p templates
 echo '{}' > templates/page.herroeping.json
@@ -26,6 +26,11 @@ git add templates/page.herroeping.json; git commit -qm "L1: withdrawal template 
 NJ_COMMIT=$(git rev-parse HEAD)
 git checkout -q staging
 assert_rc "ship stops for needs_judgment" 21 bash "$SH" "$NJ_COMMIT"
+
+# 1b. NEEDS_JUDGMENT with --confirm-live → rc 0 (operator has confirmed template is unbound)
+export DAWN_SHIP_PUSH=mock
+assert_rc "needs_judgment ship with confirm succeeds" 0 bash "$SH" "$NJ_COMMIT" --confirm-live
+unset DAWN_SHIP_PUSH
 
 # 2. Inert commit without --confirm-live → rc 20 (STOP-live)
 out=$(bash "$SH" "$INERT_COMMIT" 2>&1 || true)

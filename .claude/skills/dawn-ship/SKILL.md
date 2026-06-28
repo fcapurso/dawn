@@ -26,7 +26,15 @@ The commit is not reachable from `customizations`, or another precondition faile
 The commit adds a suffix template (`page.*.json` or `product.*.json`). **STOP.**
 
 Tell the user:
-> "This commit adds a new suffix template. Before shipping, confirm in the Shopify admin that NO page or product is currently assigned to this template. Once confirmed, re-run with `--confirm-live`."
+> "This commit adds a new suffix template. Before shipping, confirm in the Shopify admin that NO page or product is currently assigned to this template."
+
+Once the user has confirmed in admin that the template is unbound, re-run with `--confirm-live`:
+
+```bash
+bash .claude/skills/dawn-ship/ship.sh <commit-ish> --confirm-live
+```
+
+The `--confirm-live` flag signals that the operator has manually verified the template is unbound.
 
 **Exit 20 (STOP-live — awaiting human approval)**
 The script has printed:

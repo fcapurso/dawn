@@ -23,12 +23,15 @@ classify_out=$(dawn::classify_changes "$sha" 2>&1)
 echo "$classify_out" >&2
 verdict=$(echo "$classify_out" | grep '^VERDICT ' | awk '{print $2}')
 
-# NEEDS_JUDGMENT → stop immediately
+# NEEDS_JUDGMENT → stop unless operator has explicitly confirmed
 if [ "$verdict" = "NEEDS_JUDGMENT" ]; then
-  echo "" >&2
-  echo "STOP: commit contains a new suffix template. Confirm in Shopify admin that NO page or" >&2
-  echo "      product is currently assigned to this template, then re-run with --confirm-live." >&2
-  exit $DAWN_STOP_JUDGMENT
+  if [ "$confirm" != "--confirm-live" ]; then
+    echo "" >&2
+    echo "STOP: commit contains a new suffix template. Confirm in Shopify admin that NO page or" >&2
+    echo "      product is currently assigned to this template, then re-run with --confirm-live." >&2
+    exit $DAWN_STOP_JUDGMENT
+  fi
+  echo "WARNING: shipping a suffix template — operator confirmed no resource is bound." >&2
 fi
 
 # Show the full diff the operator will be shipping
@@ -64,9 +67,9 @@ if [ "${DAWN_SHIP_PUSH:-}" = "mock" ]; then
 fi
 
 tmp_branch="__dawn-ship-tmp-$$"
-trap "git branch -D '$tmp_branch' 2>/dev/null || true; git checkout -q - 2>/dev/null || true" EXIT
 git checkout -q -b "$tmp_branch" refs/remotes/origin/current \
   || { echo "GUARD: cannot create temp branch from origin/current" >&2; exit $DAWN_GUARD; }
+trap "git checkout -q - 2>/dev/null || true; git branch -D '$tmp_branch' 2>/dev/null || true" EXIT
 git cherry-pick --no-edit "$sha" \
   || { echo "STOP: cherry-pick conflict — resolve manually, then push with:" >&2
        echo "  git push origin $tmp_branch:current" >&2; exit $DAWN_STOP_JUDGMENT; }
