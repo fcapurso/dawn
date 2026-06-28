@@ -50,7 +50,7 @@ dawn::verify_tree_equal(){
 # whether a resource is bound to them is shop-global admin state, not in git.
 dawn::_default_templates(){
   echo "index.json cart.json search.json 404.json gift_card.liquid password.json \
-product.json collection.json article.json blog.json page.json"
+product.json collection.json article.json blog.json page.json list-collections.json"
 }
 
 # Print repo-relative paths of files reachable from the render graph (conservative).
@@ -64,14 +64,12 @@ dawn::reachable_files(){
   local t; for t in $(dawn::_default_templates); do git ls-files -- "templates/$t"; done
   # Sections referenced in reachable template JSONs and section-group JSONs
   {
-    git ls-files -- 'templates/index.json' 'templates/cart.json' 'templates/search.json' \
-      'templates/404.json' 'templates/password.json' 'templates/product.json' \
-      'templates/collection.json' 'templates/article.json' 'templates/blog.json' \
-      'templates/page.json' 'sections/header-group.json' 'sections/footer-group.json'
+    for _t in $(dawn::_default_templates); do git ls-files -- "templates/$_t"; done
+    git ls-files -- 'sections/header-group.json' 'sections/footer-group.json'
   } | while IFS= read -r jf; do
     [ -f "$jf" ] || continue
     # extract "type":"<section-handle>" values → sections/<handle>.liquid
-    grep -o '"type":"[^"]*"' "$jf" 2>/dev/null | sed 's/"type":"//;s/"//' \
+    grep -o '"type": "[^"]*"' "$jf" 2>/dev/null | sed 's/"type": "//;s/"//' \
       | while IFS= read -r h; do git ls-files -- "sections/${h}.liquid"; done
   done
 }
