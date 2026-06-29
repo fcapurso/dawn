@@ -13,13 +13,13 @@ inert-shipping design at `docs/superpowers/specs/2026-06-28-dawn-ops-inert-shipp
 
 ```
 dawn-vanilla        pristine Dawn @ a fixed upstream commit/tag — ff-only, never rebased
-  └─ customizations   + L1 generic features — upstream-shaped, rebases onto new Dawn
+  └─ customizations   + L1 generic features and L2 store-specific enrichments — both as discrete classified commits; rebases onto new Dawn
        └─ staging     + L2 enrichments (discrete commits) + ONE config snapshot at tip
             ⇄ current   the LIVE theme — Shopify writes admin/editor commits here
 ```
 
 - `dawn-vanilla` → fast-forward only (never commit, never rebase).
-- `customizations` → L1 generic changes only; rebased onto `dawn-vanilla` on Dawn upgrades.
+- `customizations` → L1 generic changes **and** L2 store-specific enrichments, each as a discrete classified commit (prefix `L1:` / `L2:`, `Inert:` trailer); rebased onto `dawn-vanilla` on Dawn upgrades.
 - `staging` → L2 enrichments + exactly one config-snapshot commit **always at the tip**; linked to
   the non-live preview theme in the Shopify admin.
 - `current` → the live storefront; **see the hard rule below**.
@@ -107,6 +107,9 @@ with instance IDs, branding, copy, product-type logic.
 
 **When in doubt → L2.** It is always safe to keep something in L2; incorrectly lifting L2 into L1
 poisons `customizations` for future Dawn upgrades.
+
+Both L1 and L2 commits live in `customizations`, distinguished by their commit message prefix
+(`L1:` / `L2:`) and the `Inert:` trailer set by `dawn::harvest_candidates` and the agent.
 
 ---
 
