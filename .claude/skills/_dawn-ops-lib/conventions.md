@@ -33,6 +33,16 @@ dawn-vanilla        pristine Dawn @ a fixed upstream commit/tag — ff-only, nev
 
 ---
 
+## 2a. Bot-linked branches are append-only
+
+`staging` and `current` are linked to real Shopify themes. The Shopify GitHub integration writes "Update from Shopify…" commits to them directly. Because of this:
+
+- **Never force-push `staging` or `current`** except the one deliberate guarded reset performed by `dawn-promote`.
+- **All history surgery** (rebase, split, reword) happens on `customizations`, which is not linked to any theme and is always bot-free.
+- Force-pushing a bot-linked branch while the bot has committed to it produces repeated churn (conflicting history) that re-triggers on every editor save.
+
+---
+
 ## 3. Two operating modes
 
 | Mode | Branch | Purpose |
@@ -41,6 +51,17 @@ dawn-vanilla        pristine Dawn @ a fixed upstream commit/tag — ff-only, nev
 | **Operate** | `ops` | Check out `ops`, launch the agent from there, run a skill. Skills and docs live on `ops`. |
 
 `ops` is never deployed (Shopify ignores `.claude/` and `docs/`; theme branches stay pure).
+
+---
+
+## 3a. Two promote modes
+
+| Mode | Skill | What it does | When to use |
+|---|---|---|---|
+| **Ship** (incremental) | `dawn-ship` | Cherry-picks a classified commit from `customizations` onto `current`. Append-only. Classifier gates: ALL_INERT → light confirm; HAS_ACTIVE → full confirm + smoke test; NEEDS_JUDGMENT → stop. | Ship dormant building blocks early (to unblock shop-global activation like a page binding), or ship tested-active changes incrementally. |
+| **Promote** (release) | `dawn-promote` | Force-pushes `staging` onto `current` (the authoritative reset). Yields `current == staging`. Guarded: staging must be clean. | Full release after rebuild, backflow, and testing. |
+
+The two modes are complementary: `dawn-ship` ships pieces incrementally between releases; `dawn-promote` resets `current` to the authoritative tested `staging` at each release, reconciling any divergence.
 
 ---
 
@@ -84,6 +105,22 @@ with instance IDs, branding, copy, product-type logic.
 
 **When in doubt → L2.** It is always safe to keep something in L2; incorrectly lifting L2 into L1
 poisons `customizations` for future Dawn upgrades.
+
+---
+
+## 5a. Inert vs active (render-graph reachability)
+
+A change is **inert** if publishing it does not alter the rendered output of any URL a visitor can currently reach.
+
+**Always-reachable roots:** `layout/*.liquid`, `sections/header-group.json`, `sections/footer-group.json`, `config/settings_data.json`, `config/settings_schema.json`, and the **default templates** (`templates/index.json`, `templates/cart.json`, `templates/product.json`, `templates/collection.json`, `templates/article.json`, `templates/blog.json`, `templates/password.json`, `templates/search.json`, `templates/404.json`, `templates/page.json`), plus sections listed in those templates.
+
+**Inert examples:** a new section / snippet / asset not referenced by any reachable file; additive-only new locale keys; a new suffix template (`page.foo.json`) with no resource bound to it.
+
+**Active examples:** any edit to a file in the always-reachable set; a changed locale value; wiring a new section into a reachable template.
+
+**NEEDS_JUDGMENT:** new suffix templates (`page.*.json`, `product.*.json`). Whether a resource is bound is shop-global admin state, not in git. The operator must confirm "no page/product is assigned this template" before shipping.
+
+**Conservative default:** anything not provably inert is flagged active. The classifier (`dawn::classify_changes`) never silently calls something inert.
 
 ---
 
