@@ -22,7 +22,7 @@ dawn-vanilla      L0 — pristine Dawn @ fixed upstream commit; ff-only, never c
 
 | Skill | What it does | When to use |
 |---|---|---|
-| `dawn-harvest` | Lifts a generic file from `staging` into `customizations` as an atomic, classified L1 commit | After finishing a reusable feature on staging |
+| `dawn-harvest` | Analyses staging vs customizations, groups files into proposed L1/L2 commits, confirms interactively, then commits each group atomically into `customizations` and rebases `staging` | After finishing features on staging |
 | `dawn-ship` | Cherry-picks a classified commit from `customizations` onto `current` (append-only) | To push a dormant piece to the live theme early, or to ship a tested active change incrementally |
 | `dawn-backflow` | Mirrors live admin/editor changes from `current` back into `staging` | Before a promote, or when the admin UI has config you need in staging |
 | `dawn-promote` | Force-pushes `staging` → `current` (the authoritative reset; guarded) | Full release after rebuild, backflow, and testing |
@@ -42,16 +42,24 @@ git checkout staging
 git commit -am "feat: add withdrawal form section"
 ```
 
-### 2. Harvest generic pieces
+### 2. Harvest pieces to `customizations`
 
-When a change is **generic** (passes the "stranger test" — any Dawn merchant could use it unchanged), lift it into `customizations`:
+`dawn-harvest` analyses all differences between `staging` and `customizations`, groups related
+files (section + locale strings + assets) into proposed commits, and prompts you to classify each
+as L1 (generic) or L2 (store-specific) before committing.
+
+Run it from `ops` with a clean working tree:
 
 ```bash
-# From ops branch, with a clean working tree:
-bash .claude/skills/dawn-harvest/harvest.sh sections/withdrawal.liquid
+# Just invoke the skill — the agent drives the rest interactively.
+dawn-harvest
 ```
 
-Harvest produces an atomic commit with an `Inert: yes/no` trailer. If a file mixes generic and store-specific lines, use `--hunks` to split first.
+- The agent runs `dawn::harvest_candidates` to classify candidates, then proposes groupings.
+- You confirm (or adjust) each proposed commit via `AskUserQuestion` before anything is written.
+- Both L1 and L2 commits land in `customizations` with an `Inert:` trailer. L2 commits produce
+  expected rebase conflicts during `dawn-upgrade` — each one requires manual review.
+- Files that mix generic and store-specific hunks are flagged for manual separation before harvest.
 
 ### 3. Ship inert pieces early (optional)
 
