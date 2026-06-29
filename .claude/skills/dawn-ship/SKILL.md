@@ -1,6 +1,6 @@
 ---
 name: dawn-ship
-description: Cherry-pick a classified commit from customizations onto the live theme (current). Use when the user says ship inert, ship this commit, push to live without a full promote, or unblock a page binding.
+description: Ship a classified commit from customizations to the live theme (current). Use when the user says ship, push to live, ship this commit, unblock a page binding, or what can I ship.
 ---
 
 ## dawn-ship
@@ -9,13 +9,51 @@ Ships a **single classified commit** from `customizations` onto `current` — ap
 
 This skill operates from a checked-out `ops` branch (or any non-`current` branch with a clean working tree).
 
-### Running
+### Two modes
+
+**Interactive (no commit provided):** list inert candidates and let the operator pick one.
+
+**Direct (commit hash provided):** skip the list and ship that commit.
+
+---
+
+### Mode 1 — Interactive: list and pick
+
+When the user has not specified a commit, run:
+
+```bash
+source .claude/skills/_dawn-ops-lib/dawn-ops.sh
+git cherry -v refs/remotes/origin/current customizations \
+  | grep '^+' | awk '{print $2}' \
+  | while IFS= read -r sha; do
+      body=$(git log -1 --format=%B "$sha")
+      if echo "$body" | grep -q '^Inert: yes'; then
+        echo "$sha  $(git log -1 --format=%s "$sha")"
+      fi
+    done
+```
+
+If the output is empty: report "no inert commits in customizations are waiting to be shipped" and stop.
+
+Otherwise, present the list via `AskUserQuestion`:
+- One question: "Which commit would you like to ship to the live theme?"
+- Options: one per candidate showing `<short-sha>  <subject>`, plus "None / cancel"
+
+Once the operator picks one, proceed with that SHA exactly as in Mode 2 below.
+
+---
+
+### Mode 2 — Direct: ship a specific commit
 
 ```bash
 bash .claude/skills/dawn-ship/ship.sh <commit-ish>
 ```
 
 Replace `<commit-ish>` with the SHA or branch tip you want to ship (must be reachable from `customizations`).
+
+The interactive list shows **only `Inert: yes` commits** — `needs_judgment` and active commits are excluded. To ship those, pass the SHA directly (Mode 2) and follow the extra confirmation steps below.
+
+---
 
 ### Exit codes and required responses
 
