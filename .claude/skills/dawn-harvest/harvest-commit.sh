@@ -35,16 +35,17 @@ done < <(dawn::config_files)
 
 dawn::with_branch customizations || exit $DAWN_GUARD
 
-# Build lookup for l1-content overrides: override[file]=tmppath
-declare -A override=()
-for entry in "${l1_overrides[@]}"; do
-  key="${entry%%:*}"; val="${entry#*:}"
-  override["$key"]="$val"
-done
-
+# For each file, check if there's an l1-content override (file:tmppath)
 for f in "${files[@]}"; do
-  if [[ -n "${override[$f]+set}" ]]; then
-    tmp="${override[$f]}"
+  tmp=""
+  for entry in "${l1_overrides[@]+"${l1_overrides[@]}"}"; do
+    key="${entry%%:*}"
+    if [[ "$key" = "$f" ]]; then
+      tmp="${entry#*:}"
+      break
+    fi
+  done
+  if [[ -n "$tmp" ]]; then
     mkdir -p "$(dirname "$f")"
     cp "$tmp" "$f"
     git add "$f"
