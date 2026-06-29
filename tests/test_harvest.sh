@@ -26,6 +26,14 @@ bash "$SH" sections/new-widget.liquid
 trailer=$(git log -1 --format=%B customizations | grep '^Inert:')
 assert_eq "orphan harvest trailer Inert: yes" "$trailer" "Inert: yes"
 
+# Harvest a reachable file (layout/theme.liquid — layout files are always reachable) → Inert: no
+git checkout -q staging
+mkdir -p layout; echo '<!DOCTYPE html><html></html>' > layout/theme.liquid
+git add layout/theme.liquid; git commit -qm "add layout on staging"
+bash "$SH" layout/theme.liquid
+trailer=$(git log -1 --format=%B customizations | grep '^Inert:')
+assert_eq "reachable harvest trailer Inert: no" "$trailer" "Inert: no"
+
 # Harvest a suffix template (templates/page.foo.json) → Inert: needs_judgment
 git checkout -q staging
 echo '{}' > templates/page.foo.json
