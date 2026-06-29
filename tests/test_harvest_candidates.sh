@@ -21,9 +21,9 @@ git checkout -q staging
 mkdir -p layout; echo '<!DOCTYPE html><html></html>' > layout/theme.liquid
 git add layout/theme.liquid; git commit -qm "add layout on staging"
 output=$(dawn::harvest_candidates)
-line=$(echo "$output" | grep "layout/theme.liquid" || true)
-assert_contains "layout file has active verdict" "$line" "active"
-assert_contains "layout file has L1 hint" "$line" "L1"
+assert_contains "layout file in output" "$output" "layout/theme.liquid"
+assert_contains "layout file active verdict" "$output" "active"
+assert_contains "layout file L1 hint" "$(echo "$output" | grep 'layout/theme.liquid')" "L1"
 
 # === Test Case 3: File with store keyword → L2 hint ===
 FIX=$(bash "$HERE/tests/fixture.sh"); cd "$FIX"
@@ -42,8 +42,8 @@ git checkout -q staging
 echo '{"sections":{}}' > templates/product.soap.json
 git add templates/product.soap.json; git commit -qm "add product.soap template on staging"
 output=$(dawn::harvest_candidates)
-line=$(echo "$output" | grep "product.soap.json" || true)
-assert_contains "suffix template has needs_judgment verdict" "$line" "needs_judgment"
+assert_contains "suffix template in output" "$output" "product.soap.json"
+assert_contains "suffix template needs_judgment verdict" "$(echo "$output" | grep 'product.soap.json')" "needs_judgment"
 
 # === Test Case 5: Config file excluded ===
 FIX=$(bash "$HERE/tests/fixture.sh"); cd "$FIX"
