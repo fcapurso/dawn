@@ -106,6 +106,9 @@ dawn::classify_changes(){
 
   local reachable; reachable=$(dawn::reachable_files | sort -u)
 
+  # Pre-compute added-only files in this range (status A = new file, not modified)
+  local added_files; added_files=$(git diff --name-status "$range" | awk '$1=="A"{print $2}' | sort -u)
+
   local verdict="ALL_INERT" path label
   while IFS= read -r path; do
     [ -z "$path" ] && continue
@@ -128,6 +131,13 @@ dawn::classify_changes(){
         echo "active: $path — locale value changed or key removed" >&2
         [ "$verdict" = "ALL_INERT" ] && verdict="HAS_ACTIVE"
       fi
+
+    # Rule 2b: newly-added file (status A) → inert regardless of reachability.
+    # A brand-new section/asset/snippet can't be rendered until something references it,
+    # so it's architecturally inert even if the classifier would otherwise flag it active.
+    elif echo "$added_files" | grep -qxF "$path"; then
+      label="inert"
+      echo "inert: $path — newly-added file; unreachable until admin or template references it" >&2
 
     # Rule 3: in always-reachable set → active
     elif echo "$reachable" | grep -qxF "$path"; then

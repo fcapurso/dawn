@@ -61,8 +61,12 @@ dawn-harvest
 - **Config (content only)** means the change is pure content (text, colours, section order) with no
   reuse value — leave it in the config snapshot, do not harvest. See §5 of `conventions.md` for
   the structure-vs-content distinction.
-- L1 and L2 commits land in `customizations` with an `Inert:` trailer. L2 commits produce
-  expected rebase conflicts during `dawn-upgrade` — each one requires manual review.
+- L1 and L2 commits land in `customizations` with an `Inert:` trailer where applicable.
+  **Exception:** purely additive L1 commits (new section/asset/snippet/locale files, nothing modified)
+  do not need an `Inert:` trailer — the classifier recognises them as inert by structure (a new file
+  can't be rendered until something references it). `dawn-ship` will still classify and surface them
+  correctly in the interactive list.
+- L2 commits produce expected rebase conflicts during `dawn-upgrade` — each one requires manual review.
 - Files that mix generic and store-specific hunks are flagged for manual separation before harvest.
 
 ### 3. Ship inert pieces early (optional)

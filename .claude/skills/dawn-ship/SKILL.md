@@ -29,6 +29,13 @@ git cherry -v refs/remotes/origin/current customizations \
       case "$trailer" in
         "Inert: yes")             echo "INERT         $sha  $(git log -1 --format=%s "$sha")" ;;
         "Inert: needs_judgment")  echo "NEEDS_JUDGMENT $sha  $(git log -1 --format=%s "$sha")" ;;
+        "Inert: no")              ;; # explicitly active — skip
+        *)
+          # No trailer: run the classifier. Additive L1 commits (new files only) are
+          # architecturally inert — include them if the classifier agrees (ALL_INERT).
+          verdict=$(bash -c 'source .claude/skills/_dawn-ops-lib/dawn-ops.sh && dawn::classify_changes "$1" 2>/dev/null | grep "^VERDICT " | awk "{print \$2}"' -- "$sha")
+          [ "$verdict" = "ALL_INERT" ] && echo "INERT         $sha  $(git log -1 --format=%s "$sha")"
+          ;;
       esac
     done
 ```
