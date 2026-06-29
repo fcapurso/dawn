@@ -160,6 +160,11 @@ dawn::harvest_candidates(){
   files=$(git diff --name-only customizations staging \
     -- . ':(exclude)docs/' ':(exclude).claude/' "${excludes[@]}" 2>/dev/null) || true
 
+  # Post-filter: remove config-paths.txt entries in case pathspec exclusion didn't catch them
+  if [ -n "$files" ]; then
+    files=$(echo "$files" | grep -vxFf "$DAWN_LIB_DIR/config-paths.txt" || true)
+  fi
+
   [ -z "$files" ] && return 0
 
   # Call classify_changes once and cache — avoids O(N²) and ensures consistent verdicts
