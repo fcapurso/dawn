@@ -1,6 +1,6 @@
 ---
 name: dawn-harvest
-description: Lift a generic, reusable change from staging up into the customizations (L1) layer. Use when the user says harvest, this should be generic, move to customizations, or make this upstreamable.
+description: Harvest changes from staging into customizations — classifying each as L1 (generic structure), L2 (store-shaped structure), or Config (content only, leave in snapshot). Use when the user says harvest, promote to customizations, classify these changes, or split staging commits.
 ---
 
 ## Overview
@@ -43,15 +43,27 @@ Using the candidate list from Step 1, group files by semantic relationship:
 
 **Do not use staging commit history for grouping.** The diff is the net effect of all staging work.
 
-For each proposed group:
-1. Apply the **stranger test** to confirm or override the `l1l2-hint`: L1 = a stranger could drop
-   this onto any Dawn fork unchanged; L2 = store-specific (branding, metafields, app IDs, copy).
-   When in doubt → L2.
-2. Draft a commit message: `L1: <description>` or `L2: <description>`.
-3. Set the `Inert:` trailer based on the classifier verdict for the group's files (`inert` →
-   `Inert: yes`; `active` → `Inert: no`; `needs_judgment` → `Inert: needs_judgment`). If files
-   within a group have mixed verdicts, use the most conservative: `active` beats `inert`;
-   `needs_judgment` beats both.
+For each proposed group, apply the **structure-vs-content** test:
+
+**The core question:** does this change define how the site works (structure), or what it currently
+says and shows (content)?
+
+- **Structure with no store-specific data → L1.** A stranger could drop this onto any Dawn fork
+  unchanged. Draft message: `L1: <description>`.
+- **Structure shaped for this store → L2.** The shape has reuse value within this store (a
+  template applies to many resources, a section appears on many pages) but contains store-specific
+  data (app UUIDs, metafield handles, domain references, GTM IDs). Draft message: `L2: <description>`.
+- **Content only → Config.** The change is text values, colour tokens, section ordering on a
+  default template, or theme settings — no new structure. Belongs in the config-snapshot commit,
+  not in `customizations`. Mark as Config in the confirmation step; do not harvest.
+
+**When in doubt → L2.** Never L1 unless certain.
+
+For each group that is L1 or L2:
+1. Draft a commit message: `L1: <description>` or `L2: <description>`.
+2. Set the `Inert:` trailer from the classifier verdict (`inert` → `Inert: yes`; `active` →
+   `Inert: no`; `needs_judgment` → `Inert: needs_judgment`). Mixed verdicts: use the most
+   conservative (`needs_judgment` > `active` > `inert`).
 
 ## Step 3 — Detect and plan hunk splits
 
@@ -72,10 +84,20 @@ its template is L2, the section comes first). Each question must show:
 - File list with per-file classifier verdict
 - L1 or L2 classification with one-sentence reasoning
 
-Options: **Approve** / **Change to L1** / **Change to L2** / **Skip** / **Edit message**
+Options:
+
+| Option | Meaning |
+|---|---|
+| **Approve** | Harvest as proposed |
+| **Change to L1** | Harvest as generic (no store-specific data) |
+| **Change to L2** | Harvest as store-specific |
+| **Config (content only)** | This is content, not structure — leave in config snapshot, do not harvest |
+| **Skip** | Don't harvest now, decide later |
+| **Edit message** | Keep classification, change the commit message |
 
 Process **all answers** before executing any commits. If "Edit message" is chosen, ask a
-follow-up open-text question for the replacement message.
+follow-up open-text question for the replacement message. Groups marked **Config (content only)**
+are silently dropped — no commit, no action needed.
 
 ## Step 5 — Execute in order
 

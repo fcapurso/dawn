@@ -84,6 +84,12 @@ templates/blog.json         templates/password.json
 templates/product.json
 ```
 
+These are Dawn's default templates plus theme settings and section-group JSONs. They are **content
+files**: they hold what the site currently says, shows, and how it's arranged — text, colours,
+section order, image choices. Content changes independently of structure (you can rewrite copy
+without touching a template) and has no reuse value. The live version in `current` is always the
+source of truth; we regenerate them on backflow, never harvest them.
+
 ### Backflow routing
 
 | Change type | Action |
@@ -97,19 +103,57 @@ templates/product.json
 
 ---
 
-## 5. L1 vs L2 classification
+## 5. Classification: Config / L2 / L1
 
-**L1 (generic):** a stranger could drop this change onto a vanilla Dawn fork unchanged — no
-store-specific products, metafields, app-instance UUIDs, branding, or copy.
+Every harvestable change falls into one of three buckets. The classifier provides hints; the
+operator makes the final call via `dawn-harvest`.
 
-**L2 (enrichment):** anything store-specific — templates tied to custom metafields, app integrations
-with instance IDs, branding, copy, product-type logic.
+### The core question: structure or content?
 
-**When in doubt → L2.** It is always safe to keep something in L2; incorrectly lifting L2 into L1
-poisons `customizations` for future Dawn upgrades.
+**Structure** = something that defines how the site works or is organised — a new template, a new
+section, a behaviour change, an integration. Structure has reuse value: a template applied to one
+page can be applied to ten; a section added once appears wherever it's referenced.
 
-Both L1 and L2 commits live in `customizations`, distinguished by their commit message prefix
-(`L1:` / `L2:`) and the `Inert:` trailer set by `dawn::harvest_candidates` and the agent.
+**Content** = what the site currently says and shows — text, colours, typography, section order on
+a live page, image choices. Content has no reuse value; it *is* the site at a point in time.
+Content belongs in the config snapshot and is never harvested.
+
+### The three buckets
+
+**Config (content only):** the change is purely content — text values, colour tokens, section
+ordering on a default template, theme settings. No structure was added or changed. Lives in the
+config-snapshot commit on `staging`; regenerated from `current` on backflow. Never harvested.
+*Signals:* `settings_data.json`, `settings_schema.json`, header/footer group JSONs, default
+template JSONs where only section order or settings values changed (no new section types added).
+
+**L2 (store-shaped structure):** a structural addition or change shaped for this store — a new
+suffix template, a layout file modified for store-specific integrations, a section wired to
+store-specific metafields or app IDs. The structure has reuse value within this store (a template
+applies to many resources, a section appears on many pages) but cannot be dropped onto a different
+store unchanged. Lives in `customizations` as `L2:` commits.
+*Signals:* store domain/brand, app instance UUIDs, store-specific metafield handles (`custom.*`),
+GTM/analytics IDs, hardcoded Dutch/market-specific copy that is part of the structure itself.
+
+**L1 (generic structure):** a structural addition that passes the stranger test — a developer at
+any Shopify store could drop this file in unchanged and it would work. No store-specific data
+anywhere in the file. Lives in `customizations` as `L1:` commits.
+*Signals:* generic app block integration (type only, no instance IDs), layout/styling changes with
+no store data, new utility sections or snippets with no store-specific references.
+
+### Rules
+
+- **When in doubt → L2.** Incorrectly lifting L2 into L1 poisons `customizations` for future Dawn
+  upgrades. L2 is always safe.
+- **Structure in a config file → still config.** If a default template was modified only via the
+  theme editor (section reordering, settings changes), treat it as config even if the diff looks
+  structural. The template itself is admin-owned. Any genuinely new section code lives in the
+  section file, which is harvestable separately.
+- **The operator decides.** `dawn::harvest_candidates` provides L1/L2 hints via keyword scan.
+  `dawn-harvest` surfaces those hints with reasoning. The operator confirms, overrides, or marks
+  a candidate as Config (content only) via `AskUserQuestion`.
+
+Both L1 and L2 commits live in `customizations`, distinguished by commit message prefix
+(`L1:` / `L2:`) and the `Inert:` trailer.
 
 ---
 
