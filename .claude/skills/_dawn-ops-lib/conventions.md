@@ -1,9 +1,11 @@
 # Dawn theme-ops — operating conventions
 
-Single source of truth for all four skills (`dawn-backflow`, `dawn-promote`, `dawn-upgrade`,
-`dawn-harvest`). Full depth: runbook at `docs/superpowers/runbook/dawn-update-and-promote.md`,
-layer design at `docs/superpowers/specs/2026-06-17-dawn-repo-layer-separation-design.md`,
-skills design at `docs/superpowers/specs/2026-06-18-dawn-theme-ops-skills-design.md`.
+Single source of truth for all five skills (`dawn-backflow`, `dawn-promote`, `dawn-upgrade`,
+`dawn-harvest`, `dawn-ship`). Full depth: runbook at
+`docs/superpowers/runbook/dawn-dev-and-release.md`, layer design at
+`docs/superpowers/specs/2026-06-17-dawn-repo-layer-separation-design.md`, skills design at
+`docs/superpowers/specs/2026-06-18-dawn-theme-ops-skills-design.md`,
+inert-shipping design at `docs/superpowers/specs/2026-06-28-dawn-ops-inert-shipping-design.md`.
 
 ---
 
