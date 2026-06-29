@@ -16,12 +16,9 @@ See `../_dawn-ops-lib/conventions.md` for layer definitions (L0 vanilla / L1 cus
 
 ## Usage
 
-```
-bash .claude/skills/dawn-harvest/harvest.sh <path> [--hunks]
-```
+This skill is being redesigned with an interactive agent workflow. The new implementation will guide you through selecting and harvesting files in groups.
 
-- `<path>` — repo-relative path to the file to harvest (e.g. `assets/base.css`).
-- `--hunks` — use when the file contains a mix of generic and store-specific lines that need splitting before harvesting.
+**Coming soon:** The `harvest-commit.sh` script and rewritten SKILL.md will replace the single-file workflow.
 
 ## Exit codes and agent responses
 
