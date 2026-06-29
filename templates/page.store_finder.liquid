@@ -1,0 +1,43 @@
+<style>
+
+.simple_store_finder--container {
+   
+}
+
+@media only screen and (max-width: 430px) {
+
+.simple_store_finder--container {
+   
+}
+  
+}
+
+</style>
+
+<div class="page-width simple_store_finder--container">
+  <main class="content content-area">
+  <div class="grid">
+    <div class="grid-item grid__item loaded" style="width:100%; max-width:100%;">
+
+
+
+      <div class="section-header text-center page-title store-finder-page-header" style="">
+        <h1 class="label " style="">{{ page.title }}</h1>
+      </div>
+
+
+      <div class="rte">
+        {{ page.content }}
+
+{{ shop.metafields.simple_store_finder.stores_css }}
+{{ shop.metafields.simple_store_finder.stores_text }}
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</main>
+</div>
+
