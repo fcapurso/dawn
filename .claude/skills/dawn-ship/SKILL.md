@@ -22,24 +22,29 @@ This skill operates from a checked-out `ops` branch (or any non-`current` branch
 When the user has not specified a commit, run:
 
 ```bash
-source .claude/skills/_dawn-ops-lib/dawn-ops.sh
 git cherry -v refs/remotes/origin/current customizations \
   | grep '^+' | awk '{print $2}' \
   | while IFS= read -r sha; do
-      body=$(git log -1 --format=%B "$sha")
-      if echo "$body" | grep -q '^Inert: yes'; then
-        echo "$sha  $(git log -1 --format=%s "$sha")"
-      fi
+      trailer=$(git log -1 --format=%B "$sha" | grep '^Inert:' | head -1)
+      case "$trailer" in
+        "Inert: yes")             echo "INERT         $sha  $(git log -1 --format=%s "$sha")" ;;
+        "Inert: needs_judgment")  echo "NEEDS_JUDGMENT $sha  $(git log -1 --format=%s "$sha")" ;;
+      esac
     done
 ```
 
-If the output is empty: report "no inert commits in customizations are waiting to be shipped" and stop.
+If the output is empty: report "no shippable commits in customizations are waiting — everything is already on current or marked active" and stop.
 
 Otherwise, present the list via `AskUserQuestion`:
 - One question: "Which commit would you like to ship to the live theme?"
-- Options: one per candidate showing `<short-sha>  <subject>`, plus "None / cancel"
+- Options: one per candidate, prefixed with its risk label:
+  - `[inert] <short-sha> — <subject>` — safe to ship after diff review
+  - `[needs judgment] <short-sha> — <subject>` — requires admin verification first (see below)
+  - "None / cancel"
 
-Once the operator picks one, proceed with that SHA exactly as in Mode 2 below.
+Active commits (`Inert: no`) are excluded from the list — ship those only by naming the SHA directly.
+
+Once the operator picks one, proceed with that SHA exactly as in Mode 2 below. If they picked a `needs_judgment` commit, the exit-21 flow applies automatically.
 
 ---
 
@@ -50,8 +55,6 @@ bash .claude/skills/dawn-ship/ship.sh <commit-ish>
 ```
 
 Replace `<commit-ish>` with the SHA or branch tip you want to ship (must be reachable from `customizations`).
-
-The interactive list shows **only `Inert: yes` commits** — `needs_judgment` and active commits are excluded. To ship those, pass the SHA directly (Mode 2) and follow the extra confirmation steps below.
 
 ---
 
