@@ -8,8 +8,8 @@ Single reference for operating the Zogezeept theme repo. Read this before runnin
 
 ```
 dawn-vanilla      L0 — pristine Dawn @ fixed upstream commit; ff-only, never commit here
-  └─ customizations  L1+L2 code — bot-free, rewritable (rebase, split OK)
-       └─ staging    L2 + config snapshot at tip — bot-linked preview theme (append-only)
+  └─ customizations  L1 + L2 discrete classified commits — bot-free, rewritable (rebase, split OK)
+       └─ staging    config snapshot at tip — bot-linked preview theme (append-only)
             ⇄ current  LIVE shop — bot-linked (append-only except guarded reset)
 ```
 
@@ -22,8 +22,8 @@ dawn-vanilla      L0 — pristine Dawn @ fixed upstream commit; ff-only, never c
 
 | Skill | What it does | When to use |
 |---|---|---|
-| `dawn-harvest` | Analyses staging vs customizations, groups files into proposed L1/L2 commits, confirms interactively, then commits each group atomically into `customizations` and rebases `staging` | After finishing features on staging |
-| `dawn-ship` | Cherry-picks a classified commit from `customizations` onto `current` (append-only) | To push a dormant piece to the live theme early, or to ship a tested active change incrementally |
+| `dawn-harvest` | Analyses staging vs customizations, groups files into proposed commits, classifies each as L1 (generic structure), L2 (store-shaped structure), or Config (content only — leave in snapshot), confirms interactively, then commits approved groups into `customizations` | After finishing features on staging |
+| `dawn-ship` | Lists shippable commits from `customizations` interactively, or ships a named commit directly — append-only cherry-pick onto `current` | To push an inert building block to the live theme early, or to ship a tested active change incrementally |
 | `dawn-backflow` | Mirrors live admin/editor changes from `current` back into `staging` | Before a promote, or when the admin UI has config you need in staging |
 | `dawn-promote` | Force-pushes `staging` → `current` (the authoritative reset; guarded) | Full release after rebuild, backflow, and testing |
 | `dawn-upgrade` | Fast-forwards `dawn-vanilla` to a new Dawn release, then rebases `customizations` and `staging` | When a new Dawn version is available |
@@ -56,24 +56,32 @@ dawn-harvest
 ```
 
 - The agent runs `dawn::harvest_candidates` to classify candidates, then proposes groupings.
-- You confirm (or adjust) each proposed commit via `AskUserQuestion` before anything is written.
-- Both L1 and L2 commits land in `customizations` with an `Inert:` trailer. L2 commits produce
+- For each group you choose one of: **Approve** (L1 or L2 as proposed) / **Change to L1** /
+  **Change to L2** / **Config (content only)** / **Skip** / **Edit message**.
+- **Config (content only)** means the change is pure content (text, colours, section order) with no
+  reuse value — leave it in the config snapshot, do not harvest. See §5 of `conventions.md` for
+  the structure-vs-content distinction.
+- L1 and L2 commits land in `customizations` with an `Inert:` trailer. L2 commits produce
   expected rebase conflicts during `dawn-upgrade` — each one requires manual review.
 - Files that mix generic and store-specific hunks are flagged for manual separation before harvest.
 
 ### 3. Ship inert pieces early (optional)
 
-If you need a dormant building block on the **live theme** before the full release (e.g. to unblock a page→template binding in the Shopify admin), ship it directly:
+If you need a dormant building block on the **live theme** before the full release (e.g. to unblock a page→template binding in the Shopify admin):
 
 ```bash
-# Check which commits are on customizations
-git log --oneline customizations ^staging
+# Interactive: lists inert + needs_judgment commits not yet on current; pick one
+dawn-ship
 
-# Ship a specific commit (agent will show diff + classifier report, then ask for confirmation)
-bash .claude/skills/dawn-ship/ship.sh <commit-sha>
+# Direct: ship a specific commit by SHA (skips the list)
+dawn-ship <commit-sha>
 ```
 
-This is **append-only** — no force-push, no config files. The Shopify bot's config churn on `current` is unaffected.
+The interactive list shows two groups:
+- **`[inert]`** — safe to ship after reviewing the diff
+- **`[needs judgment]`** — suffix templates or similar; requires verifying in the Shopify admin that no resource is bound before confirming
+
+In both cases the agent shows the full diff and classifier report, then stops for your explicit confirmation before touching `current`. This is **append-only** — no force-push, no config files.
 
 ### 4. Activate shop-global state in admin
 
@@ -120,8 +128,8 @@ Captured live admin edits that aren't in staging yet?
 Upgrading to a new Dawn version?
   → dawn-upgrade
 
-Need to lift a generic feature from staging into L1?
-  → dawn-harvest
+Need to classify and harvest changes from staging into customizations?
+  → dawn-harvest (produces L1, L2, or Config commits — agent guides classification)
 ```
 
 ---
