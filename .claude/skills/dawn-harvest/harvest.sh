@@ -24,7 +24,7 @@ if echo "$_harvest_reachable" | grep -qxF "$file"; then
   _inert_trailer="Inert: no"
 else
   case "$file" in
-    templates/*.*.*) _inert_trailer="Inert: needs_judgment" ;;
+    templates/*.*.json) _inert_trailer="Inert: needs_judgment" ;;
     *) _inert_trailer="Inert: yes" ;;
   esac
 fi
