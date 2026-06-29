@@ -162,13 +162,17 @@ dawn::harvest_candidates(){
 
   [ -z "$files" ] && return 0
 
-  while IFS= read -r path; do
-    [ -z "$path" ] && continue
+  # Call classify_changes once and cache — avoids O(N²) and ensures consistent verdicts
+  local all_cls
+  all_cls=$(dawn::classify_changes "customizations..staging" 2>/dev/null) || true
 
-    # Per-file verdict via classify_changes on the full staging range
-    local cls_out
-    cls_out=$(dawn::classify_changes "customizations..staging" 2>/dev/null | grep " $path$" | head -1 || true)
-    local verdict
+  local f
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+
+    # Per-file verdict from cached classify_changes output
+    local cls_out verdict
+    cls_out=$(grep "${f}$" <<< "$all_cls" | grep -v '^VERDICT' | head -1 || true)
     case "$cls_out" in
       needs_judgment*) verdict="needs_judgment" ;;
       active*)         verdict="active" ;;
@@ -177,11 +181,11 @@ dawn::harvest_candidates(){
 
     # L2 keyword scan on the file content at staging
     local hint="L1"
-    local content; content=$(git show "staging:$path" 2>/dev/null || true)
-    if echo "$content" | grep -qiE 'zogezeept|custom\.|\.myshopify\.com|GTM-'; then
+    local content; content=$(git show "staging:$f" 2>/dev/null || true)
+    if echo "$content" | grep -qiE 'zogezeept|\bcustom\.|\.myshopify\.com|GTM-'; then
       hint="L2"
     fi
 
-    printf "%-18s %-4s %s\n" "$verdict" "$hint" "$path"
+    printf "%-18s %-4s %s\n" "$verdict" "$hint" "$f"
   done <<< "$files"
 }
