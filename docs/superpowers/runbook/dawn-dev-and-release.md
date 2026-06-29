@@ -124,7 +124,7 @@ Want to push a dormant piece to the live theme now?
   → dawn-ship (inert commit from customizations)
 
 Want to publish a full tested release?
-  → dawn-backflow → rebuild staging → dawn-promote
+  → dawn-backflow → dawn-promote (promote guards staging cleanliness automatically)
 
 Captured live admin edits that aren't in staging yet?
   → dawn-backflow
