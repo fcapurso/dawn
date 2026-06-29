@@ -146,3 +146,42 @@ dawn::classify_changes(){
 
   echo "VERDICT $verdict"
 }
+
+# Emit candidate files to harvest from staging into customizations.
+# Output: one line per file: "<verdict>  <L1|L2>  <path>"
+# Scope: git diff --name-only customizations staging, excluding config-paths.txt, docs/, .claude/
+dawn::harvest_candidates(){
+  # Build exclusion list from config-paths.txt
+  local excludes=()
+  while IFS= read -r p; do [ -z "$p" ] && continue; excludes+=(":(exclude)$p"); done \
+    < "$DAWN_LIB_DIR/config-paths.txt"
+
+  local files
+  files=$(git diff --name-only customizations staging \
+    -- . ':(exclude)docs/' ':(exclude).claude/' "${excludes[@]}" 2>/dev/null) || true
+
+  [ -z "$files" ] && return 0
+
+  while IFS= read -r path; do
+    [ -z "$path" ] && continue
+
+    # Per-file verdict via classify_changes on the full staging range
+    local cls_out
+    cls_out=$(dawn::classify_changes "customizations..staging" 2>/dev/null | grep " $path$" | head -1 || true)
+    local verdict
+    case "$cls_out" in
+      needs_judgment*) verdict="needs_judgment" ;;
+      active*)         verdict="active" ;;
+      *)               verdict="inert" ;;
+    esac
+
+    # L2 keyword scan on the file content at staging
+    local hint="L1"
+    local content; content=$(git show "staging:$path" 2>/dev/null || true)
+    if echo "$content" | grep -qiE 'zogezeept|custom\.|\.myshopify\.com|GTM-'; then
+      hint="L2"
+    fi
+
+    printf "%-18s %-4s %s\n" "$verdict" "$hint" "$path"
+  done <<< "$files"
+}
