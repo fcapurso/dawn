@@ -41,6 +41,12 @@ Either way the script then:
 
 **Stop immediately.** Do not attempt to resolve automatically.
 
+> **L2 rebase conflicts are expected.** `customizations` now holds both L1 and L2 commits.
+> L2 commits by definition reference store-specific code (metafields, branding, app IDs) that
+> may conflict with upstream Dawn changes. Each L2 conflict needs manual review — this is correct
+> behaviour, not an error. Resolve each conflict by verifying the store-specific dependency still
+> holds in the new Dawn version, then `git rebase --continue`.
+
 1. Show the user which branch conflicted (printed to stderr) and run `git status` to list conflicting files.
 2. Open the conflicting files and show the conflict markers to the user.
 3. Resolve the conflicts **together with the user** — do not guess intent.
