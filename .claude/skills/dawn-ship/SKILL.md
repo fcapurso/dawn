@@ -23,8 +23,9 @@ When the user has not specified a commit, run:
 
 ```bash
 git cherry -v refs/remotes/origin/current customizations \
-  | grep '^+' | awk '{print $2}' \
-  | while IFS= read -r sha; do
+  | grep '^+' \
+  | while IFS= read -r line; do
+      sha=$(echo "$line" | cut -d' ' -f2)
       trailer=$(git log -1 --format=%B "$sha" | grep '^Inert:' | head -1)
       case "$trailer" in
         "Inert: yes")             echo "INERT         $sha  $(git log -1 --format=%s "$sha")" ;;
@@ -33,7 +34,7 @@ git cherry -v refs/remotes/origin/current customizations \
         *)
           # No trailer: run the classifier. Additive L1 commits (new files only) are
           # architecturally inert — include them if the classifier agrees (ALL_INERT).
-          verdict=$(bash -c 'source .claude/skills/_dawn-ops-lib/dawn-ops.sh && dawn::classify_changes "$1" 2>/dev/null | grep "^VERDICT " | awk "{print \$2}"' -- "$sha")
+          verdict=$(SHA="$sha" bash -c 'source .claude/skills/_dawn-ops-lib/dawn-ops.sh && dawn::classify_changes "$SHA" 2>/dev/null | grep "^VERDICT " | cut -d" " -f2')
           [ "$verdict" = "ALL_INERT" ] && echo "INERT         $sha  $(git log -1 --format=%s "$sha")"
           ;;
       esac
