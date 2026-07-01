@@ -50,65 +50,73 @@ nudge cancellation at point of sale with no compliance upside).
 - **NL:** "Herroep hier uw contract"
 - **EN:** "Withdraw from contract here"
 
-Full explicit label (maximally unambiguous). Room is not a constraint — the withdrawal link joins the
-existing legal-links line (§4.4), which is a single wrapping row.
+Full explicit label (maximally unambiguous). Room is not a constraint — the withdrawal link is
+appended to the end of the existing legal-links line (§4.4), a single wrapping row.
 
-### 4.3 Why the legal links must become menu-driven (investigated)
-The footer's legal links are **not** an editable menu today. They are rendered by
+### 4.3 The legal links are `shop.policies` — append, don't recreate (investigated)
+The footer's legal links are **not** an editable menu. They are rendered by
 `{% for policy in shop.policies %}` in the bottom copyright bar (`sections/footer.liquid`), gated by
 the `show_policy` setting (default `true`). Verified against the live server-rendered HTML, all seven
 items come from `shop.policies`:
 
-| Label | URL |
-|---|---|
-| Terugbetalingsbeleid | `/policies/refund-policy` |
-| Privacybeleid | `/policies/privacy-policy` |
-| Algemene voorwaarden | `/policies/terms-of-service` |
-| Verzendbeleid | `/policies/shipping-policy` |
-| Wettelijke kennisgeving | `/policies/legal-notice` |
-| Contactgegevens | `/policies/contact-information` |
-| Cookievoorkeuren | `/policies/#shopifyReshowConsentBanner` |
+| Label | URL | Translated via |
+|---|---|---|
+| Terugbetalingsbeleid | `/policies/refund-policy` | Translate & Adapt → Policies |
+| Privacybeleid | `/policies/privacy-policy` | Translate & Adapt → Policies |
+| Algemene voorwaarden | `/policies/terms-of-service` | Translate & Adapt → Policies |
+| Verzendbeleid | `/policies/shipping-policy` | Translate & Adapt → Policies |
+| Wettelijke kennisgeving | `/policies/legal-notice` | Translate & Adapt → Policies |
+| Contactgegevens | `/policies/contact-information` | Translate & Adapt → Policies |
+| Cookievoorkeuren | `/policies/#shopifyReshowConsentBanner` | Shopify consent (native) |
 
-**`Cookievoorkeuren` is a Shopify-native consent policy, not an app DOM injection** (the fragment
-reopens the consent banner). `shop.policies` is a **fixed, Shopify-managed set** — there is no API to
-register an arbitrary "withdrawal" page as a policy. Therefore the only way to place the withdrawal
-link *among* the legal links is to stop rendering the auto policy row and drive the legal links from
-an **editable menu** instead. (This was validated: the "just inject it like the cookie link" idea is
-not available to us.)
+Each link renders `{{ policy.title }}`, localized as **store content** (Translate & Adapt → Policies),
+not via theme locale files. `Cookievoorkeuren` is a Shopify-**native consent policy** (the fragment
+reopens the consent banner), not an app DOM injection. `shop.policies` is a **fixed, Shopify-managed
+set** — there is no API to register an arbitrary "withdrawal" page as a policy.
 
-### 4.4 Design — menu-driven legal links + stacked bottom (Route 2)
-A **surgical change to `sections/footer.liquid`** (chosen over a full forked footer section: smallest
-Dawn divergence, tiny/easy upgrade conflicts, current look preserved). Three coordinated changes:
+**Conclusion:** rather than recreating the whole legal set as a menu, **leave the `shop.policies` loop
+untouched and append one extra `<li>` for the withdrawal link** inside the same `<ul class="policies">`
+right after the loop. The policy links keep their auto-generation and auto-localization; we add only
+our own item. Smallest possible change.
+
+### 4.4 Design — append a gated withdrawal link + optional stacked bottom
+A **surgical, safely-degrading change to `sections/footer.liquid`** (chosen over a forked footer
+section: smallest Dawn divergence, current look preserved, no menu to maintain).
 
 **Theme (L1) — `sections/footer.liquid`:**
-- Add a footer **section setting** `legal_menu` (type `link_list`); keep `show_policy`.
-- In the bottom copyright bar, render the legal links from the menu when set, else fall back to
-  `shop.policies`:
-  `{%- if section.settings.legal_menu != blank -%}` render `legal_menu.links` (same
-  `<ul class="policies">` markup/position/style) `{%- elsif section.settings.show_policy -%}` render
-  `shop.policies` (unchanged vanilla behavior).
-- **Stacked bottom layout:** restructure `.footer__copyright` so the bottom renders as three rows —
-  **payments** (already separate) / **copyright** (own line) / **legal links** (own line) — instead
-  of copyright + policies flowing together. Small scoped CSS/markup tweak.
-- **Degrades safely:** with no `legal_menu` configured it behaves exactly like vanilla Dawn, keeping
-  the change generic and upstreamable (clean L1).
+- Add footer **section settings**:
+  - `show_withdrawal_link` (checkbox, default `false`) — gate.
+  - `withdrawal_page` (type `page`) — the target page (resource picker → object with `.url`/`.title`).
+  - `policies_own_line` (checkbox, default `false`) — stacked-layout toggle.
+- **Append the link:** after the `{% for policy in shop.policies %}` loop, inside the same
+  `<ul class="policies">`:
+  `{%- if section.settings.show_withdrawal_link and section.settings.withdrawal_page != blank -%}`
+  → one `<li>` with `<a href="{{ section.settings.withdrawal_page.url }}">{{ section.settings.withdrawal_page.title }}</a>`
+  (same `copyright__content` markup as the policy items). The label is the **linked page's own title**,
+  localized via Translate & Adapt → Pages — mirroring how the policy links use `policy.title`. **No
+  theme locale-file change for the label.**
+- **Optional stacked bottom layout:** when `policies_own_line` is on, apply a modifier class to
+  `.footer__copyright` (or the `.policies` list) so the bottom renders as three rows — **payments**
+  (already separate) / **copyright** / **legal links** — instead of copyright + policies flowing
+  together. Small scoped CSS tweak.
+- **Degrades safely:** with both toggles off, `footer.liquid` behaves exactly like vanilla Dawn —
+  clean, low-divergence L1.
 
-**Admin / Navigation (store-global, merchant):**
-- Create a menu (e.g. handle `footer-legal`) containing the six policy links + Cookievoorkeuren
-  (`/policies/#shopifyReshowConsentBanner`) + the **withdrawal link** (`/pages/herroeping`), with the
-  withdrawal link **at the end** of the list.
-- Set NL/EN labels via Translate & Adapt (menu-driving loses `shop.policies` auto title localization,
-  so labels are maintained manually — acceptable, both locales are maintained anyway).
+**Admin (merchant):**
+- Set the **withdrawal page's title** to the label in each locale ("Herroep hier uw contract" /
+  "Withdraw from contract here") via Translate & Adapt → Pages. (The on-page H1 is separate — it comes
+  from the withdrawal-form section's own `heading` setting.)
 
 **Theme config (L2) — `config/settings_data.json`:**
-- Bind the footer section's `legal_menu` to the `footer-legal` menu; `show_policy` becomes redundant.
+- Set the footer section's `show_withdrawal_link` on, `withdrawal_page` to the withdrawal page, and
+  `policies_own_line` as desired.
 
 ### 4.5 Gating
-The `footer.liquid` change **degrades to vanilla** when `legal_menu` is unset, so it can land on
-`current` harmlessly ahead of time. The legal row only switches to the menu — and the withdrawal link
-only appears — once the **`legal_menu` config binding (L2) is promoted**. The admin menu can be
-prepared at any time without affecting the live footer (nothing points at it until the config binds).
-Live visibility is controlled entirely by the deliberate promote.
+The `footer.liquid` change **degrades to vanilla** when `show_withdrawal_link` is off, so it can land
+on `current` harmlessly ahead of time. The withdrawal link appears only once the **section-setting
+values (L2 config) are promoted**. The page-title translations can be set any time without affecting
+the live footer (nothing renders the link until the toggle is on in promoted config). Live visibility
+is controlled entirely by the deliberate promote.
 
 ## 5. Workstream B — Legal text (full scope)
 
@@ -130,33 +138,32 @@ existing live copy.
 Per `.claude/skills/_dawn-ops-lib/conventions.md` and the dawn-ops skills:
 
 1. **Implement + test on `staging`** — on a scratch branch off `staging`: make the `footer.liquid`
-   L1 change (`legal_menu` setting + menu-driven legal links + stacked bottom layout); create the
-   `footer-legal` admin menu; bind `legal_menu` via the theme editor (L2 config). Preview via the
-   Shopify↔GitHub integration; verify the bottom renders as payments / copyright / legal-links rows,
-   all seven policy links + Cookievoorkeuren still resolve, the withdrawal link sits at the end and
-   resolves to `/pages/herroeping`, and it all renders in NL + EN.
+   L1 change (the three settings + appended withdrawal `<li>` + optional stacked layout); set the
+   withdrawal page's NL/EN title; enable the settings via the theme editor (L2 config). Preview via
+   the Shopify↔GitHub integration; verify the withdrawal link appears at the **end** of the existing
+   policy row and resolves to `/pages/herroeping`, all seven policy links + Cookievoorkeuren still
+   render unchanged, the stacked layout (payments / copyright / legal links) renders when enabled,
+   and it all renders in NL + EN.
 2. **Harvest** — `sections/footer.liquid` is **L1** (generic, degrades to vanilla) → harvest into
    `customizations`. The already-shipped withdrawal L1 (section/asset/locales) is a verify/no-op.
 3. **Backflow** config from `current` (capture live admin/config edits into the staging snapshot),
-   including the `legal_menu` binding + `show_policy` state, so staging reflects live state before
-   promote.
-4. **Promote** `staging` → `current` (gated; explicit live confirm). This is the moment the legal row
-   switches to the menu and the withdrawal function becomes live-visible.
+   including the footer section-setting values, so staging reflects live state before promote.
+4. **Promote** `staging` → `current` (gated; explicit live confirm). This is the moment the withdrawal
+   link becomes live-visible.
 
-`current` is never hand-edited. The admin/Navigation (`footer-legal` menu) and policy-text changes
-(Workstreams A-admin, B) are merchant actions performed in Shopify admin, documented in the plan with
-exact steps.
+`current` is never hand-edited. The page-title translation and policy-text changes (Workstreams
+A-admin, B) are merchant actions performed in Shopify admin, documented in the plan with exact steps.
 
 ## 7. Success criteria (full closure)
 
 - The withdrawal function is reachable from the **footer** on every page, **no login**, clearly
   labelled ("Herroep hier uw contract" / "Withdraw from contract here"), throughout the 14-day
   window — **and not visible live until the deliberate promote**.
-- The footer bottom renders as three stacked rows (**payments / copyright / legal links**); the legal
-  links are menu-driven, all seven prior policy links + Cookievoorkeuren still present and resolving,
-  with the withdrawal link at the end — in NL + EN.
-- `sections/footer.liquid` remains **generic L1** (degrades to vanilla `shop.policies` when no
-  `legal_menu` is configured).
+- The withdrawal link is **appended to the end** of the existing `shop.policies` row (all seven prior
+  policy links + Cookievoorkeuren untouched and still auto-localized), its label coming from the
+  withdrawal page's own title — in NL + EN. Optional stacked bottom layout (payments / copyright /
+  legal links) available via toggle.
+- `sections/footer.liquid` remains **generic L1** (degrades to vanilla when both new toggles are off).
 - **T&C / return-refund policy**, **privacy policy**, and **workshop text** are all compliant and
   present in **NL + EN**.
 - The work lands via **staging → harvest (verify) → backflow → promote**; `current` is never
