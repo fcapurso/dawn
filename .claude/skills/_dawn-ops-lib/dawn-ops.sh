@@ -73,6 +73,22 @@ dawn::config_leaves(){
   " 2>/dev/null
 }
 
+# Files to reconcile: all existing config-paths.txt files, plus suffix templates
+# that differ across any pair of {base, staging, current}.
+dawn::config_targets(){
+  local cur base; cur="$(dawn::current_ref)"; base="$(git merge-base staging "$cur" 2>/dev/null)"
+  {
+    dawn::config_files
+    if [ -n "$base" ]; then
+      { git diff --name-only "$base" staging      -- 'templates/'
+        git diff --name-only "$base" "$cur"       -- 'templates/'
+        git diff --name-only staging "$cur"       -- 'templates/'; } \
+      | grep -E '^templates/[a-z_]+\.[a-z0-9_-]+\.json$' \
+      | grep -vxFf "$DAWN_LIB_DIR/config-paths.txt" || true
+    fi
+  } | sort -u
+}
+
 # rc 0 if origin/current has config changes not in staging (backflow needed), else rc 1.
 dawn::backflow_pending(){
   local ref; ref="refs/remotes/origin/current"
