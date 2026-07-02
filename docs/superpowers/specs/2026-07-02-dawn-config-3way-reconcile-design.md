@@ -224,13 +224,19 @@ Suffix-template detection: a `templates/*.json` whose basename still contains a 
 `.json` (e.g. `page.withdrawal` → suffix; `product` → default). Default templates are covered by
 set A via their explicit `config-paths.txt` entries.
 
-**Out of scope — non-config divergence routing is unchanged.** Non-config, non-suffix-template files
-continue through the existing `dawn-backflow` Exit-21 flow (classify each as enrichment → L2 commit,
-generic → `dawn-harvest`, or churn → ignore). A suffix template that differs **only** in `settings`
-is now handled by the reconcile (no Exit-21); one whose **skeleton** differs still routes to harvest
-for the structural part (mixed settings+skeleton drift: reconcile the settings, harvest the
-skeleton — the existing `--l1-content` split in `dawn-harvest` already covers this). This design does
-not touch `dawn-ship`, the L1/L2/Inert classification, or the promote force-push mechanics.
+**Out of scope — non-config divergence routing is unchanged in kind, but made direction-aware.**
+Non-config, non-suffix-template files continue through the existing `dawn-backflow` Exit-21 flow
+(classify each as enrichment → L2 commit, generic → `dawn-harvest`, or churn → ignore). The one
+consistency fix: that flow should flag only **current-ahead** non-config files — those actually
+changed on the live theme relative to the merge-base and thus needing capture. A **staging-ahead**
+non-config file is staging's own work (a harvested L1/L2 commit) and is carried to current by the
+promote force-push; backflow has nothing to capture from it and must not false-halt on it (today it
+does — the same directional blindness this design removes for config). A suffix template that differs
+**only** in `settings` is now handled by the reconcile (no Exit-21); one whose **skeleton** differs
+still routes to harvest for the structural part (mixed settings+skeleton drift: reconcile the
+settings, harvest the skeleton — the existing `--l1-content` split in `dawn-harvest` already covers
+this). This design does not touch `dawn-ship`, the L1/L2/Inert classification, or the promote
+force-push mechanics.
 
 ---
 
