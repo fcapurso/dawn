@@ -139,7 +139,7 @@ dawn::backflow_pending(){ dawn::reconcile_pending; }
 # Returns $DAWN_STOP_JUDGMENT (and lists paths) if a collision has no decision.
 dawn::reconcile_apply(){
   local file="$1" decisions="$2"
-  local cur base; cur="$(dawn::current_ref)"; base="$(git merge-base staging "$cur" 2>/dev/null)"
+  local cur; cur="$(dawn::current_ref)"
   local class; class="$(dawn::config_class "$file")"
 
   # Substrate = current's document (order-preserving). Capture JSONC header to re-prepend.
@@ -188,7 +188,7 @@ dawn::reconcile_apply(){
     return $DAWN_STOP_JUDGMENT
   fi
 
-  printf '%s' "$header"
+  [ -n "$header" ] && printf '%s\n' "$header"
   printf '%s' "$body" | jq --argjson ops "$ops" '
     reduce $ops[] as $o (.; if ($o.del // false) then delpaths([$o.p]) else setpath($o.p; $o.v) end)'
 }

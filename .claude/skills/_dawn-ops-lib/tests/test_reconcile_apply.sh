@@ -31,4 +31,13 @@ printf 'sections/footer-group.json\t["sections","f","settings","collide"]\tvalue
 merged=$(in_repo "$d" "dawn::reconcile_apply sections/footer-group.json '$dec'")
 assert_eq "$(jq -r '.sections.f.settings.collide' <<< "$merged")" "X" "collision -> entered value"
 
+# staging-ahead DELETION: staging removed a key present at base+current => merged output omits it
+dd=$(dawn_test_repo)
+commit_on "$dd" staging sections/footer-group.json <<< '{"sections":{"f":{"settings":{"keep":"base","drop":"base"}}}}' "base"
+git -C "$dd" checkout -q current; git -C "$dd" merge -q sync 2>/dev/null || git -C "$dd" merge -q staging -m sync
+commit_on "$dd" staging sections/footer-group.json <<< '{"sections":{"f":{"settings":{"keep":"base"}}}}' "drop key"
+mm=$(in_repo "$dd" 'dawn::reconcile_apply sections/footer-group.json /dev/null')
+assert_eq "$(jq -r '.sections.f.settings.drop // "GONE"' <<< "$mm")" "GONE" "staging-ahead deletion removes key"
+assert_eq "$(jq -r '.sections.f.settings.keep' <<< "$mm")" "base" "sibling key retained"
+
 echo "  reconcile_apply ok"

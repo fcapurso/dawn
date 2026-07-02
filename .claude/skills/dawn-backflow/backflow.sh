@@ -65,7 +65,7 @@ fi
 git add -A
 last_msg="$(git log -1 --format=%s)"
 case "$last_msg" in
-  *config*|*snapshot*|*settings*) git commit -q --amend --no-edit ;;
+  "L2: store config snapshot"*) git commit -q --amend --no-edit ;;
   *) git commit -q -m "L2: store config snapshot (reconciled)" ;;
 esac
 echo "Backflow complete (config reconciled into the snapshot)."

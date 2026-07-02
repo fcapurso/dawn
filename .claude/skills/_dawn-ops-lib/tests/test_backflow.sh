@@ -23,4 +23,21 @@ git -C "$d2" checkout -q staging
 assert_rc "$rc" 0 "current-ahead backflow ok"
 assert_eq "$(git -C "$d2" show staging:config/settings_data.json | jq -r .k)" "live" "current folded"
 
+# amend heuristic must NOT fold config into an unrelated feature-tip commit
+d3=$(dawn_test_repo)
+commit_on "$d3" staging config/settings_data.json <<< '{"k":"base"}' "L2: store config snapshot"
+git -C "$d3" checkout -q current; git -C "$d3" merge -q staging -m sync
+commit_on "$d3" current config/settings_data.json <<< '{"k":"live"}'   # current-ahead => a fold will happen
+git -C "$d3" checkout -q staging
+# Feature commit touches a non-config file. Subject contains "settings" to trigger the OLD loose
+# pattern (*settings*) but must NOT match the new anchored pattern ("L2: store config snapshot"*).
+commit_on "$d3" staging layout/theme.liquid <<< '<html></html>' "feat: redesign settings panel"
+n_before=$(git -C "$d3" rev-list --count staging)
+( cd "$d3" && DAWN_CURRENT_REF=current bash "$BF" ); rc=$?
+assert_rc "$rc" 0 "backflow ok with feature tip"
+n_after=$(git -C "$d3" rev-list --count staging)
+assert_eq "$n_after" "$((n_before+1))" "new snapshot commit added, feature tip NOT amended"
+assert_eq "$(git -C "$d3" log -1 --format=%s staging | grep -c 'store config snapshot')" "1" "tip is a fresh snapshot commit"
+assert_eq "$(git -C "$d3" log -1 --format=%s 'staging~1')" "feat: redesign settings panel" "feature commit intact below"
+
 echo "  backflow ok"
