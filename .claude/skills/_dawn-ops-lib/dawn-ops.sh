@@ -55,6 +55,24 @@ dawn::config_class(){
   echo ""
 }
 
+# Emit canonical leaf map for one config file at one ref.
+# One line per leaf:  <path-json>\t<value-json>. Leaf = scalar or whole array.
+# For class "suffix", restrict to leaves whose path passes through a `settings` key.
+dawn::config_leaves(){
+  local ref="$1" file="$2" class
+  class="$(dawn::config_class "$file")"
+  local raw; raw="$(git show "$ref:$file" 2>/dev/null | dawn::_strip_jsonc)" || return 0
+  [ -z "$raw" ] && return 0
+  local sel='.'
+  [ "$class" = suffix ] && sel='select(.p | index("settings"))'
+  printf '%s' "$raw" | jq -rc "
+    def leaves(\$p):
+      if type==\"object\" then (to_entries[] as \$e | (\$e.value | leaves(\$p + [\$e.key])))
+      else {p:\$p, v:.} end;
+    leaves([]) | $sel | (.p|tojson) + \"\t\" + (.v|tojson)
+  " 2>/dev/null
+}
+
 # rc 0 if origin/current has config changes not in staging (backflow needed), else rc 1.
 dawn::backflow_pending(){
   local ref; ref="refs/remotes/origin/current"
