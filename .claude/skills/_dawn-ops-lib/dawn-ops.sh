@@ -134,6 +134,65 @@ dawn::reconcile_pending(){
 # Deprecated name — kept so callers migrate incrementally. Prefer dawn::reconcile_pending.
 dawn::backflow_pending(){ dawn::reconcile_pending; }
 
+# Print the merged content for ONE file to stdout.
+# Args: <file> <decisions-file>. Decisions lines: <file>\t<path-json>\t<staging|current|value:JSON>
+# Returns $DAWN_STOP_JUDGMENT (and lists paths) if a collision has no decision.
+dawn::reconcile_apply(){
+  local file="$1" decisions="$2"
+  local cur base; cur="$(dawn::current_ref)"; base="$(git merge-base staging "$cur" 2>/dev/null)"
+  local class; class="$(dawn::config_class "$file")"
+
+  # Substrate = current's document (order-preserving). Capture JSONC header to re-prepend.
+  local raw header body
+  raw="$(git show "$cur:$file" 2>/dev/null)"
+  if [ -z "$raw" ]; then
+    [ "$class" = suffix ] && return 0   # no live version to protect; leave staging's as-is
+    raw="$(git show "staging:$file" 2>/dev/null)"
+  fi
+  header="$(printf '%s' "$raw" | perl -0ne 'print $1 if m{\A(\s*/\*.*?\*/\s*)}s')"
+  body="$(printf '%s' "$raw" | dawn::_strip_jsonc)"
+
+  # Build the ops array: staging-ahead + resolved collisions.
+  local ops='[]' verdict f p b s c res
+  local -a unresolved=()
+  while IFS=$'\t' read -r verdict f p b s c; do
+    [ "$f" = "$file" ] || continue
+    case "$verdict" in
+      current_ahead) : ;;
+      staging_ahead)
+        if [ "$s" = "$DAWN_ABSENT" ]; then
+          ops="$(jq -c --argjson p "$p" '. + [{p:$p,del:true}]' <<< "$ops")"
+        else
+          ops="$(jq -c --argjson p "$p" --argjson v "$s" '. + [{p:$p,v:$v}]' <<< "$ops")"
+        fi ;;
+      collision)
+        res="$(awk -F'\t' -v f="$file" -v pp="$p" '$1==f && $2==pp {print $3}' "$decisions" 2>/dev/null | head -1)"
+        case "$res" in
+          current) : ;;
+          staging)
+            if [ "$s" = "$DAWN_ABSENT" ]; then
+              ops="$(jq -c --argjson p "$p" '. + [{p:$p,del:true}]' <<< "$ops")"
+            else
+              ops="$(jq -c --argjson p "$p" --argjson v "$s" '. + [{p:$p,v:$v}]' <<< "$ops")"
+            fi ;;
+          value:*)
+            ops="$(jq -c --argjson p "$p" --argjson v "${res#value:}" '. + [{p:$p,v:$v}]' <<< "$ops")" ;;
+          *) unresolved+=("$p") ;;
+        esac ;;
+    esac
+  done < <(dawn::reconcile_scan)
+
+  if [ "${#unresolved[@]}" -gt 0 ]; then
+    echo "STOP: unresolved collisions in $file:" >&2
+    printf '  %s\n' "${unresolved[@]}" >&2
+    return $DAWN_STOP_JUDGMENT
+  fi
+
+  printf '%s' "$header"
+  printf '%s' "$body" | jq --argjson ops "$ops" '
+    reduce $ops[] as $o (.; if ($o.del // false) then delpaths([$o.p]) else setpath($o.p; $o.v) end)'
+}
+
 # rc 0 if trees equal (excl docs/ + .claude/), rc 30 with a summary if not.
 dawn::verify_tree_equal(){
   local a="$1" b="$2"
