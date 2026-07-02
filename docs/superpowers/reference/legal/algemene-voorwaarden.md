@@ -1,6 +1,6 @@
 # Algemene voorwaarden
 
-> Snapshot of the published policy at /policies/terms-of-service (www.zogezeept.com), captured 2026-07-02. Verbatim baseline before withdrawal-compliance edits.
+> Baseline captured 2026-07-02 at /policies/terms-of-service; this version adds an online-withdrawal-form reference in Artikel 4.4 (Bijlage 1 kept) and a workshop fixed-date exemption clause. See git history for the untouched baseline.
 
 #### Artikel 1 – Definities
 
@@ -80,7 +80,7 @@ In deze algemene voorwaarden (“Algemene Voorwaarden”) wordt verstaan onder:
 
 Met betrekking tot Overeenkomsten op afstand die strekken tot de levering van Diensten gaat deze herroepingstermijn in op de dag waarop de Overeenkomst op afstand wordt gesloten. De Consument kan het herroepingsrecht echter niet meer uitoefenen na de volledige uitvoering van de Diensten, onder de voorwaarde dat de uitvoering is begonnen met uitdrukkelijke voorafgaande instemming van de Consument, mits de Consument hierbij heeft erkend dat hij zijn herroepingsrecht verliest van zodra de Onderneming de Overeenkomst op afstand volledig heeft uitgevoerd.
 
-- De Consument die gebruik wil maken van zijn herroepingsrecht, dient dit op ondubbelzinnige wijze kenbaar te maken aan de Onderneming. Indien gewenst, kan de Consument hiervoor gebruikmaken van het Modelformulier voor herroeping en dit opsturen naar [info@zogezeept.com](mailto:info@zogezeept.com)[](mailto:zogezeept@gmail.com), Zogezeept, Sint-Laureisstraat 65a, 2018 Antwerpen, België. De bewijslast van deze herroeping rust in ieder geval op de Consument.
+- De Consument die gebruik wil maken van zijn herroepingsrecht, dient dit op ondubbelzinnige wijze kenbaar te maken aan de Onderneming. Indien gewenst, kan de Consument hiervoor gebruikmaken van het Modelformulier voor herroeping en dit opsturen naar [info@zogezeept.com](mailto:info@zogezeept.com)[](mailto:zogezeept@gmail.com), Zogezeept, Sint-Laureisstraat 65a, 2018 Antwerpen, België. De Consument kan zijn herroeping ook eenvoudig melden via het online herroepingsformulier op onze website (zie de pagina Herroeping). De bewijslast van deze herroeping rust in ieder geval op de Consument.
 
 - Tijdens de herroepingstermijn zal de Consument zorgvuldig omgaan met de Goederen. Het uitgangspunt hierbij is dat de Consument de Goederen slechts mag hanteren en inspecteren zoals hij dat in de winkel zou mogen doen. De Consument zal aansprakelijk zijn voor elke waardevermindering van de Goederen die het gevolg is van een handeling die strijdig is met dit artikel.
 
@@ -89,6 +89,8 @@ Met betrekking tot Overeenkomsten op afstand die strekken tot de levering van Di
 - De Consument beschikt niet over enig herroepingsrecht voor de volgende categorieën van Goederen:
 
 - zeepstempels ontworpen volgens specifieke instructies van de Klant (bv. door het intypen tijdens het bestelproces van een tekst die in de zeepstempels verwerkt moet worden).
+
+- Voor workshops en andere activiteiten op een vaste datum (vrijetijdsbesteding) beschikt de Consument evenmin over een herroepingsrecht, overeenkomstig artikel VI.53, 12° van het Wetboek Economisch Recht.
 
 - De Consument die zijn herroepingsrecht uitoefent nadat de uitvoering van de Diensten reeds begonnen was op diens uitdrukkelijk verzoek, zal geen recht hebben op terugbetaling van het gedeelte van het betaalde bedrag dat evenredig is aan het gedeelte van de Diensten dat reeds is geleverd op het moment dat de Onderneming door de Consument in kennis is gesteld dat hij zijn herroepingsrecht uitoefent, vergeleken met de totale uitvoering van de Overeenkomst op afstand.
 

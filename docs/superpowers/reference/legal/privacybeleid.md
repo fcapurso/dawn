@@ -1,6 +1,6 @@
 # Privacybeleid
 
-> Snapshot of the published policy at /policies/privacy-policy (www.zogezeept.com), captured 2026-07-02. Verbatim baseline before withdrawal-compliance edits.
+> Baseline captured 2026-07-02 at /policies/privacy-policy; this version adds the Google Workspace processor note (in the "derden / derde landen" section). See git history for the untouched baseline.
 
 **Privacyverklaring**
 
@@ -176,7 +176,7 @@ Waar nodig doen wij een beroep op externe dienstverleners, zogenaamde “verwerk
 
  
 
-Wanneer wij uw gegevens doorgeven aan verwerkers die ze buiten de Europees Economische Ruimte verwerken, zal dit enkel gebeuren naar landen waarvan de Europese Commissie heeft bevestigd dat ze een passend beschermingsniveau van uw gegevens waarborgen, of wanneer andere maatregelen genomen zijn om de rechtmatige verwerking van uw gegevens in deze derde landen te verzekeren. Momenteel vindt dergelijke doorgifte onder meer plaats omdat de Webshop wordt aangedreven door Shopify, wat tot gevolg heeft dat uw gegevens mogelijk verwerkt worden in Canada en/of de Verenigde Staten.
+Wanneer wij uw gegevens doorgeven aan verwerkers die ze buiten de Europees Economische Ruimte verwerken, zal dit enkel gebeuren naar landen waarvan de Europese Commissie heeft bevestigd dat ze een passend beschermingsniveau van uw gegevens waarborgen, of wanneer andere maatregelen genomen zijn om de rechtmatige verwerking van uw gegevens in deze derde landen te verzekeren. Momenteel vindt dergelijke doorgifte onder meer plaats omdat de Webshop wordt aangedreven door Shopify, wat tot gevolg heeft dat uw gegevens mogelijk verwerkt worden in Canada en/of de Verenigde Staten. Zo maken wij onder meer gebruik van Google Workspace (Google Ireland Ltd.) voor onze klantcommunicatie en voor de afhandeling van herroepingsverzoeken; deze verwerking valt onder de gegevensverwerkingsovereenkomst van Google Workspace.
 
  
 
