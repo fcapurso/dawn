@@ -18,13 +18,19 @@ The `dawn-backflow` skill folds live admin/config edits made on `current` back i
 bash .claude/skills/dawn-backflow/backflow.sh
 ```
 
-## Exit codes and responses
+Backflow now performs a **direction-aware 3-way reconcile** of the config files (see
+`docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md`):
 
-### Exit 0 — success (Case A: config-only)
+- **staging-ahead** settings (you changed them in staging's preview theme) are **kept** and will
+  promote to `current`.
+- **current-ahead** settings (edited in the live theme editor) are **folded** into staging's
+  snapshot.
+- **collisions** (both sides changed the same setting differently) stop for your decision.
 
-The config-snapshot commit at the tip of `staging` was amended in place. Commit count is unchanged. Confirm with the user:
+### Exit 0 — reconciled (or nothing to do)
 
-> Backflow complete. The config snapshot at the tip of `staging` was amended — still exactly one config commit, now containing the live admin settings.
+The config snapshot at the tip of `staging` was amended with the merged result (or left unchanged
+if only staging-ahead values existed). Confirm with the user which settings were folded.
 
 ### Exit 10 — guard triggered
 
@@ -33,16 +39,31 @@ Report the guard message from stderr. Common causes:
 - **Dirty working tree** — commit or stash local changes first, then re-run.
 - **Staging tip is not the config snapshot** — the commit ordering is wrong; the config snapshot must be at the tip of `staging` before backflow can amend it. Fix the branch ordering first.
 
-### Exit 21 — STOP: non-config changes need classification
+### Exit 21 — decisions or classification needed
 
-The script found files on `current` that are not tracked config paths. **Stop and work through each file with the user before re-running.**
+Two possible causes:
 
-For each listed file, decide:
+1. **Config collisions.** The script prints each colliding `file → path` with its base / staging /
+   current values. For each, ask the operator via `AskUserQuestion`:
+
+   | Option | Meaning |
+   |---|---|
+   | **Keep staging** | staging's value wins (promotes to current) |
+   | **Take current** | fold the live edit into staging |
+   | **Enter a value** | supply a replacement (follow-up open-text; parsed as JSON when valid) |
+
+   Write the answers to a decisions TSV — one line per collision:
+   `<file>\t<path-json>\t<staging|current|value:JSON>` — then re-run:
+
+   ```bash
+   bash .claude/skills/dawn-backflow/backflow.sh --decisions /tmp/decisions.tsv
+   ```
+
+2. **Current-ahead non-config files.** Classify each per the table below (enrichment → own L2
+   commit; generic → `dawn-harvest`; churn → ignore), then re-run.
 
 | Classification | Action |
 |---|---|
 | **Enrichment** (L2 store-specific logic or content) | Create its own L2 commit on `staging` per conventions §4 Case B |
 | **Generic L1 improvement** (something all Dawn stores would want) | Use the `dawn-harvest` skill to pull it into the `customizations` layer |
 | **Churn / noise** (reverted, irrelevant, or already present) | Ignore — no action needed |
-
-Once all non-config files are resolved (either committed or confirmed as ignorable), re-run `backflow.sh`. It will proceed with the config amend only if the remaining diff is config-only.
