@@ -148,6 +148,19 @@ no store data, new utility sections or snippets with no store-specific reference
   theme editor (section reordering, settings changes), treat it as config even if the diff looks
   structural. The template itself is admin-owned. Any genuinely new section code lives in the
   section file, which is harvestable separately.
+- **A template JSON = skeleton (structure) + `settings` (content) — this splits custom templates
+  too.** A template's structure is everything *outside* the `settings` objects; its content is the
+  values *inside* them (section- **and** block-level, since `blocks` is a sibling of `settings`).
+  So an already-harvested custom suffix template (e.g. `page.withdrawal.json`) that shows up as a
+  candidate is decided mechanically: run `dawn::classify_template_json <templates/….json>`.
+  - `config` — only in-`settings` values differ (heading/intro/copy, colours, paddings, block
+    setting values). Theme-editor content mirrored from live; leave it in the config snapshot,
+    do not re-harvest.
+  - `l2` — the skeleton differs (section add/remove/reorder, `type`, `disabled`, `name`, or block
+    add/remove/reorder/`type`), or the template is new/removed. Harvest the structural change as L2.
+  A structural template change is never L1. Keep the store's `settings` values out of the L2 commit
+  (reset them to the `customizations` baseline) so they stay config — see the `--l1-content` split
+  in the `dawn-harvest` skill.
 - **The operator decides.** `dawn::harvest_candidates` provides L1/L2 hints via keyword scan.
   `dawn-harvest` surfaces those hints with reasoning. The operator confirms, overrides, or marks
   a candidate as Config (content only) via `AskUserQuestion`.

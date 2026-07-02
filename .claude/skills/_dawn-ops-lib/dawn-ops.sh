@@ -157,6 +157,46 @@ dawn::classify_changes(){
   echo "VERDICT $verdict"
 }
 
+# --- Template JSON structure-vs-content classifier ---
+#
+# For a template JSON that differs between customizations and staging, decide whether
+# the difference is STRUCTURE (→ L2) or only in-section settings values (→ Config).
+#
+# Rule: a template's structure is everything OUTSIDE the `settings` objects. Strip every
+# `settings` object (section-level AND block-level, since `blocks` is a sibling of
+# `settings`), then compare the remainder. Any difference in the remainder is structural:
+# section add/remove/reorder, section `type`, `disabled`, `name`, or block add/remove/
+# reorder/`type`. If the remainders match and only values inside `settings` differ, the
+# change is content that belongs in the config snapshot, not in customizations.
+#
+# A structural change is always L2 (store-shaped), never L1.
+# A template present on only one side (added/removed), or unparseable, is treated as L2.
+
+# Strip a leading JSONC /* ... */ header comment (Shopify auto-generates one) so jq can parse.
+dawn::_strip_jsonc(){ perl -0pe 's{^\s*/\*.*?\*/\s*}{}s'; }
+
+# stdin: raw template JSON. stdout: normalized JSON with every `settings` object removed.
+dawn::_template_skeleton(){
+  dawn::_strip_jsonc | jq -S '
+    def strip:
+      if   type=="object" then (with_entries(select(.key != "settings")) | map_values(strip))
+      elif type=="array"  then map(strip)
+      else . end;
+    strip' 2>/dev/null
+}
+
+# dawn::classify_template_json <template-path>
+# Stdout: "config" or "l2".  Exit: 0 if config (skeletons match), 1 if l2 (structural).
+dawn::classify_template_json(){
+  local path="${1:?usage: dawn::classify_template_json <template-path>}"
+  local cust stag
+  cust=$(git show "customizations:$path" 2>/dev/null | dawn::_template_skeleton)
+  stag=$(git show "staging:$path" 2>/dev/null | dawn::_template_skeleton)
+  if [ -z "$cust" ] || [ -z "$stag" ]; then echo l2; return 1; fi   # one side missing/unparseable
+  if [ "$cust" = "$stag" ]; then echo config; return 0; fi
+  echo l2; return 1
+}
+
 # Emit candidate files to harvest from staging into customizations.
 # Output: one line per file: "<verdict>  <L1|L2>  <path>"
 # Scope: git diff --name-only customizations staging, excluding config-paths.txt, docs/, .claude/

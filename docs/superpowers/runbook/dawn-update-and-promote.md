@@ -52,6 +52,11 @@ git checkout staging
 git checkout origin/current -- config/settings_data.json sections/*-group.json templates/*.json
 git commit --amend --no-edit          # ONE config commit, forever — never appended
 ```
+> The `templates/*.json` glob is intentionally broader than `config-paths.txt` (which lists only
+> stock templates). A **custom** suffix template's `settings` **values** are config too — theme-editor
+> content mirrored from live — so this glob sweeps them into the snapshot, while the template's
+> *structure* stays as its `L2:` commit in `customizations`. See `conventions.md §5`
+> (`dawn::classify_template_json`) for the skeleton-vs-`settings` split.
 
 **Case B — a new store-specific enrichment** (template/page/integration; config would no longer be
 the tip). Because the config commit is regenerable, **drop it, add the enrichment commit, recreate

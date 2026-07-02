@@ -59,6 +59,30 @@ says and shows (content)?
 
 **When in doubt → L2.** Never L1 unless certain.
 
+### Template JSON candidates — mechanical structure-vs-content split
+
+For any candidate under `templates/*.json`, **do not eyeball the diff** — the boundary is
+decidable. A template's **structure** is everything outside the `settings` objects; its
+**content** is the values inside `settings` (both section-level and block-level, since `blocks`
+is a sibling of `settings`). Run:
+
+```bash
+dawn::classify_template_json <templates/….json>   # prints "config" or "l2"
+```
+
+- **`config`** — only in-`settings` values differ (heading/intro/copy, colours, paddings, block
+  setting values). This is theme-editor content mirrored from live; it belongs in the config
+  snapshot. Mark as **Config (content only)** in Step 4 and do not harvest.
+- **`l2`** — the skeleton differs (section add/remove/reorder, section `type`, `disabled`,
+  `name`, or block add/remove/reorder/`type`), or the template is new/removed on one side. This
+  is store-shaped structure → harvest as **L2**. A structural template change is never L1.
+
+If a live template mixes a real structural change **with** incidental settings drift, harvest
+only the skeleton as L2 and leave the settings values as config: write the desired template
+(skeleton change applied, drifted setting values reset to the `customizations` baseline) to a
+temp file and pass it via `--l1-content <path>:<tmp>` to `harvest-commit.sh` (the flag copies
+arbitrary content into the commit despite its L1 name).
+
 For each group that is L1 or L2:
 1. Draft a commit message: `L1: <description>` or `L2: <description>`.
 2. Set the `Inert:` trailer from the classifier verdict (`inert` → `Inert: yes`; `active` →
