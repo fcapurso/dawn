@@ -89,6 +89,42 @@ dawn::config_targets(){
   } | sort -u
 }
 
+# 3-way classify every leaf of every reconcile target.
+# Emits (only for non-agreeing leaves), tab-separated:
+#   <verdict>\t<file>\t<path-json>\t<base>\t<staging>\t<current>
+# verdict ∈ current_ahead | staging_ahead | collision.  Absent => $DAWN_ABSENT.
+# NOTE: awk (not bash assoc arrays) for grouping; awk (not sed) for tab tagging.
+# Safe because leaf lines are canonical jq -c: values never contain a raw TAB.
+dawn::reconcile_scan(){
+  local cur base f
+  cur="$(dawn::current_ref)"
+  base="$(git merge-base staging "$cur" 2>/dev/null)" \
+    || { echo "GUARD: no merge-base for staging vs $cur" >&2; return $DAWN_GUARD; }
+  [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $cur" >&2; return $DAWN_GUARD; }
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    {
+      dawn::config_leaves "$base"   "$f" | awk '{print "B\t"$0}'
+      dawn::config_leaves staging   "$f" | awk '{print "S\t"$0}'
+      dawn::config_leaves "$cur"    "$f" | awk '{print "C\t"$0}'
+    } | awk -F'\t' -v file="$f" -v ABSENT="$DAWN_ABSENT" '
+      { side=$1; path=$2; val=$3; seen[path]=1
+        if(side=="B"){b[path]=val}
+        else if(side=="S"){s[path]=val}
+        else {c[path]=val} }
+      END{
+        for(p in seen){
+          bv=(p in b)?b[p]:ABSENT; sv=(p in s)?s[p]:ABSENT; cv=(p in c)?c[p]:ABSENT
+          if(sv==cv) continue
+          if(sv==bv && cv!=bv) v="current_ahead"
+          else if(cv==bv && sv!=bv) v="staging_ahead"
+          else v="collision"
+          printf "%s\t%s\t%s\t%s\t%s\t%s\n", v, file, p, bv, sv, cv
+        }
+      }'
+  done < <(dawn::config_targets)
+}
+
 # rc 0 if origin/current has config changes not in staging (backflow needed), else rc 1.
 dawn::backflow_pending(){
   local ref; ref="refs/remotes/origin/current"
