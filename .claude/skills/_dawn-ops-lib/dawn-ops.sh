@@ -6,6 +6,19 @@ DAWN_OK=0 DAWN_GUARD=10 DAWN_STOP_LIVE=20 DAWN_STOP_JUDGMENT=21 DAWN_VERIFY=30
 # Directory of this lib (for sibling files like config-paths.txt), resolved even when sourced.
 DAWN_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Sentinel for "leaf absent at this ref" — a byte JSON can never contain.
+DAWN_ABSENT=$'\x01ABSENT'
+
+# Resolve the ref that represents the live theme. Test seam: DAWN_CURRENT_REF.
+dawn::current_ref(){
+  if [ -n "${DAWN_CURRENT_REF:-}" ]; then echo "$DAWN_CURRENT_REF"; return 0; fi
+  if git rev-parse --verify -q refs/remotes/origin/current >/dev/null; then
+    echo refs/remotes/origin/current
+  else
+    echo origin/current
+  fi
+}
+
 dawn::current_branch(){ git rev-parse --abbrev-ref HEAD; }
 
 dawn::assert_not_current(){
