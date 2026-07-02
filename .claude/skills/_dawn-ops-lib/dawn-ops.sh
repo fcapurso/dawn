@@ -132,58 +132,64 @@ dawn::reconcile_scan(){
   done < <(dawn::config_targets)
 }
 
-# rc 0 (pending) if any current-ahead or collision leaf exists; else rc 1.
+# rc 0 (pending) if any current-ahead leaf exists; else rc 1.
+# Collisions are NOT counted here: they are decided at backflow time (backflow stops with
+# exit 21 until every collision has a decision), and a collision resolved to staging is a
+# deliberate staging-wins outcome that promote is meant to carry. Statelessly a
+# resolved-to-staging collision is indistinguishable from an unresolved one (base absent,
+# staging != current), so counting collisions here would block promote forever after you
+# chose staging. A genuinely un-folded live edit shows up as current_ahead and does block.
 dawn::reconcile_pending(){
   local scan; scan="$(dawn::reconcile_scan)" || return $DAWN_GUARD
-  grep -qE '^(current_ahead|collision)'$'\t' <<< "$scan"
+  grep -qE '^current_ahead'$'\t' <<< "$scan"
 }
 
 # Deprecated name — kept so callers migrate incrementally. Prefer dawn::reconcile_pending.
 dawn::backflow_pending(){ dawn::reconcile_pending; }
 
-# Print the merged content for ONE file to stdout.
+# Print the merged content for ONE file to stdout, or nothing if the file needs no change.
 # Args: <file> <decisions-file>. Decisions lines: <file>\t<path-json>\t<staging|current|value:JSON>
 # Returns $DAWN_STOP_JUDGMENT (and lists paths) if a collision has no decision.
+#
+# Substrate = STAGING (not current): staging is what we commit, and for suffix templates the
+# skeleton is staging-authoritative — rebuilding from current would clobber staging's structure.
+# We therefore apply ONLY the folds that move staging toward the reconciled result:
+#   current_ahead                -> take current's value (fold the live edit into staging)
+#   collision resolved to current -> take current's value
+#   collision resolved to value   -> take the entered value
+# staging_ahead and collisions resolved to staging need NO op (staging already holds them).
+# If there are no folds, emit nothing so the caller leaves staging's file byte-for-byte intact
+# (no spurious re-serialization churn).
 dawn::reconcile_apply(){
   local file="$1" decisions="$2"
-  local cur; cur="$(dawn::current_ref)"
-  local class; class="$(dawn::config_class "$file")"
 
-  # Substrate = current's document (order-preserving). Capture JSONC header to re-prepend.
   local raw header body
-  raw="$(git show "$cur:$file" 2>/dev/null)"
-  if [ -z "$raw" ]; then
-    [ "$class" = suffix ] && return 0   # no live version to protect; leave staging's as-is
-    raw="$(git show "staging:$file" 2>/dev/null)"
-  fi
+  raw="$(git show "staging:$file" 2>/dev/null)"
+  [ -z "$raw" ] && return 0   # staging lacks the file; nothing to reconcile into it
   header="$(printf '%s' "$raw" | perl -0ne 'print $1 if m{\A(\s*/\*.*?\*/\s*)}s')"
   body="$(printf '%s' "$raw" | dawn::_strip_jsonc)"
 
-  # Build the ops array: staging-ahead + resolved collisions.
+  # Build the fold ops. A fold sets (or deletes) a path in staging to current's / the chosen value.
   local ops='[]' verdict f p b s c res
   local -a unresolved=()
+  _dawn_fold(){ # $1 = value-json or $DAWN_ABSENT ; appends a set/del op for path $p
+    if [ "$1" = "$DAWN_ABSENT" ]; then
+      ops="$(jq -c --argjson p "$p" '. + [{p:$p,del:true}]' <<< "$ops")"
+    else
+      ops="$(jq -c --argjson p "$p" --argjson v "$1" '. + [{p:$p,v:$v}]' <<< "$ops")"
+    fi
+  }
   while IFS=$'\t' read -r verdict f p b s c; do
     [ "$f" = "$file" ] || continue
     case "$verdict" in
-      current_ahead) : ;;
-      staging_ahead)
-        if [ "$s" = "$DAWN_ABSENT" ]; then
-          ops="$(jq -c --argjson p "$p" '. + [{p:$p,del:true}]' <<< "$ops")"
-        else
-          ops="$(jq -c --argjson p "$p" --argjson v "$s" '. + [{p:$p,v:$v}]' <<< "$ops")"
-        fi ;;
+      staging_ahead) : ;;              # staging already holds the desired value
+      current_ahead) _dawn_fold "$c" ;;
       collision)
         res="$(awk -F'\t' -v f="$file" -v pp="$p" '$1==f && $2==pp {print $3}' "$decisions" 2>/dev/null | head -1)"
         case "$res" in
-          current) : ;;
-          staging)
-            if [ "$s" = "$DAWN_ABSENT" ]; then
-              ops="$(jq -c --argjson p "$p" '. + [{p:$p,del:true}]' <<< "$ops")"
-            else
-              ops="$(jq -c --argjson p "$p" --argjson v "$s" '. + [{p:$p,v:$v}]' <<< "$ops")"
-            fi ;;
-          value:*)
-            ops="$(jq -c --argjson p "$p" --argjson v "${res#value:}" '. + [{p:$p,v:$v}]' <<< "$ops")" ;;
+          staging) : ;;                # staging already holds it
+          current) _dawn_fold "$c" ;;
+          value:*) _dawn_fold "${res#value:}" ;;
           *) unresolved+=("$p") ;;
         esac ;;
     esac
@@ -194,6 +200,9 @@ dawn::reconcile_apply(){
     printf '  %s\n' "${unresolved[@]}" >&2
     return $DAWN_STOP_JUDGMENT
   fi
+
+  # No folds => file already correct on staging; emit nothing so the caller skips rewriting it.
+  [ "$ops" = "[]" ] && return 0
 
   [ -n "$header" ] && printf '%s\n' "$header"
   printf '%s' "$body" | jq --argjson ops "$ops" '

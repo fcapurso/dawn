@@ -5,7 +5,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../_dawn-ops-lib" && pwd)/dawn-ops.
 PUSH="${DAWN_PUSH:-git push --force-with-lease}"
 REMOTE="${DAWN_REMOTE:-origin}"
 
-dawn::reconcile_pending && { echo "GUARD: backflow first — origin/current has current-ahead edits or unresolved collisions" >&2; exit $DAWN_GUARD; }
+dawn::reconcile_pending && { echo "GUARD: backflow first — origin/current has current-ahead edits not yet folded into staging" >&2; exit $DAWN_GUARD; }
 dawn::assert_staging_clean || exit $DAWN_GUARD
 
 stamp="config-archive/$(date +%Y-%m-%d-%H%M%S)"

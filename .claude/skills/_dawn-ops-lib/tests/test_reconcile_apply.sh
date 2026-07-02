@@ -31,13 +31,21 @@ printf 'sections/footer-group.json\t["sections","f","settings","collide"]\tvalue
 merged=$(in_repo "$d" "dawn::reconcile_apply sections/footer-group.json '$dec'")
 assert_eq "$(jq -r '.sections.f.settings.collide' <<< "$merged")" "X" "collision -> entered value"
 
-# staging-ahead DELETION: staging removed a key present at base+current => merged output omits it
+# current-ahead DELETION: current removed a key present at base+staging => fold removes it from staging
 dd=$(dawn_test_repo)
 commit_on "$dd" staging sections/footer-group.json <<< '{"sections":{"f":{"settings":{"keep":"base","drop":"base"}}}}' "base"
-git -C "$dd" checkout -q current; git -C "$dd" merge -q sync 2>/dev/null || git -C "$dd" merge -q staging -m sync
-commit_on "$dd" staging sections/footer-group.json <<< '{"sections":{"f":{"settings":{"keep":"base"}}}}' "drop key"
+git -C "$dd" checkout -q current; git -C "$dd" merge -q staging -m sync
+commit_on "$dd" current sections/footer-group.json <<< '{"sections":{"f":{"settings":{"keep":"base"}}}}' "current drops key"
 mm=$(in_repo "$dd" 'dawn::reconcile_apply sections/footer-group.json /dev/null')
-assert_eq "$(jq -r '.sections.f.settings.drop // "GONE"' <<< "$mm")" "GONE" "staging-ahead deletion removes key"
+assert_eq "$(jq -r '.sections.f.settings.drop // "GONE"' <<< "$mm")" "GONE" "current-ahead deletion folded out"
 assert_eq "$(jq -r '.sections.f.settings.keep' <<< "$mm")" "base" "sibling key retained"
+
+# staging-ahead only => NO fold => empty output (staging left byte-for-byte untouched, no churn)
+ss=$(dawn_test_repo)
+commit_on "$ss" staging config/settings_data.json <<< '{"a":"base"}' "base"
+git -C "$ss" checkout -q current; git -C "$ss" merge -q staging -m sync
+commit_on "$ss" staging config/settings_data.json <<< '{"a":"base","new":true}' "staging add"
+noop=$(in_repo "$ss" 'dawn::reconcile_apply config/settings_data.json /dev/null')
+assert_eq "$noop" "" "staging-ahead only => empty output (no rewrite)"
 
 echo "  reconcile_apply ok"

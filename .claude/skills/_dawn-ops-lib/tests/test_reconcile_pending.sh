@@ -18,4 +18,15 @@ commit_on "$d2" current sections/footer-group.json <<< '{"sections":{"f":{"setti
 in_repo "$d2" 'dawn::reconcile_pending'; rc=$?
 assert_rc "$rc" 0 "current-ahead => pending"
 
+# Case: collision only (both changed the same key differently) => NOT pending (rc 1).
+# Collisions are decided at backflow time, not blocked at the promote gate. A resolved-to-staging
+# collision is indistinguishable from an unresolved one statelessly, so it must not block promote.
+d3=$(dawn_test_repo)
+commit_on "$d3" staging sections/footer-group.json <<< '{"sections":{"f":{"settings":{"k":"base"}}}}'
+git -C "$d3" checkout -q current; git -C "$d3" merge -q staging -m sync
+commit_on "$d3" staging  sections/footer-group.json <<< '{"sections":{"f":{"settings":{"k":"S"}}}}'
+commit_on "$d3" current  sections/footer-group.json <<< '{"sections":{"f":{"settings":{"k":"C"}}}}'
+in_repo "$d3" 'dawn::reconcile_pending'; rc=$?
+assert_rc "$rc" 1 "collision only => not pending (decided at backflow, not blocked at promote)"
+
 echo "  reconcile_pending ok"
