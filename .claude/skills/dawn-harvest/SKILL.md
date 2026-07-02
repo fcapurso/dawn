@@ -83,6 +83,11 @@ only the skeleton as L2 and leave the settings values as config: write the desir
 temp file and pass it via `--l1-content <path>:<tmp>` to `harvest-commit.sh` (the flag copies
 arbitrary content into the commit despite its L1 name).
 
+> Note: for **suffix templates**, these `settings` values are now actively reconciled by
+> `dawn-backflow` (3-way merge), not merely left inert — see
+> `docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md`. The skeleton still
+> harvests as L2 here.
+
 For each group that is L1 or L2:
 1. Draft a commit message: `L1: <description>` or `L2: <description>`.
 2. Set the `Inert:` trailer from the classifier verdict (`inert` → `Inert: yes`; `active` →

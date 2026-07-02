@@ -24,7 +24,7 @@ dawn-vanilla      L0 — pristine Dawn @ fixed upstream commit; ff-only, never c
 |---|---|---|
 | `dawn-harvest` | Analyses staging vs customizations, groups files into proposed commits, classifies each as L1 (generic structure), L2 (store-shaped structure), or Config (content only — leave in snapshot), confirms interactively, then commits approved groups into `customizations` | After finishing features on staging |
 | `dawn-ship` | Lists shippable commits from `customizations` interactively, or ships a named commit directly — append-only cherry-pick onto `current` | To push an inert building block to the live theme early, or to ship a tested active change incrementally |
-| `dawn-backflow` | Mirrors live admin/editor changes from `current` back into `staging` | Before a promote, or when the admin UI has config you need in staging |
+| `dawn-backflow` | Direction-aware 3-way config reconcile between `staging` and `current` — staging-ahead values kept, current-ahead values folded, collisions prompted | Before a promote, or when the admin UI has config you need in staging |
 | `dawn-promote` | Force-pushes `staging` → `current` (the authoritative reset; guarded) | Full release after rebuild, backflow, and testing |
 | `dawn-upgrade` | Fast-forwards `dawn-vanilla` to a new Dawn release, then rebases `customizations` and `staging` | When a new Dawn version is available |
 

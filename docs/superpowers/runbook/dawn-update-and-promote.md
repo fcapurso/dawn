@@ -35,10 +35,11 @@ git log --oneline staging..origin/current        # inspect what the bot/admin ch
 ### The config-snapshot invariant (this is what keeps history from re-rotting)
 
 **`staging` always ends in exactly ONE config-snapshot commit, kept at the tip, and that commit is
-regenerable — its content is *always* just "whatever `current`'s config files are right now."**
-You never hand-author it, so you can drop and recreate it freely; the real content lives on
-`current`. The config files are: `config/settings_data.json`, `sections/*-group.json`, and the
-stock `templates/*.json`.
+regenerable — its content is the output of the 3-way config reconcile of {base, staging, current}.
+Recreate it by re-running backflow, never by copying current verbatim (that would drop values
+authored on staging).** You never hand-author it, so you can drop and recreate it freely. The
+config files are: `config/settings_data.json`, `sections/*-group.json`, and the stock
+`templates/*.json`.
 
 Route each backflowed change by type:
 
@@ -46,17 +47,16 @@ Route each backflowed change by type:
 - **locale / cosmetic churn** → ignore; it's Shopify re-serialization (see `drops.md`).
 - **config churn** (settings/layout edits, app blocks) and **new enrichments** → two cases below.
 
-**Case A — config churn only** (no new feature; config is already the tip → just refresh & amend):
+**Case A — config churn only** (no new feature; config is already the tip → reconcile & amend):
 ```bash
-git checkout staging
-git checkout origin/current -- config/settings_data.json sections/*-group.json templates/*.json
-git commit --amend --no-edit          # ONE config commit, forever — never appended
+bash .claude/skills/dawn-backflow/backflow.sh
 ```
-> The `templates/*.json` glob is intentionally broader than `config-paths.txt` (which lists only
-> stock templates). A **custom** suffix template's `settings` **values** are config too — theme-editor
-> content mirrored from live — so this glob sweeps them into the snapshot, while the template's
-> *structure* stays as its `L2:` commit in `customizations`. See `conventions.md §5`
-> (`dawn::classify_template_json`) for the skeleton-vs-`settings` split.
+The script performs the direction-aware 3-way reconcile and amends the snapshot in place. Never
+copy `origin/current` config files verbatim — that would overwrite values deliberately authored
+on staging. See `docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md`.
+> A **custom** suffix template's `settings` **values** are config too — the reconcile handles them
+> leaf-by-leaf, while the template's *structure* stays as its `L2:` commit in `customizations`.
+> See `conventions.md §5` (`dawn::classify_template_json`) for the skeleton-vs-`settings` split.
 
 **Case B — a new store-specific enrichment** (template/page/integration; config would no longer be
 the tip). Because the config commit is regenerable, **drop it, add the enrichment commit, recreate
@@ -67,9 +67,8 @@ git reset --hard HEAD~1                # drop the config snapshot (regenerable �
 # add the enrichment as its own commit:
 git checkout origin/current -- templates/product.newtype.json
 git commit -m "L2 enrichment: product.newtype template" -m "Prereqs: <metafields/app/suffix>"
-# recreate the config snapshot back at the tip:
-git checkout origin/current -- config/settings_data.json sections/*-group.json templates/*.json
-git commit -m "L2: store config snapshot"
+# recreate the config snapshot via the reconcile (never copy current verbatim — staging may have authored values):
+bash .claude/skills/dawn-backflow/backflow.sh
 ```
 (For a *generic* feature, don't use Case B — route it to §4, whose rebase keeps config at the tip.)
 
@@ -83,7 +82,7 @@ upgrades, so its history is a working artifact (unlike `customizations`, which i
 ## 2. Promote — publish `staging` to the live theme
 
 **Pre-flight (all must be true):**
-- [ ] Backflow done (section 1) — no un-captured admin edits remain on `current`.
+- [ ] Backflow done (section 1) — no current-ahead config edits or unresolved collisions remain (the reconcile guard, `dawn::reconcile_pending`); staging-ahead values are expected and will promote.
 - [ ] `staging` tested on the preview theme.
 - [ ] `config-archive/<date>` tag pushed (preserves pre-promote settings history — below).
 - [ ] You accept the first-promote consequence (locale reformat + 6 unused regional locales removed —
@@ -116,7 +115,7 @@ git checkout current && git reset --hard origin/current   # keep local current i
 git checkout staging
 ```
 > `--force-with-lease` (not `--force`) so the push fails safely if `origin/current` advanced
-> (i.e. an un-backflowed admin edit) — which would mean you skipped section 1.
+> (i.e. a current-ahead edit not yet folded by the reconcile) — which would mean you skipped section 1.
 
 **Rollback:** `git push --force-with-lease origin pre-cleanup-backup:current` restores the original
 pre-cleanup live state; or push any earlier known-good `staging` SHA.
