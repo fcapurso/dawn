@@ -129,10 +129,13 @@ Options per collision:
 |---|---|
 | **Keep staging** | staging's value wins (will promote to current) |
 | **Take current** | current's value wins (folds the live edit into staging) |
+| **Enter a value** | operator supplies a replacement value; it is set at that path and wins |
 
-`Keep staging` and `Take current` are the only options in v1 — no free-text custom value (YAGNI; a
-custom value is just a staging edit you can make in the preview editor and re-run). All collisions
-are resolved before any file is written; a partially-answered run writes nothing.
+The **Enter a value** option is a follow-up open-text question (per the `AskUserQuestion` "Other"
+affordance). The supplied text is parsed as JSON if it is valid JSON (so `true`, `36`, or a quoted
+string round-trip to the right type); otherwise it is stored as a string. It is then materialised at
+the collision path exactly like a staging-ahead value. All collisions are resolved before any file
+is written; a partially-answered run writes nothing.
 
 ---
 
@@ -197,23 +200,37 @@ preserved staging-ahead), so the merged result reaches the live theme as one aut
 
 ## 6. Scope
 
-**In scope (v1):** the existing `config-paths.txt` set — `config/settings_data.json`,
-`config/settings_schema.json`, `sections/header-group.json`, `sections/footer-group.json`, and the
-default templates (`index`, `cart`, `collection`, `article`, `blog`, `password`, `product`). These
-are the files the reconcile parses and 3-way-merges.
+The reconcile parses and 3-way-merges two classes of file, distinguished by **which of their leaves
+count as config**:
 
-**Out of scope — non-config divergence routing is unchanged.** Files outside `config-paths.txt`
+**A. Full-file config — every leaf reconciled.** The existing `config-paths.txt` set:
+`config/settings_data.json`, `config/settings_schema.json`, `sections/header-group.json`,
+`sections/footer-group.json`, and the default templates (`index`, `cart`, `collection`, `article`,
+`blog`, `password`, `product`). Per convention §4 these files are admin-owned in full, so all leaves
+are config.
+
+**B. Suffix templates — only `settings` leaves reconciled.** Custom suffix templates
+(`templates/<type>.<suffix>.json`, e.g. `page.withdrawal.json`, `product.soap.json`) are
+**skeleton + `settings`**. The existing model already splits them: skeleton (section/block
+add/remove/reorder, `type`, `disabled`, `name`, `block_order`) → **L2 structure, harvested**;
+`settings` values → **content**. So the reconcile covers **only leaves whose JSON path passes
+through a `settings` object** (section-level and block-level). This is the protection the "yes,
+I edit suffix-template copy live" case needs: a live copy edit becomes a **current-ahead** settings
+leaf and is folded in (or surfaces as a collision) instead of being **silently clobbered** by the
+promote force-push. Skeleton leaves are **excluded** from the reconcile and continue to route to
+`dawn-harvest` exactly as today.
+
+Suffix-template detection: a `templates/*.json` whose basename still contains a dot after stripping
+`.json` (e.g. `page.withdrawal` → suffix; `product` → default). Default templates are covered by
+set A via their explicit `config-paths.txt` entries.
+
+**Out of scope — non-config divergence routing is unchanged.** Non-config, non-suffix-template files
 continue through the existing `dawn-backflow` Exit-21 flow (classify each as enrichment → L2 commit,
-generic → `dawn-harvest`, or churn → ignore). This design does not touch `dawn-harvest`,
-`dawn-ship`, the L1/L2/Inert classification, or the promote force-push mechanics.
-
-**Deliberately not solved here — suffix-template settings drift.** Custom suffix templates
-(`templates/page.*.json`, `product.*.json`) are not in `config-paths.txt`; their `settings` blocks
-have "nowhere clean to live" and perpetually surface as `dawn-harvest` candidates classified
-`config`. They already promote correctly today (non-config → not guarded → carried by the promote
-force-push). Bringing their `settings` blocks into the reconcile set is a natural future extension
-but is **explicitly deferred** to keep v1 focused. Noted so the boundary is intentional, not
-forgotten.
+generic → `dawn-harvest`, or churn → ignore). A suffix template that differs **only** in `settings`
+is now handled by the reconcile (no Exit-21); one whose **skeleton** differs still routes to harvest
+for the structural part (mixed settings+skeleton drift: reconcile the settings, harvest the
+skeleton — the existing `--l1-content` split in `dawn-harvest` already covers this). This design does
+not touch `dawn-ship`, the L1/L2/Inert classification, or the promote force-push mechanics.
 
 ---
 
@@ -222,10 +239,17 @@ forgotten.
 New lib functions in `dawn-ops.sh` (implementation detail for the plan; semantics fixed here):
 
 ```
+dawn::config_class <file>
+    # "full"   -> file is in config-paths.txt (set A): all leaves are config
+    # "suffix" -> templates/<type>.<suffix>.json (set B): only settings leaves
+    # ""       -> not a reconcile target (routes to the existing non-config flow)
+
 dawn::config_leaves <ref> <file>
     # Emit a canonical leaf map for one config file at one ref:
     #   one line per leaf:  <json-path>\t<canonical-value>
     # Leaf = scalar OR whole array; objects recursed. Uses jq.
+    # For class "suffix", restrict to leaves whose path passes through a
+    #   `settings` object (section- or block-level); skeleton leaves omitted.
     # Missing file/key => leaf absent (no line).
 
 dawn::reconcile_file <file>   (dry-run and apply modes)
@@ -240,14 +264,20 @@ dawn::reconcile_file <file>   (dry-run and apply modes)
     #   staging-ahead leaves and resolved-to-staging collisions), write file.
 
 dawn::reconcile_pending
-    # True iff any config file has a current-ahead leaf or an unresolved
-    # collision. Replaces dawn::backflow_pending everywhere it is used.
+    # True iff any reconcile-target file has a current-ahead leaf or an
+    # unresolved collision. Replaces dawn::backflow_pending everywhere.
 ```
 
+The reconcile-target file set is `{full-config files from config-paths.txt} ∪ {suffix templates
+that differ between refs}`, each processed under its `dawn::config_class`.
+
 Merge materialisation detail: build the output document from **current** (so live structure/order is
-the substrate), then overlay the staging-ahead leaves and staging-resolved collisions by JSON path
-with `jq`'s `setpath`/`delpaths`. This preserves current's serialization/order for everything the
-merchant owns and injects only the deliberately-staged values.
+the substrate), then overlay the staging-ahead leaves, staging-resolved collisions, and any
+operator-entered values by JSON path with `jq`'s `setpath`/`delpaths`. This preserves current's
+serialization/order for everything the merchant owns and injects only the deliberately-staged
+values. For suffix templates only `settings`-path leaves are ever overlaid, so the skeleton on the
+merged file remains current's — the staging skeleton reaches current later via the promote
+force-push (structure is staging-authoritative by design).
 
 Per-file loop lives in `dawn-backflow`; the lib provides the mechanics.
 
@@ -258,7 +288,7 @@ Per-file loop lives in `dawn-backflow`; the lib provides the mechanics.
 | File | Change |
 |---|---|
 | `_dawn-ops-lib/dawn-ops.sh` | add `dawn::config_leaves`, `dawn::reconcile_file`, `dawn::reconcile_pending`; keep `dawn::backflow_pending` as a thin alias or remove after callers migrate |
-| `dawn-backflow/backflow.sh` | replace the blind per-file `checkout current` with the reconcile loop; drive collision prompts via the skill; keep the Exit-21 non-config routing |
+| `dawn-backflow/backflow.sh` | replace the blind per-file `checkout current` with the reconcile loop over `{full-config ∪ differing suffix templates}`; drive collision prompts via the skill; keep Exit-21 routing for non-config files and for suffix-template *skeleton* drift |
 | `dawn-backflow/SKILL.md` | document the reconcile behaviour, the collision `AskUserQuestion` step, and the new "staging-ahead survives" guarantee |
 | `dawn-promote/promote.sh` | guard on `dawn::reconcile_pending` instead of `dawn::backflow_pending` |
 | `_dawn-ops-lib/conventions.md` | §4: snapshot is regenerable *via reconcile*, not "= current"; add the direction-aware verdict table; Case B recreate = reconcile |
@@ -283,6 +313,11 @@ No change to `config-paths.txt` contents (same file set).
 - **Array element-level intent** (operator wanted to keep some blocks from each side): not
   supported — arrays are atomic, so this is one collision. If finer control is ever needed, the
   operator edits the preview theme and re-runs. Documented limitation.
+- **Suffix template with mixed drift** (both `settings` and skeleton changed): the reconcile handles
+  the `settings` leaves; the skeleton part still routes to `dawn-harvest` (Exit-21). The two are
+  independent — reconciling settings never rewrites skeleton, so there is no interference.
+- **Operator-entered value fails to parse as JSON:** stored as a string (documented in §3); if the
+  path expects a non-string, that is the operator's choice and is applied verbatim.
 
 ---
 
@@ -294,12 +329,15 @@ in `promote.sh`). Fixture repo with `staging`/`current`/merge-base config files 
 1. **staging-ahead only** (the footer case) → no prompt, `reconcile_pending` false, promote allowed,
    staging value preserved.
 2. **current-ahead only** → folded automatically, no prompt.
-3. **collision** → one prompt; "Keep staging" and "Take current" each produce the right file.
+3. **collision** → one prompt; "Keep staging", "Take current", and an entered value each produce
+   the right file.
 4. **re-serialization noise** (same values, reordered/reformatted JSON) → zero deltas, no prompt.
 5. **array reorder** → exactly one delta/collision, not many.
 6. **add/delete matrix** → each row of §2.2's expanded list.
 7. **idempotence** → running reconcile twice with no new edits is a no-op.
 8. **Case B** (drop + recreate snapshot via reconcile) → staging-ahead config survives.
+9. **suffix template, settings-only drift** → reconciled (current-ahead copy edit folded, not
+   clobbered), no Exit-21; **skeleton drift** → routed to harvest, settings untouched.
 
 ---
 
@@ -317,7 +355,8 @@ in `promote.sh`). Fixture repo with `staging`/`current`/merge-base config files 
 
 ## 12. Out of scope / YAGNI / future
 
-- Free-text custom collision values — deferred; edit the preview theme and re-run.
-- Suffix-template `settings` reconciliation — deferred (§6); they promote correctly today.
+- Suffix-template **skeleton** reconciliation — out of scope by design; skeleton is
+  staging-authoritative L2 structure, harvested/shipped, not reconciled (§6). Only their `settings`
+  are reconciled.
 - Element-level array merging — deferred; arrays are atomic.
 - Any change to harvest, ship, or L1/L2/Inert classification — untouched.
