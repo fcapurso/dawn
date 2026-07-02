@@ -291,10 +291,28 @@ Per-file loop lives in `dawn-backflow`; the lib provides the mechanics.
 | `dawn-backflow/backflow.sh` | replace the blind per-file `checkout current` with the reconcile loop over `{full-config ∪ differing suffix templates}`; drive collision prompts via the skill; keep Exit-21 routing for non-config files and for suffix-template *skeleton* drift |
 | `dawn-backflow/SKILL.md` | document the reconcile behaviour, the collision `AskUserQuestion` step, and the new "staging-ahead survives" guarantee |
 | `dawn-promote/promote.sh` | guard on `dawn::reconcile_pending` instead of `dawn::backflow_pending` |
-| `_dawn-ops-lib/conventions.md` | §4: snapshot is regenerable *via reconcile*, not "= current"; add the direction-aware verdict table; Case B recreate = reconcile |
+| `dawn-harvest/SKILL.md` | no behaviour change; cross-reference only — a suffix template classified `config` now has its `settings` reconciled (not passively "left in the snapshot"); point the reader to this design |
+| `_dawn-ops-lib/conventions.md` | §4: snapshot is regenerable *via reconcile*, not "= current"; add the direction-aware verdict table; Case B recreate = reconcile; note suffix-template `settings` are reconciled while skeleton stays harvested |
 | `docs/superpowers/runbook/dawn-dev-and-release.md` | update the backflow/promote steps and Case B choreography |
+| `docs/superpowers/runbook/dawn-update-and-promote.md` | replace the "regenerable = whatever current is now" framing (line ~38) with "regenerable via reconcile"; update the Case-B `reset --hard HEAD~1` recreate steps (lines ~62–72) to recreate via reconcile; update the promote checklist's backflow-guard item (lines ~86, ~119) for the direction-aware guard |
 
 No change to `config-paths.txt` contents (same file set).
+
+### Documentation-consistency principle
+
+**Living docs are updated; dated artifacts are not rewritten.**
+
+- **Update to match the new behaviour:** `conventions.md`, both runbooks
+  (`dawn-dev-and-release.md`, `dawn-update-and-promote.md`), and the affected skill `SKILL.md`
+  files (`dawn-backflow`, cross-ref in `dawn-harvest`). These are the canonical, always-current
+  references operators read.
+- **Leave as point-in-time records:** dated specs, plans, and inventory files under
+  `docs/superpowers/{specs,plans,inventory}/` (including this one after approval). They document
+  decisions as of their date and are superseded by newer dated docs, not edited in place.
+- **Verification:** the implementation plan ends with a consistency sweep — grep the living-doc set
+  for the invalidated phrases (`current wins`, `whatever current`, `checkout .*current` in the
+  backflow context, the old `backflow_pending` guard description) and confirm none remain in a
+  canonical doc.
 
 ---
 
