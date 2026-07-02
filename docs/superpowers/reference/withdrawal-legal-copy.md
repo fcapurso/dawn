@@ -12,7 +12,7 @@
 - **No product seals today.** The hygiene exemption for sealed goods (CRD Art. 16(e) / BW 6:230p) is NOT invoked now. Returns are allowed on all physical products.
 - **Diminished value instead.** For soaps, bath products and masks (hygiene- and moisture-sensitive), the consumer is liable for value lost through use or exposure to humidity; where the item becomes unsellable this can reach 100% of the price, offset against the refund. Soaps stay on this model permanently (no sealing planned). Masks and bath salts use it for now; when sealed later, they switch to the hygiene exemption (a future amendment).
 - **Return shipping:** consumer bears the direct cost.
-- **Refund:** paid only after the returned goods are received and inspected; timed from receipt.
+- **Refund:** within 14 days of the withdrawal notification (mandatory statutory anchor), but payment withheld until the returned goods are received and inspected (withholding right). Diminished value offset against the refund.
 - **Workshops:** excluded from the withdrawal right (fixed-date leisure services); own cancellation terms.
 
 Only NL is drafted, since only the Dutch storefront is live. Add EN via Translate & Adapt when an EN storefront launches.
@@ -67,7 +67,7 @@ Onze producten (zepen, badproducten, maskers) zijn hygiene- en vochtgevoelig. Wa
 
 ### Terugbetaling
 
-Na een geldige herroeping betalen wij je terug binnen 14 dagen nadat wij de teruggezonden producten hebben ontvangen. Wij inspecteren de producten na ontvangst om een eventuele waardevermindering vast te stellen. Wij betalen terug met hetzelfde betaalmiddel als waarmee je hebt betaald, tenzij uitdrukkelijk anders met jou afgesproken. Een eventuele waardevermindering zoals hierboven omschreven wordt met de terugbetaling verrekend.
+Na een geldige herroeping betalen wij je terug binnen 14 dagen nadat je ons van je herroeping in kennis hebt gesteld. Wij mogen wachten met terugbetalen tot wij de teruggezonden producten hebben ontvangen. Na ontvangst inspecteren wij de producten om een eventuele waardevermindering vast te stellen. Wij betalen terug met hetzelfde betaalmiddel als waarmee je hebt betaald, tenzij uitdrukkelijk anders met jou afgesproken. Een eventuele waardevermindering zoals hierboven omschreven wordt met de terugbetaling verrekend.
 
 ### Uitzondering: workshops
 
@@ -77,6 +77,7 @@ Workshops zijn activiteiten op een vaste datum en vallen onder de wettelijke uit
 
 ## Counsel review notes (do not publish)
 
-1. **Refund timing (section 4, Terugbetaling).** CRD Art. 13(3) / BW 6:230r let the trader withhold the refund until the goods are received OR the consumer proves they sent them back, whichever is earliest, and time the 14-day deadline from the withdrawal notification. This draft withholds until actual receipt (dropping the proof-of-return trigger) and times the 14 days from receipt, so the consumer can inspect can happen first. This leans trader-favorable and is the one clause most likely to be challenged. Confirm acceptability with counsel.
+1. **Refund timing (section 4, Terugbetaling).** This follows the statute: reimburse within 14 days of the withdrawal notification (CRD Art. 13(1); transposed BW 6:230r / WER VI.51), with the right to withhold payment until the goods are received (CRD Art. 13(3)). In the normal case (customer sends the parcel back without separately supplying proof of shipment) the withholding right runs until the goods physically arrive, so you inspect on receipt and deduct diminished value before paying. Residual edge case: if the customer supplies proof of shipment AND the goods have not arrived by day 14 from notification, you must refund the full amount by day 14 without inspection. Rare for domestic returns; accepted. The 14-day deadline is mandatory and cannot be re-anchored to a later "acceptance" step. Confirm the exact BE/NL article numbers with counsel.
+   - Note: the withdrawal "notification" is the customer's form submission; our automatic acknowledgment (Art. 11a durable-medium receipt) timestamps it. The clock legally starts there regardless of phrasing, and the auto-ack is itself a legal requirement, not an admission to avoid.
 2. **Diminished value up to 100% (section 4).** Framed as waardevermindering, which is defensible, but a policy that routinely reaches 100% could draw scrutiny. It must genuinely track the goods being unsellable. Confirm wording.
 3. **Sealing (future).** When masks and bath salts are sealed, add the hygiene-exemption clause for those unsealed items and narrow the diminished-value clause accordingly.
