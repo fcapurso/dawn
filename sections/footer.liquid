@@ -298,28 +298,42 @@
       </div>
     </div>
     <div class="footer__content-bottom-wrapper page-width{% if section.settings.enable_country_selector == false and section.settings.enable_language_selector == false %} footer__content-bottom-wrapper--center{% endif %}">
-      <div class="footer__copyright caption">
+      <div class="footer__copyright caption{% if section.settings.policies_own_line %} footer__copyright--stacked{% endif %}">
         <small class="copyright__content"
           >&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}
         </small>
         <small class="copyright__content">{{ powered_by_link }}</small>
-        {%- if section.settings.show_policy -%}
+        {%- if section.settings.show_policy or section.settings.show_withdrawal_link -%}
           <ul class="policies list-unstyled">
-            {%- for policy in shop.policies -%}
-              {%- if policy != blank -%}
-                <li>
-                  <small class="copyright__content"
-                    ><a href="{{ policy.url }}">{{ policy.title | escape }}</a></small
-                  >
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
+            {%- if section.settings.show_policy -%}
+              {%- for policy in shop.policies -%}
+                {%- if policy != blank -%}
+                  <li>
+                    <small class="copyright__content"
+                      ><a href="{{ policy.url }}">{{ policy.title | escape }}</a></small
+                    >
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if section.settings.show_withdrawal_link and section.settings.withdrawal_page != blank -%}
+              <li>
+                <small class="copyright__content"
+                  ><a href="{{ section.settings.withdrawal_page.url }}">{{ section.settings.withdrawal_page.title | escape }}</a></small
+                >
+              </li>
+            {%- endif -%}
           </ul>
         {%- endif -%}
       </div>
     </div>
   </div>
 </footer>
+
+{%- style -%}
+  .footer__copyright--stacked { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .footer__copyright--stacked .policies { flex-basis: 100%; margin-top: 1rem; justify-content: center; }
+{%- endstyle -%}
 
 {% schema %}
 {
@@ -491,6 +505,29 @@
       "default": true,
       "label": "t:sections.footer.settings.show_policy.label",
       "info": "t:sections.footer.settings.show_policy.info"
+    },
+    {
+      "type": "header",
+      "content": "Withdrawal link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_withdrawal_link",
+      "default": false,
+      "label": "Show withdrawal link in legal links",
+      "info": "Appends a link (e.g. the right-of-withdrawal page) to the end of the policy links row. Label comes from the selected page's title."
+    },
+    {
+      "type": "page",
+      "id": "withdrawal_page",
+      "label": "Withdrawal page"
+    },
+    {
+      "type": "checkbox",
+      "id": "policies_own_line",
+      "default": false,
+      "label": "Show legal links on their own line",
+      "info": "Places the legal links on a separate line below the copyright notice."
     },
     {
       "type": "header",
