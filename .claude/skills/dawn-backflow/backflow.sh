@@ -57,16 +57,23 @@ while IFS= read -r f; do
   fi
 done < <(dawn::config_targets)
 
+tip_is_snapshot(){ case "$(git log -1 --format=%s)" in "L2: store config snapshot"*) return 0;; *) return 1;; esac; }
+
 if [ "$changed" = "0" ]; then
-  echo "Nothing to backflow (no current-ahead config; staging-ahead values already present)."
+  # No folds — staging is already authoritative. But the config-snapshot-at-tip invariant
+  # (conventions §4; promote's assert_staging_clean) must still hold. If a Shopify bot commit
+  # sits at the tip, establish an empty snapshot marker so promote can proceed. No file churn.
+  if tip_is_snapshot; then
+    echo "Nothing to backflow (staging already authoritative; snapshot already at tip)."
+  else
+    git commit -q --allow-empty -m "L2: store config snapshot (reconciled)"
+    echo "Nothing to reconcile; established config-snapshot marker at staging tip."
+  fi
   exit $DAWN_OK
 fi
 
 git add -A
-last_msg="$(git log -1 --format=%s)"
-case "$last_msg" in
-  "L2: store config snapshot"*) git commit -q --amend --no-edit ;;
-  *) git commit -q -m "L2: store config snapshot (reconciled)" ;;
-esac
+if tip_is_snapshot; then git commit -q --amend --no-edit
+else git commit -q -m "L2: store config snapshot (reconciled)"; fi
 echo "Backflow complete (config reconciled into the snapshot)."
 exit $DAWN_OK

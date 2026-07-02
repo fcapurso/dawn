@@ -40,4 +40,17 @@ assert_eq "$n_after" "$((n_before+1))" "new snapshot commit added, feature tip N
 assert_eq "$(git -C "$d3" log -1 --format=%s staging | grep -c 'store config snapshot')" "1" "tip is a fresh snapshot commit"
 assert_eq "$(git -C "$d3" log -1 --format=%s 'staging~1')" "feat: redesign settings panel" "feature commit intact below"
 
+# no folds (staging-ahead only) + non-snapshot tip => establish empty snapshot marker for promote
+d4=$(dawn_test_repo)
+commit_on "$d4" staging config/settings_data.json <<< '{"k":"base"}' "L2: store config snapshot"
+git -C "$d4" checkout -q current; git -C "$d4" merge -q staging -m sync
+commit_on "$d4" staging config/settings_data.json <<< '{"k":"base","new":true}' "Update from Shopify for theme dawn/staging"
+n_before=$(git -C "$d4" rev-list --count staging)
+( cd "$d4" && DAWN_CURRENT_REF=current bash "$BF" ); rc=$?
+assert_rc "$rc" 0 "backflow ok (marker path)"
+n_after=$(git -C "$d4" rev-list --count staging)
+assert_eq "$n_after" "$((n_before+1))" "empty snapshot marker commit added"
+assert_eq "$(git -C "$d4" log -1 --format=%s staging | grep -c 'store config snapshot')" "1" "tip is now a snapshot commit"
+assert_eq "$(git -C "$d4" show staging:config/settings_data.json | jq -r .new)" "true" "staging-ahead value still intact"
+
 echo "  backflow ok"
