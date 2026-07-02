@@ -6,6 +6,13 @@ DAWN_OK=0 DAWN_GUARD=10 DAWN_STOP_LIVE=20 DAWN_STOP_JUDGMENT=21 DAWN_VERIFY=30
 # Directory of this lib (for sibling files like config-paths.txt), resolved even when sourced.
 DAWN_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Cache config-paths.txt content at source time. The skills check out `staging` mid-run, and
+# `staging` does not track the ops-only `.claude/` tree — so `git checkout staging` REMOVES this
+# file from disk. Re-reading it after the switch fails and silently yields an empty path list
+# (→ "nothing to reconcile"). Reading it once now, while `.claude/` is present, makes the list
+# survive the branch switch. All readers use $DAWN_CONFIG_PATHS, never the file directly.
+DAWN_CONFIG_PATHS="$(cat "$DAWN_LIB_DIR/config-paths.txt" 2>/dev/null || true)"
+
 # Sentinel for "leaf absent at this ref" — a byte JSON can never contain.
 DAWN_ABSENT=$'\x01ABSENT'
 
@@ -41,7 +48,7 @@ dawn::merge_base_vanilla(){ git merge-base refs/remotes/upstream/main refs/remot
 # Emit config-snapshot paths from config-paths.txt that actually exist as tracked files.
 dawn::config_files(){
   local p; while IFS= read -r p; do [ -z "$p" ] && continue
-    git ls-files -- "$p"; done < "$DAWN_LIB_DIR/config-paths.txt" | sort -u; }
+    git ls-files -- "$p"; done <<< "$DAWN_CONFIG_PATHS" | sort -u; }
 
 # Classify a repo path for reconcile:
 #   "full"   -> listed in config-paths.txt (all leaves are config)
@@ -49,7 +56,7 @@ dawn::config_files(){
 #   ""       -> not a reconcile target
 dawn::config_class(){
   local p="$1"
-  if grep -qxF "$p" "$DAWN_LIB_DIR/config-paths.txt"; then echo full; return 0; fi
+  if grep -qxF "$p" <<< "$DAWN_CONFIG_PATHS"; then echo full; return 0; fi
   # suffix template: templates/<type>.<suffix>.json, but NOT a default templates/<type>.json
   if echo "$p" | grep -qE '^templates/[a-z_]+\.[a-z0-9_-]+\.json$'; then echo suffix; return 0; fi
   echo ""
@@ -84,7 +91,7 @@ dawn::config_targets(){
         git diff --name-only "$base" "$cur"       -- 'templates/'
         git diff --name-only staging "$cur"       -- 'templates/'; } \
       | grep -E '^templates/[a-z_]+\.[a-z0-9_-]+\.json$' \
-      | grep -vxFf "$DAWN_LIB_DIR/config-paths.txt" || true
+      | grep -vxFf <(printf '%s\n' "$DAWN_CONFIG_PATHS") || true
     fi
   } | sort -u
 }
@@ -361,7 +368,7 @@ dawn::harvest_candidates(){
   # Build exclusion list from config-paths.txt
   local excludes=()
   while IFS= read -r p; do [ -z "$p" ] && continue; excludes+=(":(exclude)$p"); done \
-    < "$DAWN_LIB_DIR/config-paths.txt"
+    <<< "$DAWN_CONFIG_PATHS"
 
   local files
   files=$(git diff --name-only customizations staging \
@@ -369,7 +376,7 @@ dawn::harvest_candidates(){
 
   # Post-filter: remove config-paths.txt entries in case pathspec exclusion didn't catch them
   if [ -n "$files" ]; then
-    files=$(echo "$files" | grep -vxFf "$DAWN_LIB_DIR/config-paths.txt" || true)
+    files=$(echo "$files" | grep -vxFf <(printf '%s\n' "$DAWN_CONFIG_PATHS") || true)
   fi
 
   [ -z "$files" ] && return 0
