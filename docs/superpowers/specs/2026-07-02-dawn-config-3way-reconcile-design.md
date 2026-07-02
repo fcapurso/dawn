@@ -181,8 +181,10 @@ guard) is replaced by a **direction-aware** check:
 
 - **OLD:** `staging` and `current` config files *differ at all* → pending.
 - **NEW — `dawn::reconcile_pending`:** run the merge in **dry-run** and report pending **iff** there
-  is at least one **current-ahead** leaf not yet folded into staging, **or** an **unresolved
-  collision**. A state whose only differences are **staging-ahead** leaves is **not** pending.
+  is at least one **current-ahead** leaf not yet folded into staging. States whose only differences
+  are **staging-ahead** leaves or **collisions** are **not** pending. (Collisions are handled at
+  backflow time, not the promote gate — see the field-test correction note in §7 for why counting
+  them here would deadlock promote after a resolve-to-staging.)
 
 Consequences:
 
@@ -258,32 +260,42 @@ dawn::config_leaves <ref> <file>
     #   `settings` object (section- or block-level); skeleton leaves omitted.
     # Missing file/key => leaf absent (no line).
 
-dawn::reconcile_file <file>   (dry-run and apply modes)
+dawn::reconcile_scan / dawn::reconcile_apply
     # base = git merge-base staging origin/current
     # Build leaf maps for base/staging/current via dawn::config_leaves.
     # For each leaf path in the union, classify per §2.2:
     #   agree | current-ahead | staging-ahead | collision
-    # Dry-run: print the classification (path + three values) for
-    #   current-ahead and collision leaves; return "pending" if any exist.
-    # Apply: take the operator's collision decisions, materialise the
-    #   merged JSON (start from current as the base document, then set
-    #   staging-ahead leaves and resolved-to-staging collisions), write file.
+    # reconcile_scan: emit non-agreeing leaves (verdict/file/path/base/staging/current).
+    # reconcile_apply <file> <decisions>: substrate = STAGING; apply ONLY folds; write file.
 
 dawn::reconcile_pending
-    # True iff any reconcile-target file has a current-ahead leaf or an
-    # unresolved collision. Replaces dawn::backflow_pending everywhere.
+    # True iff any reconcile-target file has a current-ahead leaf.
+    # Replaces dawn::backflow_pending everywhere.
 ```
 
 The reconcile-target file set is `{full-config files from config-paths.txt} ∪ {suffix templates
 that differ between refs}`, each processed under its `dawn::config_class`.
 
-Merge materialisation detail: build the output document from **current** (so live structure/order is
-the substrate), then overlay the staging-ahead leaves, staging-resolved collisions, and any
-operator-entered values by JSON path with `jq`'s `setpath`/`delpaths`. This preserves current's
-serialization/order for everything the merchant owns and injects only the deliberately-staged
-values. For suffix templates only `settings`-path leaves are ever overlaid, so the skeleton on the
-merged file remains current's — the staging skeleton reaches current later via the promote
-force-push (structure is staging-authoritative by design).
+> **Materialisation — corrected during field testing (2026-07-03).** The first cut built the merged
+> document from **current** and overlaid the staging side. That was wrong on two counts, both caught
+> by field-testing the withdrawal-footer case: (a) for **suffix templates** the skeleton is
+> staging-authoritative, so a current substrate risks clobbering staging's structure; and (b) it
+> re-serialized *every* config-target file, spuriously rewriting untouched templates. The correct
+> rule: **substrate = staging**, and apply **only the folds** that move staging toward the
+> reconciled result — `current-ahead` → take current's value; a collision resolved to
+> `current`/`value` → take that value (via `jq setpath`/`delpaths`). `staging-ahead` leaves and
+> collisions resolved to `staging` need **no** op because staging already holds them. A file with no
+> folds is emitted as **nothing**, so `dawn-backflow` leaves it byte-for-byte intact (zero churn).
+> This preserves staging's skeleton for suffix templates for free, since suffix leaves are
+> `settings`-only and the skeleton is never a fold target.
+
+> **Pending — corrected during field testing (2026-07-03).** `reconcile_pending` counts
+> **current-ahead leaves only**, not collisions. Statelessly, a collision *resolved to staging* is
+> indistinguishable from an unresolved one (base absent / staging ≠ current), so counting collisions
+> would block promote **forever** after you deliberately chose staging. Collisions are decided at
+> **backflow** time instead (backflow stops with exit 21 until every collision has a decision); a
+> resolved-to-staging collision is a deliberate staging-wins outcome that the promote force-push
+> carries, with `--confirm-live` as the final human gate.
 
 Per-file loop lives in `dawn-backflow`; the lib provides the mechanics.
 
