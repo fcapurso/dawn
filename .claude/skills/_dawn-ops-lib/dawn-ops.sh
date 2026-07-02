@@ -125,11 +125,14 @@ dawn::reconcile_scan(){
   done < <(dawn::config_targets)
 }
 
-# rc 0 if origin/current has config changes not in staging (backflow needed), else rc 1.
-dawn::backflow_pending(){
-  local ref; ref="refs/remotes/origin/current"
-  git rev-parse --verify "$ref" &>/dev/null || ref="origin/current"
-  ! git diff --quiet staging "$ref" -- $(cat "$DAWN_LIB_DIR/config-paths.txt" | grep -v '^$' | tr '\n' ' '); }
+# rc 0 (pending) if any current-ahead or collision leaf exists; else rc 1.
+dawn::reconcile_pending(){
+  local scan; scan="$(dawn::reconcile_scan)" || return $DAWN_GUARD
+  grep -qE '^(current_ahead|collision)'$'\t' <<< "$scan"
+}
+
+# Deprecated name — kept so callers migrate incrementally. Prefer dawn::reconcile_pending.
+dawn::backflow_pending(){ dawn::reconcile_pending; }
 
 # rc 0 if trees equal (excl docs/ + .claude/), rc 30 with a summary if not.
 dawn::verify_tree_equal(){
