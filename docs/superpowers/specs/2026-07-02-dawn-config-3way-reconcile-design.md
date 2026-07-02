@@ -1,0 +1,323 @@
+# Dawn-ops: direction-aware config reconcile (3-way key-level merge) — Design
+
+**Date:** 2026-07-02
+**Repo:** Dawn / Zogezeept (operated from `ops`)
+**Status:** Approved design, pending spec review → implementation plan
+**Revises:** the config-snapshot / backflow model in
+`.claude/skills/_dawn-ops-lib/conventions.md` (§4, §4 backflow routing) and the `dawn-backflow`
+and `dawn-promote` skills. Adds a key-level 3-way merge to `dawn-ops.sh`. No change to
+`dawn-harvest`, `dawn-ship`, or the L1/L2 classification model.
+
+> Context: this came out of trying to promote the EU right-of-withdrawal footer link. The three
+> keys that wire the link on (`show_withdrawal_link`, `withdrawal_page`, `policies_own_line`) were
+> configured in **staging**'s preview theme editor. `dawn-promote` refused (Exit 10 —
+> "backflow first"), and following the instruction to run `dawn-backflow` would have **silently
+> deleted those three keys** from staging (blind "current wins" overwrite), shipping the compliance
+> feature in the *off* state. The current model has no way for a config value authored on staging
+> to survive backflow and reach `current`.
+
+---
+
+## 1. Problem
+
+The config machinery is one-way and destructive on the staging side:
+
+- **`config-paths.txt`** defines the "config" file set (`settings_data.json`,
+  `settings_schema.json`, header/footer groups, and the default templates).
+- **`dawn-backflow` (Case A)** does, per config file, a blind
+  `git checkout origin/current -- <file>` then `--amend`. Current overwrites staging wholesale.
+  Any value authored on staging is destroyed.
+- **`dawn-promote`** guards on `dawn::backflow_pending`, which is
+  `! git diff --quiet staging origin/current -- <config-paths>` — i.e. "do these files *differ*?"
+  It **cannot tell "staging ahead" from "current ahead."** So a state where staging holds a
+  deliberate config change that current lacks is a **false positive**: promote refuses, and the
+  only way to clear the guard is to backflow, which erases the change.
+
+This is correct for *content the merchant edits on the live theme* (current is authoritative), but
+wrong for the real workflow: **you change a setting in staging's preview theme to test an L1/L2
+change, then want it to promote to current.** That deliberate change can touch any key in any
+config file; it is not confined to a declarable set of "staging-owned" files.
+
+### Live example (state at design time)
+
+`git merge-base staging origin/current` = `9dc7fa17`. For `sections/footer-group.json`:
+
+| key | base (`9dc7fa17`) | staging | current |
+|---|---|---|---|
+| `footer.show_withdrawal_link` | absent | `true` | absent |
+| `footer.withdrawal_page` | absent | `"contract-withdrawal"` | absent |
+| `footer.policies_own_line` | absent | `true` | absent |
+
+All three: **staging changed relative to base, current did not.** The intent is unambiguous from
+history alone — no declaration required.
+
+---
+
+## 2. Core model: 3-way key-level merge
+
+Treat config reconciliation exactly like git treats a code merge, but on **parsed JSON values at
+their paths** rather than text lines. "Did I change this deliberately on staging?" versus "is this
+regular config I changed on current?" is not something to *declare* — it is already recorded in
+history. Read it.
+
+### 2.1 The three inputs
+
+For each config file and each setting within it, compare three values:
+
+- **base** = value at `git merge-base staging origin/current` — the last common point of the two
+  branches (in practice, the last promote). This is a coherent shared config state because promote
+  makes `current == staging`; both sides only diverge *after* it.
+- **staging** = value at `staging` tip.
+- **current** = value at `origin/current` tip.
+
+A value may be **ABSENT** (the key does not exist at that ref). ABSENT is a first-class value in the
+comparison, so add/delete/modify are all handled by one rule.
+
+### 2.2 Per-key verdict
+
+Let `b`, `s`, `c` be the base / staging / current values for one setting path.
+
+| Condition | Meaning | Action |
+|---|---|---|
+| `s == c` | already agree (incl. both ABSENT) | no-op |
+| `s == b` and `c != b` | **current-ahead** — edited on live only | **fold back** → take `c` |
+| `c == b` and `s != b` | **staging-ahead** — deliberate staging change | **keep** → take `s` |
+| `s != b` and `c != b` and `s != c` | **collision** — both changed, differently | **prompt operator** |
+
+Because ABSENT participates, this single table covers every case:
+
+- add on staging only (`b,c` ABSENT, `s` present) → **staging-ahead → keep** ← the footer keys
+- add on current only (`b,s` ABSENT, `c` present) → current-ahead → fold
+- add on both, same value → agree
+- add on both, different values → collision
+- delete on staging (`b,c` present equal, `s` ABSENT) → staging-ahead → keep the deletion
+- delete on current (`b,s` present equal, `c` ABSENT) → current-ahead → fold the deletion
+- modify one side only → ahead on that side
+- modify both to different values, or delete-vs-modify → collision
+
+**The operator is only ever asked about true collisions.** Staging-ahead and current-ahead resolve
+automatically and correctly.
+
+### 2.3 Value-based comparison → noise immunity
+
+Comparisons are on **parsed values at JSON paths**, never on raw file text. Shopify re-serializes
+the whole file on every theme-editor save (key reordering, whitespace, numeric reformatting). Under
+a value comparison these produce **zero deltas** — the values are equal regardless of serialization.
+This is what makes the prompt list contain only *real* changes and never phantom churn.
+
+### 2.4 Arrays are atomic
+
+A "setting" (leaf) is either a **scalar** or a **whole array**; objects are recursed into. Arrays
+(e.g. a section group's `block_order`, or a template's `block_order`) are compared as one
+canonicalized unit at their path, not element-by-element. A block reorder therefore surfaces as
+**one** delta/collision to resolve, not a cascade of phantom per-element moves. This keeps
+order-sensitive structures correct and legible.
+
+---
+
+## 3. Interactive reconciliation (collisions only)
+
+When the dry-run merge finds one or more **collision** leaves, `dawn-backflow` stops and drives one
+`AskUserQuestion` per collision (batched in one call where there are several). Each question shows:
+
+- the file and JSON path (e.g. `sections/footer-group.json → footer.color_scheme`)
+- **base**, **staging**, and **current** values side by side
+
+Options per collision:
+
+| Option | Result |
+|---|---|
+| **Keep staging** | staging's value wins (will promote to current) |
+| **Take current** | current's value wins (folds the live edit into staging) |
+
+`Keep staging` and `Take current` are the only options in v1 — no free-text custom value (YAGNI; a
+custom value is just a staging edit you can make in the preview editor and re-run). All collisions
+are resolved before any file is written; a partially-answered run writes nothing.
+
+---
+
+## 4. Where the merged result lands + durability
+
+The merged result is written to the config files on `staging` and committed as the **single
+config-snapshot commit at the tip** — same invariant as today (§4 of conventions): *N stable
+enrichment commits + exactly one config-snapshot at the tip.* If the tip is already the snapshot,
+amend it; otherwise (e.g. a Shopify bot commit landed on staging above the snapshot) re-establish
+the snapshot at the tip as part of the reconcile.
+
+### The snapshot stays regenerable — but from the merge, not from current
+
+Today's model calls the snapshot "regenerable — its content is always whatever `current` is now."
+This design **narrows that**: the snapshot is regenerable as the **deterministic output of the
+3-way merge of `{base, staging, current}`**. Re-running the reconcile reproduces it exactly
+(idempotent: feeding the merged snapshot back in as the staging input yields the same result,
+because `base` is fixed until the next promote, so staging-ahead keys stay staging-ahead).
+
+### Durability invariant (and the Case B hazard)
+
+**Invariant:** every recreation of the config snapshot goes through the reconcile merge. Nothing may
+recreate it by the old blind "checkout current" path, because that path cannot see staging-ahead
+values and would silently drop them.
+
+This directly affects **backflow routing Case B** (new L2 enrichment: `reset --hard HEAD~1` to drop
+the snapshot, commit the enrichment, recreate the snapshot). The recreate step **must** be the
+reconcile merge, not a current-mirror. As long as that holds, staging-ahead config survives Case B,
+because the merge re-reads staging's value from history.
+
+**Boundary condition:** a staging-authored config value must be present at `staging` tip when the
+reconcile runs (it is, since the previous reconcile wrote it into the snapshot, and before that it
+arrived via a staging preview-theme bot commit or an explicit commit). The only way to lose it is
+to recreate the snapshot outside the reconcile — which the invariant forbids. The implementation
+plan must audit every snapshot (re)creation site for compliance.
+
+---
+
+## 5. Guard fix: direction-aware pending check
+
+`dawn::backflow_pending` (used by both `dawn-backflow`'s no-op short-circuit and `dawn-promote`'s
+guard) is replaced by a **direction-aware** check:
+
+- **OLD:** `staging` and `current` config files *differ at all* → pending.
+- **NEW — `dawn::reconcile_pending`:** run the merge in **dry-run** and report pending **iff** there
+  is at least one **current-ahead** leaf not yet folded into staging, **or** an **unresolved
+  collision**. A state whose only differences are **staging-ahead** leaves is **not** pending.
+
+Consequences:
+
+- `dawn-promote` no longer false-positives when staging is merely ahead (today's footer case). It
+  blocks only when the live theme has genuine edits staging hasn't absorbed, or an undecided
+  collision remains.
+- `dawn-backflow` short-circuits ("Nothing to backflow") only when there is truly nothing to fold
+  and no collision — staging-ahead-only counts as nothing to do.
+
+`dawn-promote` itself is otherwise unchanged: after a clean reconcile it still force-pushes
+`staging → current` wholesale (staging = base + folded current edits + resolved collisions +
+preserved staging-ahead), so the merged result reaches the live theme as one authoritative reset.
+
+---
+
+## 6. Scope
+
+**In scope (v1):** the existing `config-paths.txt` set — `config/settings_data.json`,
+`config/settings_schema.json`, `sections/header-group.json`, `sections/footer-group.json`, and the
+default templates (`index`, `cart`, `collection`, `article`, `blog`, `password`, `product`). These
+are the files the reconcile parses and 3-way-merges.
+
+**Out of scope — non-config divergence routing is unchanged.** Files outside `config-paths.txt`
+continue through the existing `dawn-backflow` Exit-21 flow (classify each as enrichment → L2 commit,
+generic → `dawn-harvest`, or churn → ignore). This design does not touch `dawn-harvest`,
+`dawn-ship`, the L1/L2/Inert classification, or the promote force-push mechanics.
+
+**Deliberately not solved here — suffix-template settings drift.** Custom suffix templates
+(`templates/page.*.json`, `product.*.json`) are not in `config-paths.txt`; their `settings` blocks
+have "nowhere clean to live" and perpetually surface as `dawn-harvest` candidates classified
+`config`. They already promote correctly today (non-config → not guarded → carried by the promote
+force-push). Bringing their `settings` blocks into the reconcile set is a natural future extension
+but is **explicitly deferred** to keep v1 focused. Noted so the boundary is intentional, not
+forgotten.
+
+---
+
+## 7. Algorithm sketch
+
+New lib functions in `dawn-ops.sh` (implementation detail for the plan; semantics fixed here):
+
+```
+dawn::config_leaves <ref> <file>
+    # Emit a canonical leaf map for one config file at one ref:
+    #   one line per leaf:  <json-path>\t<canonical-value>
+    # Leaf = scalar OR whole array; objects recursed. Uses jq.
+    # Missing file/key => leaf absent (no line).
+
+dawn::reconcile_file <file>   (dry-run and apply modes)
+    # base = git merge-base staging origin/current
+    # Build leaf maps for base/staging/current via dawn::config_leaves.
+    # For each leaf path in the union, classify per §2.2:
+    #   agree | current-ahead | staging-ahead | collision
+    # Dry-run: print the classification (path + three values) for
+    #   current-ahead and collision leaves; return "pending" if any exist.
+    # Apply: take the operator's collision decisions, materialise the
+    #   merged JSON (start from current as the base document, then set
+    #   staging-ahead leaves and resolved-to-staging collisions), write file.
+
+dawn::reconcile_pending
+    # True iff any config file has a current-ahead leaf or an unresolved
+    # collision. Replaces dawn::backflow_pending everywhere it is used.
+```
+
+Merge materialisation detail: build the output document from **current** (so live structure/order is
+the substrate), then overlay the staging-ahead leaves and staging-resolved collisions by JSON path
+with `jq`'s `setpath`/`delpaths`. This preserves current's serialization/order for everything the
+merchant owns and injects only the deliberately-staged values.
+
+Per-file loop lives in `dawn-backflow`; the lib provides the mechanics.
+
+---
+
+## 8. Surface of change
+
+| File | Change |
+|---|---|
+| `_dawn-ops-lib/dawn-ops.sh` | add `dawn::config_leaves`, `dawn::reconcile_file`, `dawn::reconcile_pending`; keep `dawn::backflow_pending` as a thin alias or remove after callers migrate |
+| `dawn-backflow/backflow.sh` | replace the blind per-file `checkout current` with the reconcile loop; drive collision prompts via the skill; keep the Exit-21 non-config routing |
+| `dawn-backflow/SKILL.md` | document the reconcile behaviour, the collision `AskUserQuestion` step, and the new "staging-ahead survives" guarantee |
+| `dawn-promote/promote.sh` | guard on `dawn::reconcile_pending` instead of `dawn::backflow_pending` |
+| `_dawn-ops-lib/conventions.md` | §4: snapshot is regenerable *via reconcile*, not "= current"; add the direction-aware verdict table; Case B recreate = reconcile |
+| `docs/superpowers/runbook/dawn-dev-and-release.md` | update the backflow/promote steps and Case B choreography |
+
+No change to `config-paths.txt` contents (same file set).
+
+---
+
+## 9. Edge cases
+
+- **No merge-base** (unrelated histories): fail loud with a guard; do not fall back to blind
+  overwrite. Should not happen given the branch model, but must not silently mis-resolve.
+- **File present on one side only:** treated as all-leaves-absent on the missing side; per-leaf rule
+  applies (a new config file authored on staging → all leaves staging-ahead → kept).
+- **Bot commit above the snapshot on staging** (observed: `feb17332` sits above the config-snapshot
+  commit): the reconcile normalises the tip back to a single snapshot; the deliberate values from
+  the bot commit are read as staging-ahead and re-baked into the snapshot.
+- **Invalid JSON at a ref:** abort with a clear error; never write a partial/merged file.
+- **Type change at a path** (scalar ↔ object/array): treat as a collision (values differ), operator
+  decides.
+- **Array element-level intent** (operator wanted to keep some blocks from each side): not
+  supported — arrays are atomic, so this is one collision. If finer control is ever needed, the
+  operator edits the preview theme and re-runs. Documented limitation.
+
+---
+
+## 10. Testing
+
+Follow the existing dawn-ops test seams (local refs, no network; cf. `DAWN_PROMOTE_REF`/`DAWN_PUSH`
+in `promote.sh`). Fixture repo with `staging`/`current`/merge-base config files exercising:
+
+1. **staging-ahead only** (the footer case) → no prompt, `reconcile_pending` false, promote allowed,
+   staging value preserved.
+2. **current-ahead only** → folded automatically, no prompt.
+3. **collision** → one prompt; "Keep staging" and "Take current" each produce the right file.
+4. **re-serialization noise** (same values, reordered/reformatted JSON) → zero deltas, no prompt.
+5. **array reorder** → exactly one delta/collision, not many.
+6. **add/delete matrix** → each row of §2.2's expanded list.
+7. **idempotence** → running reconcile twice with no new edits is a no-op.
+8. **Case B** (drop + recreate snapshot via reconcile) → staging-ahead config survives.
+
+---
+
+## 11. Exit codes (unchanged contract)
+
+| Code | When |
+|---|---|
+| `0` `DAWN_OK` | reconcile applied (or nothing to do); snapshot at tip |
+| `10` `DAWN_GUARD` | dirty tree, wrong branch, no merge-base, invalid JSON |
+| `21` `DAWN_STOP_JUDGMENT` | collisions need operator decisions (backflow), or non-config files need classification (existing Exit-21 flow) |
+
+`dawn-promote` keeps its `20` `DAWN_STOP_LIVE` confirm-live gate.
+
+---
+
+## 12. Out of scope / YAGNI / future
+
+- Free-text custom collision values — deferred; edit the preview theme and re-run.
+- Suffix-template `settings` reconciliation — deferred (§6); they promote correctly today.
+- Element-level array merging — deferred; arrays are atomic.
+- Any change to harvest, ship, or L1/L2/Inert classification — untouched.
