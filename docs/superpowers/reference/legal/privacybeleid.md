@@ -42,7 +42,7 @@ Voor de verwerking van uw gegevens via het gebruik van cookies, verwijzen wij na
 
 **Wat wij doen met uw gegevens**
 
-**Wanneer verzamelen wij uw gegevens?**
+**A. Wanneer verzamelen wij uw gegevens?**
 
 Wij kunnen gegevens van u verwerken indien:
 
@@ -64,7 +64,7 @@ vb. het versturen van een e-mail naar [info@zogezeept.com](mailto:info@zogezeept
 
  
 
-**Welke gegevens kunnen wij verzamelen?**
+**B. Welke gegevens kunnen wij verzamelen?**
 
 Hieronder verduidelijken wij welke gegevens wij van u kunnen verwerken. Afhankelijk van de concrete situatie, verwerken wij niet alle onderstaande gegevens van u.
 
@@ -88,7 +88,7 @@ Aangezien wij voor het verwerken van bovenstaande gegevens vertrouwen op het geb
 
  
 
-**Voor welke doeleinden verwerken wij uw gegevens en op basis van welke rechtsgronden?**
+**C. Voor welke doeleinden verwerken wij uw gegevens en op basis van welke rechtsgronden?**
 
 **Algemeen**
 
@@ -124,7 +124,7 @@ Wanneer wij uw gegevens wensen te verwerken voor een ander doel dan dat waarvoor
 
  
 
-**Hoe lang bewaren wij uw gegevens?**
+**D. Hoe lang bewaren wij uw gegevens?**
 
 Wij bewaren uw gegevens niet langer dan nodig is voor het doel waarvoor de gegevens zijn verzameld of worden verwerkt, namelijk het aanbieden en leveren van onze producten aan u als (potentiële) klant van de Webshop en waar relevant de dienstverlening na verkoop die hiermee gepaard gaat. Specifieke wettelijke vereisten omtrent de bewaring van uw gegevens worden hierbij door ons steeds nageleefd, bijvoorbeeld in het kader van onze boekhoudkundige verplichtingen als onderneming.
 
@@ -138,7 +138,7 @@ Wanneer het niet langer noodzakelijk is uw gegevens te verwerken, zullen we deze
 
  
 
-**Van wie ontvangen wij uw gegevens?**
+**E. Van wie ontvangen wij uw gegevens?**
 
 Wij verkrijgen uw gegevens voornamelijk rechtstreeks van u, en in bepaalde gevallen van openbare bronnen.
 
@@ -152,7 +152,7 @@ Sommige gegevens worden daarenboven verzameld bij het gebruik van de Webshop doo
 
  
 
-**Waar bewaren wij uw gegevens?**
+**F. Waar bewaren wij uw gegevens?**
 
 Wij bewaren uw gegevens zowel op onze interne systemen als extern.
 
@@ -166,7 +166,7 @@ Wij en onze verwerkers hebben de nodige fysieke en passende technische en organi
 
  
 
-**Wanneer delen wij uw gegevens met derden of derde landen?**
+**G. Wanneer delen wij uw gegevens met derden of derde landen?**
 
 Wij zullen uw gegevens niet doorgeven aan derden, tenzij wanneer wij daar door de wet toe verplicht zijn, u daarin toestemt of wanneer het noodzakelijk is voor het bereiken van één van onze voormelde doeleinden. Zo moeten wij bepaalde van uw gegevens verstrekken aan de koeriersdiensten die wij inschakelen om de bestelling aan u te leveren op het adres dat u hiervoor opgegeven heeft. Daarnaast krijgen betalingsdienstverleners waarop wij een beroep doen toegang tot bepaalde van uw gegevens wanneer u via de Webshop overgaat tot betaling. Bovendien heeft Shopify als aandrijver van de Webshop toegang tot bepaalde van uw gegevens, waaronder ook via het gebruik van cookies. Voor meer uitvoerige informatie over de manier waarop Shopify uw gegevens verwerkt, verwijzen wij naar de volgende pagina: [www.shopify.nl/juridisch/privacy](http://www.shopify.nl/juridisch/privacy).
 
