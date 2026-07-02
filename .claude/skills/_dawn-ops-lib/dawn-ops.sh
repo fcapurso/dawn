@@ -43,6 +43,18 @@ dawn::config_files(){
   local p; while IFS= read -r p; do [ -z "$p" ] && continue
     git ls-files -- "$p"; done < "$DAWN_LIB_DIR/config-paths.txt" | sort -u; }
 
+# Classify a repo path for reconcile:
+#   "full"   -> listed in config-paths.txt (all leaves are config)
+#   "suffix" -> custom suffix template templates/<type>.<suffix>.json (settings leaves only)
+#   ""       -> not a reconcile target
+dawn::config_class(){
+  local p="$1"
+  if grep -qxF "$p" "$DAWN_LIB_DIR/config-paths.txt"; then echo full; return 0; fi
+  # suffix template: templates/<type>.<suffix>.json, but NOT a default templates/<type>.json
+  if echo "$p" | grep -qE '^templates/[a-z_]+\.[a-z0-9_-]+\.json$'; then echo suffix; return 0; fi
+  echo ""
+}
+
 # rc 0 if origin/current has config changes not in staging (backflow needed), else rc 1.
 dawn::backflow_pending(){
   local ref; ref="refs/remotes/origin/current"
