@@ -22,7 +22,7 @@ fi
 if [ -n "${DAWN_PROMOTE_REF:-}" ]; then         # test path: move local ref
   git update-ref "$DAWN_PROMOTE_REF" staging; git update-ref refs/remotes/origin/current staging
 else                                            # real path: force-push staging onto current
-  git push "$REMOTE" staging
+  $PUSH "$REMOTE" staging
   $PUSH "$REMOTE" staging:current
 fi
 echo "Promoted staging -> current."

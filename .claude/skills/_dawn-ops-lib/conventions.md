@@ -84,9 +84,7 @@ merge-base — and re-commits the reconciled config as one snapshot. This **coll
 enrichment/code commits are the floor and are never squashed in. Because this rewrites `staging`'s
 local history, the eventual `git push origin staging` in `dawn-promote` **must** be a
 `--force-with-lease` (the sanctioned reset of §2a); the pushed **tree** is unchanged, so the preview
-theme content does not move — only the commit history collapses. **Pending:** `dawn-promote` still
-does a non-force `git push origin staging`, so it will refuse the collapsed (non-fast-forward)
-history until that push is switched to `--force-with-lease` — deferred for operator review.
+theme content does not move — only the commit history collapses.
 
 **Canonical config file set** (defined in `.claude/skills/_dawn-ops-lib/config-paths.txt`):
 
