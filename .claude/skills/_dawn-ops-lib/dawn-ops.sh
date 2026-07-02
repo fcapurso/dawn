@@ -62,6 +62,19 @@ dawn::config_class(){
   echo ""
 }
 
+# rc 0 if every file a commit touches is config (a reconcile target) or locale churn; rc 1 if it
+# touches any non-config file (i.e. it is an enrichment / code commit that must NOT be squashed
+# into the config snapshot). Used by backflow to find the collapse floor.
+dawn::_commit_is_config_only(){
+  local c="$1" f
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    case "$f" in locales/*) continue ;; esac
+    [ -n "$(dawn::config_class "$f")" ] || return 1
+  done < <(git show --name-only --format= "$c")
+  return 0
+}
+
 # Emit canonical leaf map for one config file at one ref.
 # One line per leaf:  <path-json>\t<value-json>. Leaf = scalar or whole array.
 # For class "suffix", restrict to leaves whose path passes through a `settings` key.

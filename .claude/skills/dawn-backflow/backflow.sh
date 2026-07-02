@@ -45,35 +45,36 @@ if [ -n "$collisions" ]; then
   fi
 fi
 
-# 3) Apply reconcile to every target on staging, then amend the config snapshot.
+# 3) Apply reconcile folds to every target on staging (writes files; no commit yet).
 dawn::with_branch staging || exit $DAWN_GUARD
-changed=0
 while IFS= read -r f; do
   [ -z "$f" ] && continue
   merged="$(dawn::reconcile_apply "$f" "$DECISIONS")" || exit $?
   [ -z "$merged" ] && continue
   if [ ! -f "$f" ] || [ "$(cat "$f")" != "$merged" ]; then
-    mkdir -p "$(dirname "$f")"; printf '%s\n' "$merged" > "$f"; changed=1
+    mkdir -p "$(dirname "$f")"; printf '%s\n' "$merged" > "$f"
   fi
 done < <(dawn::config_targets)
 
-tip_is_snapshot(){ case "$(git log -1 --format=%s)" in "L2: store config snapshot"*) return 0;; *) return 1;; esac; }
-
-if [ "$changed" = "0" ]; then
-  # No folds — staging is already authoritative. But the config-snapshot-at-tip invariant
-  # (conventions §4; promote's assert_staging_clean) must still hold. If a Shopify bot commit
-  # sits at the tip, establish an empty snapshot marker so promote can proceed. No file churn.
-  if tip_is_snapshot; then
-    echo "Nothing to backflow (staging already authoritative; snapshot already at tip)."
-  else
-    git commit -q --allow-empty -m "L2: store config snapshot (reconciled)"
-    echo "Nothing to reconcile; established config-snapshot marker at staging tip."
-  fi
-  exit $DAWN_OK
-fi
+# 4) Collapse the contiguous config-only commit run at the tip into exactly ONE snapshot commit
+#    (conventions §4: staging always ends in ONE config snapshot at the tip). The floor is the
+#    first non-config (enrichment/code) commit from the top, else the customizations merge-base.
+#    Enrichment commits are preserved as the floor — never squashed into the config snapshot.
+cust_base="$(git merge-base staging customizations 2>/dev/null)" \
+  || { echo "GUARD: no merge-base with customizations; cannot collapse snapshot" >&2; exit $DAWN_GUARD; }
+[ -z "$cust_base" ] && { echo "GUARD: no merge-base with customizations" >&2; exit $DAWN_GUARD; }
+floor="$cust_base"
+for c in $(git rev-list staging "^$cust_base"); do   # tip-first
+  dawn::_commit_is_config_only "$c" || { floor="$c"; break; }
+done
 
 git add -A
-if tip_is_snapshot; then git commit -q --amend --no-edit
-else git commit -q -m "L2: store config snapshot (reconciled)"; fi
-echo "Backflow complete (config reconciled into the snapshot)."
+git reset -q --soft "$floor"
+if git diff --cached --quiet; then
+  git commit -q --allow-empty -m "L2: store config snapshot (reconciled)"
+  echo "Nothing to reconcile; staging config collapsed to one empty snapshot at the tip."
+else
+  git commit -q -m "L2: store config snapshot (reconciled)"
+  echo "Backflow complete: staging config collapsed into one snapshot at the tip."
+fi
 exit $DAWN_OK

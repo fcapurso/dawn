@@ -18,6 +18,7 @@ dawn_test_repo(){
   git -C "$d" commit -q --allow-empty -m base
   git -C "$d" branch staging
   git -C "$d" branch current
+  git -C "$d" branch customizations    # collapse floor for backflow (staging's stable base)
   echo "$d"
 }
 
