@@ -1,6 +1,6 @@
 # Algemene voorwaarden
 
-> Baseline captured 2026-07-02 at /policies/terms-of-service; this version adds an online-withdrawal-form reference in Artikel 4.4 (Bijlage 1 kept) and a workshop fixed-date exemption clause. See git history for the untouched baseline.
+> Baseline captured 2026-07-02 at /policies/terms-of-service; this version adds an online-withdrawal-form reference in Artikel 4.4, replaces Bijlage 1's inline printed form with downloadable PDF/Word links, and adds a workshop fixed-date exemption clause. See git history for the untouched baseline.
 
 #### Artikel 1 – Definities
 
@@ -174,53 +174,7 @@ De nietigheid of niet-afdwingbaarheid van één of meerdere (delen van) bepaling
 
 (Dit formulier alleen invullen en terugzenden indien u de overeenkomst wilt herroepen)
 
- 
-       Aan 
- Zogezeept
-       Sint-Laureisstraat 65 A
-       2018 Antwerpen
-  België
-[](mailto:zogezeept@gmail.com)[info@zogezeept.com](mailto:info@zogezeept.com)
- 
+Download het modelformulier voor herroeping in het formaat van je keuze:
 
-Ik / wij (*) deel/delen (*) u hierbij mede dat ik/wij (*) onze overeenkomst betreffende de verkoop van de volgende goederen/levering van de volgende dienst (*) herroep/herroepen (*):
-
- 
-
- 
-
- 
-
-Besteld op (*) / ontvangen op (*) :   ... ... / ... ... / ... ... ... ...
-
- 
-
-Naam/Namen consument(en):
-
- 
-
- 
-
- 
-
-Adres consument(en):
-
- 
-
- 
-
- 
- 
-
-Handtekening van consument(en) (alleen wanneer dit formulier op papier wordt ingediend):
-
- 
-
- 
-
- 
-
-Datum:  ... ... / ... ... / ... ... ... ...
-
- 
-(*) Doorhalen wat niet van toepassing is
+- [PDF-versie](https://cdn.shopify.com/s/files/1/0368/7985/9845/files/modelformulier-herroeping.pdf?v=1783013884) — invulbaar in elke PDF-lezer, klaar om te printen of te mailen.
+- [Word-versie](https://cdn.shopify.com/s/files/1/0368/7985/9845/files/modelformulier-herroeping.docx?v=1783013884) — bewerkbaar in Word, Google Docs of LibreOffice.
