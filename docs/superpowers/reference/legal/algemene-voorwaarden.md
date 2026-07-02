@@ -168,7 +168,7 @@ De nietigheid of niet-afdwingbaarheid van één of meerdere (delen van) bepaling
 
 - Geschillen tussen de Onderneming en de Professioneel vallen onder de exclusieve bevoegdheid van de rechtbanken en hoven van het gerechtelijk arrondissement Antwerpen. Geschillen tussen de Onderneming en de Consument vallen onder de exclusieve bevoegdheid van de territoriaal bevoegde Belgische rechtbanken en hoven, tenzij indien toepasselijke wet- of regelgeving op dwingende wijze bepaalt dat de Consument gerechtigd is om buiten België een vordering in te stellen tegen de Onderneming.
 
-- De Consument kan te allen tijde een beroep doen op alternatieve manieren van geschillenbeslechting, zoals de [Consumentenombudsdienst van de FOD Economie](https://consumentenombudsdienst.be/nl) en het [platform voor online geschillenbeslechting van de Europese Commissie](https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=NL).
+- De Consument kan te allen tijde een beroep doen op alternatieve manieren van geschillenbeslechting, zoals de [Consumentenombudsdienst van de FOD Economie](https://consumentenombudsdienst.be/nl).
 
 ### **Bijlage 1: Modelformulier voor herroeping**
 
