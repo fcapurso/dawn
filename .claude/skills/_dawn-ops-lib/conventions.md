@@ -70,8 +70,12 @@ The two modes are complementary: `dawn-ship` ships pieces incrementally between 
 ## 4. Config-snapshot invariant
 
 **`staging` always ends in exactly ONE config-snapshot commit at the tip.** That commit is
-*regenerable* — its content is always "whatever `current`'s config files are right now." You can
-drop and recreate it freely; the real source of truth is `current`.
+*regenerable* — its content is the deterministic output of the **3-way config reconcile** of
+`{base = git merge-base staging origin/current, staging, current}` (see
+`docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md`). You can drop and recreate
+it freely **by re-running the reconcile** (never by a blind "checkout current", which would lose
+values authored on staging). `current` is the source of truth for values edited live; `staging` is
+the source of truth for values you deliberately changed there.
 
 **Canonical config file set** (defined in `.claude/skills/_dawn-ops-lib/config-paths.txt`):
 
@@ -94,10 +98,10 @@ source of truth; we regenerate them on backflow, never harvest them.
 
 | Change type | Action |
 |---|---|
-| Config/settings churn only | **Case A:** checkout config files from `origin/current`, `--amend` the tip commit — one config commit, forever |
-| New L2 enrichment (store-specific) | **Case B:** `reset --hard HEAD~1` (drop the regenerable config commit), commit the enrichment, recreate the config snapshot at the new tip |
-| Generic code change (L1 candidate) | Route to `dawn-harvest` (§4 of runbook); rebase keeps config at the tip automatically |
-| Locale / cosmetic churn | Ignore — Shopify re-serialization noise |
+| Config/settings divergence (either direction) | **Reconcile:** `dawn-backflow` runs the 3-way merge — staging-ahead kept, current-ahead folded, collisions prompted; amends the snapshot |
+| New L2 enrichment (store-specific) | **Case B:** `reset --hard HEAD~1` (drop the regenerable snapshot), commit the enrichment, **recreate the snapshot by re-running the reconcile** |
+| Generic code change (L1 candidate) | Route to `dawn-harvest`; rebase keeps the snapshot at the tip automatically |
+| Locale / cosmetic churn | Ignore — Shopify re-serialization noise (the reconcile is value-based and ignores it automatically) |
 
 **Invariant after either case:** N stable enrichment commits + exactly one config-snapshot at the tip.
 
@@ -139,6 +143,21 @@ any Shopify store could drop this file in unchanged and it would work. No store-
 anywhere in the file. Lives in `customizations` as `L1:` commits.
 *Signals:* generic app block integration (type only, no instance IDs), layout/styling changes with
 no store data, new utility sections or snippets with no store-specific references.
+
+### Direction-aware config reconcile (verdict per setting)
+
+For config-path files (all leaves) and suffix templates (`settings` leaves only), `dawn-backflow`
+compares each setting at `base` / `staging` / `current`:
+
+| base vs staging vs current | Meaning | Action |
+|---|---|---|
+| staging changed, current didn't | deliberate staging change | keep staging (promotes) |
+| current changed, staging didn't | live editor change | fold into staging |
+| both changed, same value | agree | no-op |
+| both changed, different values | collision | prompt operator |
+
+Suffix-template **skeleton** changes are excluded from the reconcile and continue to route to
+`dawn-harvest` as L2 structure.
 
 ### Rules
 
