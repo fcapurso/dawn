@@ -43,6 +43,12 @@ dawn-vanilla        pristine Dawn @ a fixed upstream commit/tag — ff-only, nev
 - **All history surgery** (rebase, split, reword) happens on `customizations`, which is not linked to any theme and is always bot-free.
 - Force-pushing a bot-linked branch while the bot has committed to it produces repeated churn (conflicting history) that re-triggers on every editor save.
 
+`dawn-backflow` fetches and folds `origin/staging`'s bot commits automatically on every run (see
+`docs/superpowers/specs/2026-07-03-dawn-backflow-staging-drift-and-plan-gate-design.md`) — there is
+no manual "pull staging first" step to remember. Config-class drift (settings, templates) folds
+through the same leaf-level reconciler as `current`'s drift (§4); everything else (in practice,
+locale files) folds through a plain 3-way text merge, guarded on conflict.
+
 ---
 
 ## 3. Two operating modes
@@ -132,6 +138,11 @@ explicit `bash` prefix runs them under real bash regardless of the ambient shell
 it freely **by re-running the reconcile** (never by a blind "checkout current", which would lose
 values authored on staging). `current` is the source of truth for values edited live; `staging` is
 the source of truth for values you deliberately changed there.
+
+Since 2026-07-03, the same reconcile also runs against `origin/staging` (the staging preview
+theme's own bot-linked drift) before the `current` reconcile — see the drift design doc above.
+`dawn-backflow` defaults to a **plan mode**: it computes and prints what it would fold, then
+requires `--apply` to actually commit. A plan-only run never leaves `staging` changed.
 
 **How the single commit is maintained:** `dawn-backflow` `reset --soft`s `staging` to its collapse
 floor — the first non-config (enrichment/code) commit from the tip, else the `customizations`
