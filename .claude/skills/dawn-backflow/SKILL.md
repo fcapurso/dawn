@@ -58,11 +58,20 @@ Report the guard message from stderr. Common causes:
 Three possible causes, checked in this order — resolve one, re-run, and you'll hit the next if it
 also applies:
 
-1. **`origin/staging` config collisions.** Same shape as (2) below, but the "other side" is the
+1. **`origin/staging` config collisions.** Same shape as (3) below, but the "other side" is the
    staging preview theme's live editor instead of the published theme. Ask via `AskUserQuestion`
    with **Keep staging** / **Take origin/staging** / **Enter a value**, write to the same decisions
    TSV, re-run with `--decisions`.
-2. **Config collisions** (current vs. staging). The script prints each colliding `file → path` with
+2. **Current-ahead non-config files.** Classify each per the table below (enrichment → own L2
+   commit; generic → `dawn-harvest`; churn → ignore), then re-run.
+
+   | Classification | Action |
+   |---|---|
+   | **Enrichment** (L2 store-specific logic or content) | Create its own L2 commit on `staging` per conventions §4 Case B |
+   | **Generic L1 improvement** (something all Dawn stores would want) | Use the `dawn-harvest` skill to pull it into the `customizations` layer |
+   | **Churn / noise** (reverted, irrelevant, or already present) | Ignore — no action needed |
+
+3. **Config collisions** (current vs. staging). The script prints each colliding `file → path` with
    its base / staging / current values. For each, ask the operator via `AskUserQuestion`:
 
    | Option | Meaning |
@@ -77,15 +86,6 @@ also applies:
    ```bash
    bash .claude/skills/dawn-backflow/backflow.sh --decisions /tmp/decisions.tsv
    ```
-
-3. **Current-ahead non-config files.** Classify each per the table below (enrichment → own L2
-   commit; generic → `dawn-harvest`; churn → ignore), then re-run.
-
-| Classification | Action |
-|---|---|
-| **Enrichment** (L2 store-specific logic or content) | Create its own L2 commit on `staging` per conventions §4 Case B |
-| **Generic L1 improvement** (something all Dawn stores would want) | Use the `dawn-harvest` skill to pull it into the `customizations` layer |
-| **Churn / noise** (reverted, irrelevant, or already present) | Ignore — no action needed |
 
 ### Exit 22 — plan ready, needs approval
 
