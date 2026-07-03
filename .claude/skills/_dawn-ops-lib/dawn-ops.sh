@@ -34,6 +34,17 @@ dawn::current_ref(){
   fi
 }
 
+# Resolve the ref that represents the staging preview theme's bot-linked remote copy.
+# Test seam: DAWN_STAGING_REMOTE_REF.
+dawn::staging_remote_ref(){
+  if [ -n "${DAWN_STAGING_REMOTE_REF:-}" ]; then echo "$DAWN_STAGING_REMOTE_REF"; return 0; fi
+  if git rev-parse --verify -q refs/remotes/origin/staging >/dev/null; then
+    echo refs/remotes/origin/staging
+  else
+    echo origin/staging
+  fi
+}
+
 dawn::current_branch(){ git rev-parse --abbrev-ref HEAD; }
 
 dawn::assert_not_current(){
