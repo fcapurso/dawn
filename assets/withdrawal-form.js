@@ -19,7 +19,11 @@
     if (document.querySelector('.withdrawal-modal')) return; // already open
     if (form.reportValidity && !form.reportValidity()) return; // native required-field check
     var orderInput = form.querySelector('input[name="contact[Order number]"]');
-    openModal(orderInput && orderInput.value ? orderInput.value : '');
+    var emailInput = form.querySelector('input[name="contact[email]"]');
+    openModal(
+      orderInput && orderInput.value ? orderInput.value : '',
+      emailInput && emailInput.value ? emailInput.value : ''
+    );
   }
 
   // Primary path: the (type="button") button just opens the modal.
@@ -32,10 +36,26 @@
     tryOpen();
   });
 
-  function openModal(order) {
+  function openModal(order, email) {
     var bodyTpl = btn.getAttribute('data-confirm-body') || '';
     var orderText = order ? '#' + order.replace(/^#/, '') : '';
-    var body = bodyTpl.replace('[order]', orderText);
+    // Escape the template and each dynamic value separately, then join with
+    // trusted (hardcoded, attribute-free) markup, so a malicious order number
+    // or email can never inject real tags: only its own escaped text ends up
+    // inside <strong>.
+    // Function replacers, not replacement strings: a string replacement would
+    // let an order/email value containing "$&", "$$", "$`" or "$'" splice in
+    // extra template text via String.replace's special pattern syntax.
+    // Dawn only loads two body-font weight files (regular + its resolved
+    // "bold"), so intermediate font-weight values just snap to one of those
+    // two extremes rather than rendering a true medium weight - bold reads as
+    // too heavy for this font. Highlight with color instead of weight: keep
+    // <strong> for semantics, override its default bold via CSS (see
+    // .withdrawal-modal__highlight in withdrawal-form.liquid).
+    var body = esc(bodyTpl)
+      .replace('[order]', function () { return '<strong class="withdrawal-modal__highlight">' + esc(orderText) + '</strong>'; })
+      .replace('[email]', function () { return '<strong class="withdrawal-modal__highlight">' + esc(email || '') + '</strong>'; })
+      .replace(/\n/g, '<br>');
 
     var overlay = document.createElement('div');
     overlay.className = 'withdrawal-modal';
@@ -44,7 +64,7 @@
     overlay.innerHTML =
       '<div class="withdrawal-modal__box" tabindex="-1">' +
       '<h2>' + esc(btn.getAttribute('data-confirm-title')) + '</h2>' +
-      '<p>' + esc(body) + '</p>' +
+      '<p>' + body + '</p>' +
       '<div class="withdrawal-modal__actions">' +
       '<button type="button" class="button" data-ok>' + esc(btn.getAttribute('data-confirm-ok')) + '</button>' +
       '<button type="button" class="button button--secondary" data-cancel>' + esc(btn.getAttribute('data-confirm-cancel')) + '</button>' +

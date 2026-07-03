@@ -7,7 +7,7 @@
     "statement_label": "Your withdrawal statement (optional)",
     "submit": "Withdraw from contract here",
     "confirm_title": "Confirm your withdrawal",
-    "confirm_body": "Confirm you want to withdraw order [order]?",
+    "confirm_body": "Confirm you want to withdraw order [order]?\nA confirmation will be sent to [email].",
     "confirm_ok": "Confirm withdrawal",
     "confirm_cancel": "Go back"
   },

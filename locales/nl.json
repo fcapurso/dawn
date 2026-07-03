@@ -7,7 +7,7 @@
     "statement_label": "Je herroepingsverklaring (optioneel)",
     "submit": "Herroep hier uw contract",
     "confirm_title": "Bevestig je herroeping",
-    "confirm_body": "Bevestig dat je bestelling [order] wilt herroepen?",
+    "confirm_body": "Bevestig dat je bestelling [order] wilt herroepen?\nEen bevestiging wordt verstuurd naar [email].",
     "confirm_ok": "Herroeping bevestigen",
     "confirm_cancel": "Terug"
   },

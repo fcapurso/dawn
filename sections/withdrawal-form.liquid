@@ -170,6 +170,23 @@
     margin-top: 1.5rem;
     flex-wrap: wrap;
   }
+  .withdrawal-modal__highlight {
+    font-weight: inherit;
+    color: rgb(var(--color-link));
+  }
+  /* Match .rte a's lighter/underlined link treatment for the merchant-authored
+     mailto link in the success message, without overriding its heading font. */
+  .section-{{ section.id }}-padding .form__message a {
+    color: rgba(var(--color-link), var(--alpha-link));
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+    text-decoration-thickness: 0.1rem;
+    transition: text-decoration-thickness var(--duration-short) ease;
+  }
+  .section-{{ section.id }}-padding .form__message a:hover {
+    color: rgb(var(--color-link));
+    text-decoration-thickness: 0.2rem;
+  }
 </style>
 
 <script src="{{ 'withdrawal-form.js' | asset_url }}" defer="defer"></script>
