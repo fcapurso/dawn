@@ -113,39 +113,45 @@ dawn::config_leaves(){
 }
 
 # Files to reconcile: all existing config-paths.txt files, plus suffix templates
-# that differ across any pair of {base, staging, current}.
+# that differ across any pair of {base, staging, <other>}.
+# <other> defaults to dawn::current_ref (existing call sites keep today's behavior); pass
+# dawn::staging_remote_ref explicitly to reconcile against the staging preview theme's bot instead.
 dawn::config_targets(){
-  local cur base; cur="$(dawn::current_ref)"; base="$(git merge-base staging "$cur" 2>/dev/null)"
+  local other="${1:-$(dawn::current_ref)}"
+  local base; base="$(git merge-base staging "$other" 2>/dev/null)"
   {
     dawn::config_files
     if [ -n "$base" ]; then
-      { git diff --name-only "$base" staging      -- 'templates/'
-        git diff --name-only "$base" "$cur"       -- 'templates/'
-        git diff --name-only staging "$cur"       -- 'templates/'; } \
+      { git diff --name-only "$base" staging  -- 'templates/'
+        git diff --name-only "$base" "$other" -- 'templates/'
+        git diff --name-only staging "$other" -- 'templates/'; } \
       | grep -E '^templates/[a-z_]+\.[a-z0-9_-]+\.json$' \
       | grep -vxFf <(printf '%s\n' "$DAWN_CONFIG_PATHS") || true
     fi
   } | sort -u
 }
 
-# 3-way classify every leaf of every reconcile target.
+# 3-way classify every leaf of every reconcile target against <other> (default dawn::current_ref).
 # Emits (only for non-agreeing leaves), tab-separated:
-#   <verdict>\t<file>\t<path-json>\t<base>\t<staging>\t<current>
+#   <verdict>\t<file>\t<path-json>\t<base>\t<staging>\t<other>
 # verdict ∈ current_ahead | staging_ahead | collision.  Absent => $DAWN_ABSENT.
+# The verdict names are historical (from when <other> was always current) and are kept as-is
+# regardless of which ref is passed: current_ahead means "the other side is ahead", staging_ahead
+# means "staging is ahead of that same other side".
 # NOTE: awk (not bash assoc arrays) for grouping; awk (not sed) for tab tagging.
 # Safe because leaf lines are canonical jq -c: values never contain a raw TAB.
 dawn::reconcile_scan(){
-  local cur base f
-  cur="$(dawn::current_ref)"
-  base="$(git merge-base staging "$cur" 2>/dev/null)" \
-    || { echo "GUARD: no merge-base for staging vs $cur" >&2; return $DAWN_GUARD; }
-  [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $cur" >&2; return $DAWN_GUARD; }
+  local other="${1:-$(dawn::current_ref)}"
+  local base f
+  base="$(git merge-base staging "$other" 2>/dev/null)" \
+    || { echo "GUARD: no merge-base for staging vs $other" >&2; return $DAWN_GUARD; }
+  [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $other" >&2; return $DAWN_GUARD; }
   while IFS= read -r f; do
     [ -z "$f" ] && continue
     {
       dawn::config_leaves "$base"   "$f" | awk '{print "B\t"$0}'
       dawn::config_leaves staging   "$f" | awk '{print "S\t"$0}'
-      dawn::config_leaves "$cur"    "$f" | awk '{print "C\t"$0}'
+      dawn::config_leaves "$other"  "$f" | awk '{print "C\t"$0}'
     } | awk -F'\t' -v file="$f" -v ABSENT="$DAWN_ABSENT" '
       { side=$1; path=$2; val=$3; seen[path]=1
         if(side=="B"){b[path]=val}
@@ -161,7 +167,7 @@ dawn::reconcile_scan(){
           printf "%s\t%s\t%s\t%s\t%s\t%s\n", v, file, p, bv, sv, cv
         }
       }'
-  done < <(dawn::config_targets)
+  done < <(dawn::config_targets "$other")
 }
 
 # rc 0 (pending) if any current-ahead leaf exists; else rc 1.
@@ -180,7 +186,7 @@ dawn::reconcile_pending(){
 dawn::backflow_pending(){ dawn::reconcile_pending; }
 
 # Print the merged content for ONE file to stdout, or nothing if the file needs no change.
-# Args: <file> <decisions-file>. Decisions lines: <file>\t<path-json>\t<staging|current|value:JSON>
+# Args: <file> <decisions-file> [<other-ref>, default dawn::current_ref]. Decisions lines: <file>\t<path-json>\t<staging|current|value:JSON>
 # Returns $DAWN_STOP_JUDGMENT (and lists paths) if a collision has no decision.
 #
 # Substrate = STAGING (not current): staging is what we commit, and for suffix templates the
@@ -193,7 +199,7 @@ dawn::backflow_pending(){ dawn::reconcile_pending; }
 # If there are no folds, emit nothing so the caller leaves staging's file byte-for-byte intact
 # (no spurious re-serialization churn).
 dawn::reconcile_apply(){
-  local file="$1" decisions="$2"
+  local file="$1" decisions="$2" other="${3:-$(dawn::current_ref)}"
 
   local raw header body
   raw="$(git show "staging:$file" 2>/dev/null)"
@@ -225,7 +231,7 @@ dawn::reconcile_apply(){
           *) unresolved+=("$p") ;;
         esac ;;
     esac
-  done < <(dawn::reconcile_scan)
+  done < <(dawn::reconcile_scan "$other")
 
   if [ "${#unresolved[@]}" -gt 0 ]; then
     echo "STOP: unresolved collisions in $file:" >&2
