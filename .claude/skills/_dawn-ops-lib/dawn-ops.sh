@@ -247,6 +247,50 @@ dawn::reconcile_apply(){
     reduce $ops[] as $o (.; if ($o.del // false) then delpaths([$o.p]) else setpath($o.p; $o.v) end)'
 }
 
+# Read-only-in-effect preview of folding dawn::staging_remote_ref's remaining (non-leaf-reconciled)
+# drift into staging — in practice, locale files (dawn::config_class has no leaf reconciler for
+# them). Call this AFTER the config-class fold (dawn::reconcile_apply against
+# dawn::staging_remote_ref) has been committed, so config-class files no longer differ here and
+# don't spuriously surface as conflicts.
+# Real 3-way text merge (git merge-tree), since no leaf-level reconciler covers these paths.
+# Stdout: one changed-file path per line. Exit 0 = clean (list may be empty). Exit 1 = conflict
+# (same file list — see caller for the "resolve manually" message).
+dawn::nonconfig_drift_scan(){
+  local remote base changed
+  remote="$(dawn::staging_remote_ref)"
+  git rev-parse --verify -q "$remote" >/dev/null 2>&1 || return 0
+  base="$(git merge-base staging "$remote" 2>/dev/null)" \
+    || { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
+  [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
+  changed="$(git diff --name-only "$base" "$remote" -- .)"
+  [ -z "$changed" ] && return 0
+
+  if git merge-tree --write-tree --merge-base="$base" staging "$remote" >/dev/null 2>&1; then
+    printf '%s\n' "$changed"
+    return 0
+  fi
+  printf '%s\n' "$changed"
+  return 1
+}
+
+# Materialize dawn::nonconfig_drift_scan's clean fold into the working tree. Call only after a 0
+# return from dawn::nonconfig_drift_scan. No commit is created — same working-tree-write pattern
+# as dawn::reconcile_apply's callers.
+dawn::nonconfig_drift_apply(){
+  local remote base tree f blob content
+  remote="$(dawn::staging_remote_ref)"
+  base="$(git merge-base staging "$remote" 2>/dev/null)" || return 1
+  tree="$(git merge-tree --write-tree --merge-base="$base" staging "$remote" 2>/dev/null | head -1)"
+  [ -z "$tree" ] && return 1
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    blob="$(git rev-parse "$tree:$f" 2>/dev/null)" || continue
+    content="$(git cat-file -p "$blob" 2>/dev/null)" || continue
+    mkdir -p "$(dirname "$f")"
+    printf '%s\n' "$content" > "$f"
+  done < <(git diff --name-only "$base" "$remote" -- .)
+}
+
 # rc 0 if trees equal (excl docs/ + .claude/), rc 30 with a summary if not.
 dawn::verify_tree_equal(){
   local a="$1" b="$2"
