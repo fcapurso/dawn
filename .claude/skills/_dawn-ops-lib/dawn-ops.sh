@@ -250,37 +250,48 @@ dawn::reconcile_apply(){
 # Read-only-in-effect preview of folding dawn::staging_remote_ref's remaining (non-leaf-reconciled)
 # drift into staging — in practice, locale files (dawn::config_class has no leaf reconciler for
 # them). Call this AFTER the config-class fold (dawn::reconcile_apply against
-# dawn::staging_remote_ref) has been committed, so config-class files no longer differ here and
-# don't spuriously surface as conflicts.
+# dawn::staging_remote_ref) has been committed, so config-class files' JSON-value-level collisions
+# are already resolved by the time this runs.
 # Real 3-way text merge (git merge-tree), since no leaf-level reconciler covers these paths.
-# Operates on the whole tree (git diff -- .), not just locales/ — it relies on the caller having
-# already folded config-class files first (see the docstring above), so in practice what's left
-# to scan here is locale files, but nothing here filters to that path prefix specifically.
-# Stdout: one changed-file path per line. Exit 0 = clean (list may be empty). Exit 1 = conflict
-# (same file list in both cases: this path deliberately does not attempt per-file conflict
-# granularity — multi-file drift here is rare enough that the precision isn't worth the
-# complexity; a conflict on any file just means "resolve manually", full stop).
+# Explicitly EXCLUDES config-class files (dawn::config_class non-empty) from both the reported
+# "changed" list and the conflict verdict — not just an optimization. A config-class collision
+# resolved via decisions (e.g. "take staging's own value") is, at the byte level, still a genuine
+# textual conflict against staging_remote's raw serialization on that line (staging changed it one
+# way, staging_remote changed it another). git merge-tree correctly reports that as CONFLICT, but
+# it is already-resolved from this tool's point of view — the leaf reconciler is authoritative for
+# these paths, so raw-text disagreement here must never surface as drift or block the run.
+# `git merge-tree --write-tree` (git 2.50) doesn't support pathspec-scoping the merge itself, so we
+# run it whole-tree and then post-filter: parse the stage 1/2/3 index lines it prints after the
+# tree oid (format: "<mode> <object> <stage>\t<path>", one per unmerged path) to find which paths
+# actually conflicted, and only fail if that set overlaps the non-config-class changed-file set.
+# Stdout: one changed-file path per line, config-class files excluded. Exit 0 = clean (list may be
+# empty). Exit 1 = conflict (same file list — see caller for the "resolve manually" message).
 dawn::nonconfig_drift_scan(){
-  local remote base changed
+  local remote base changed out conflicted overlap
   remote="$(dawn::staging_remote_ref)"
   git rev-parse --verify -q "$remote" >/dev/null 2>&1 || return 0
   base="$(git merge-base staging "$remote" 2>/dev/null)" \
     || { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
   [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
-  changed="$(git diff --name-only "$base" "$remote" -- .)"
+
+  changed="$(git diff --name-only "$base" "$remote" -- . | while IFS= read -r f; do
+    [ -n "$f" ] && [ -z "$(dawn::config_class "$f")" ] && printf '%s\n' "$f"
+  done)"
   [ -z "$changed" ] && return 0
 
-  if git merge-tree --write-tree --merge-base="$base" staging "$remote" >/dev/null 2>&1; then
-    printf '%s\n' "$changed"
-    return 0
-  fi
+  out="$(git merge-tree --write-tree --merge-base="$base" staging "$remote" 2>/dev/null)"
+  conflicted="$(awk -F'\t' 'NF==2 && $1 ~ /^[0-7]+ [0-9a-f]+ [123]$/ {print $2}' <<< "$out" | sort -u)"
+  overlap="$(comm -12 <(sort -u <<< "$changed") <(printf '%s\n' "$conflicted"))"
+
   printf '%s\n' "$changed"
-  return 1
+  [ -n "$overlap" ] && return 1
+  return 0
 }
 
 # Materialize dawn::nonconfig_drift_scan's clean fold into the working tree. Call only after a 0
 # return from dawn::nonconfig_drift_scan. No commit is created — same working-tree-write pattern
-# as dawn::reconcile_apply's callers.
+# as dawn::reconcile_apply's callers. Skips config-class files (dawn::config_class non-empty) so
+# it never touches a path the leaf reconciler already owns — mirrors the scan's exclusion.
 dawn::nonconfig_drift_apply(){
   local remote base tree f
   remote="$(dawn::staging_remote_ref)"
@@ -289,6 +300,7 @@ dawn::nonconfig_drift_apply(){
   [ -z "$tree" ] && return 1
   while IFS= read -r f; do
     [ -z "$f" ] && continue
+    [ -n "$(dawn::config_class "$f")" ] && continue
     if git cat-file -e "$tree:$f" 2>/dev/null; then
       mkdir -p "$(dirname "$f")"
       git show "$tree:$f" > "$f" 2>/dev/null || continue

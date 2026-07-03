@@ -78,4 +78,30 @@ assert_contains "$out4" "locales/nl.json" "deleted file reported"
 in_repo "$d4" 'dawn::nonconfig_drift_apply'
 [ -f "$d4/locales/nl.json" ] && _dawn_fail "deleted file still present on disk after apply"
 
+# Config-class file, clean (non-conflicting) drift: must NEVER surface here — it's the leaf
+# reconciler's territory, not this function's, regardless of whether it also changed.
+d5=$(dawn_test_repo)
+commit_on "$d5" staging config/settings_data.json <<< '{"z":"base"}'
+git -C "$d5" checkout -q staging_remote; git -C "$d5" merge -q staging -m sync
+commit_on "$d5" staging_remote config/settings_data.json <<< '{"z":"bot-value"}'
+git -C "$d5" checkout -q staging
+out5=$(in_repo "$d5" 'dawn::nonconfig_drift_scan'); rc5=$?
+assert_rc "$rc5" 0 "config-class-only drift scan ok"
+assert_eq "$out5" "" "config-class file never reported by nonconfig scan"
+
+# Bug 2 repro: config-class file where staging and staging_remote each change the exact same
+# line to different values (the shape that raw-text-conflicts in git merge-tree) — this simulates
+# a Step-0a collision already resolved (staging's committed value differs literally from
+# staging_remote's raw serialization). Must NOT be treated as a conflict by this function: it's
+# out of scope, already-resolved-elsewhere territory, so scan must return 0 and report nothing.
+d6=$(dawn_test_repo)
+commit_on "$d6" staging config/settings_data.json <<< '{"z":"base"}'
+git -C "$d6" checkout -q staging_remote; git -C "$d6" merge -q staging -m sync
+commit_on "$d6" staging config/settings_data.json <<< '{"z":"staging-resolved"}'
+commit_on "$d6" staging_remote config/settings_data.json <<< '{"z":"bot-value"}'
+git -C "$d6" checkout -q staging
+out6=$(in_repo "$d6" 'dawn::nonconfig_drift_scan'); rc6=$?
+assert_rc "$rc6" 0 "config-class same-line conflict is out of scope, scan still returns 0"
+assert_eq "$out6" "" "config-class file not reported even though it would raw-text-conflict"
+
 echo "  nonconfig_drift ok"
