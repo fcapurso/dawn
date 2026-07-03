@@ -21,9 +21,14 @@ and `Inert:` trailer. See `../_dawn-ops-lib/conventions.md` for the full layer m
 ## Step 1 — Run analysis
 
 ```bash
+bash --noprofile --norc -c '
 source .claude/skills/_dawn-ops-lib/dawn-ops.sh
 dawn::harvest_candidates
+'
 ```
+
+> Always invoke `dawn::*` functions through an explicit `bash -c` wrapper, never a bare
+> `source` in the ambient shell — see `../_dawn-ops-lib/conventions.md` §3c.
 
 If output is empty: report "nothing to harvest — staging and customizations are in sync" and stop.
 
@@ -67,7 +72,7 @@ decidable. A template's **structure** is everything outside the `settings` objec
 is a sibling of `settings`). Run:
 
 ```bash
-dawn::classify_template_json <templates/….json>   # prints "config" or "l2"
+bash --noprofile --norc -c 'source .claude/skills/_dawn-ops-lib/dawn-ops.sh && dawn::classify_template_json <templates/….json>'   # prints "config" or "l2"
 ```
 
 - **`config`** — only in-`settings` values differ (heading/intro/copy, colours, paddings, block

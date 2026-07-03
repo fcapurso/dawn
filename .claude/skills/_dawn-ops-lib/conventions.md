@@ -88,6 +88,41 @@ the mechanism for normal `ops → staging/customizations → ops` development.
 
 ---
 
+## 3c. Invoke `dawn-ops.sh` via explicit `bash`, never a bare `source`
+
+`dawn-ops.sh` has a `#!/usr/bin/env bash` shebang, but a shebang only applies when a file is
+*executed*; `source`ing it runs the script under whatever shell is already running. On this
+machine the operator's default shell is zsh, not bash, and native zsh has two independent problems
+with this library:
+
+- **Nounset on `BASH_SOURCE`** — `dawn-ops.sh` resolves its own directory via `${BASH_SOURCE[0]}`,
+  which doesn't exist in zsh; under `set -u` this used to throw a "parameter not set" error on
+  every source. Fixed in the library itself (portable bash/zsh self-path resolution), but the next
+  point is not fixable inside the library.
+- **Intermittent `command not found: git` under process substitution** — reproducible independent
+  of `dawn-ops.sh` (a bare `while read; do :; done < <(git diff ...)` loop fails ~1 in 3 tries in
+  native zsh here). Root cause: `~/.zshrc` sources `nvm.sh` via a `$(brew --prefix nvm)` shell-out,
+  which races with zsh's command-hash table when a forked subshell (like a process substitution)
+  looks up `git`. This is silent and non-deterministic — it has produced a **wrong classification
+  verdict** (`inert` instead of `needs_judgment`) with no error surfaced to the caller.
+
+`bash` does not exhibit either problem. Every invocation of `dawn-ops.sh` functions — from a skill
+doc, from an agent, from a terminal — must go through an explicit bash subprocess:
+
+```bash
+bash --noprofile --norc -c '
+source .claude/skills/_dawn-ops-lib/dawn-ops.sh
+dawn::some_function args...
+'
+```
+
+Never write a bare `source .claude/skills/_dawn-ops-lib/dawn-ops.sh` intended to run in the calling
+shell — there is no guarantee that shell is bash. (The `bash .../foo.sh args` entry points like
+`harvest-commit.sh`, `promote.sh`, `ship.sh`, `upgrade.sh`, `backflow.sh` are already safe: an
+explicit `bash` prefix runs them under real bash regardless of the ambient shell.)
+
+---
+
 ## 4. Config-snapshot invariant
 
 **`staging` always ends in exactly ONE config-snapshot commit at the tip.** That commit is

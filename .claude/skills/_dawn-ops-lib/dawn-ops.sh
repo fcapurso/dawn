@@ -4,7 +4,15 @@
 set -uo pipefail
 DAWN_OK=0 DAWN_GUARD=10 DAWN_STOP_LIVE=20 DAWN_STOP_JUDGMENT=21 DAWN_VERIFY=30
 # Directory of this lib (for sibling files like config-paths.txt), resolved even when sourced.
-DAWN_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Portable across bash (BASH_SOURCE) and zsh (%x prompt-expansion) — this file gets `source`d
+# directly from an operator's ambient shell, which on this machine defaults to zsh, not bash.
+if [ -n "${BASH_SOURCE:-}" ]; then
+  _dawn_self="${BASH_SOURCE[0]}"
+else
+  _dawn_self="${(%):-%x}"
+fi
+DAWN_LIB_DIR="$(cd "$(dirname "$_dawn_self")" && pwd)"
+unset _dawn_self
 
 # Cache config-paths.txt content at source time. The skills check out `staging` mid-run, and
 # `staging` does not track the ops-only `.claude/` tree — so `git checkout staging` REMOVES this
