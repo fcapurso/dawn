@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Dawn theme-ops shared library. Source from a checkout of the dawn repo.
-# Exit-code contract: 0 ok · 10 guard · 20 stop-live · 21 stop-judgment · 30 verify
+# Exit-code contract: 0 ok · 10 guard · 20 stop-live · 21 stop-judgment · 22 stop-approval · 30 verify
 set -uo pipefail
-DAWN_OK=0 DAWN_GUARD=10 DAWN_STOP_LIVE=20 DAWN_STOP_JUDGMENT=21 DAWN_VERIFY=30
+DAWN_OK=0 DAWN_GUARD=10 DAWN_STOP_LIVE=20 DAWN_STOP_JUDGMENT=21 DAWN_STOP_APPROVAL=22 DAWN_VERIFY=30
 # Directory of this lib (for sibling files like config-paths.txt), resolved even when sourced.
 # Portable across bash (BASH_SOURCE) and zsh (%x prompt-expansion) — this file gets `source`d
 # directly from an operator's ambient shell, which on this machine defaults to zsh, not bash.

@@ -18,6 +18,7 @@ dawn_test_repo(){
   git -C "$d" commit -q --allow-empty -m base
   git -C "$d" branch staging
   git -C "$d" branch current
+  git -C "$d" branch staging_remote      # bot-linked remote copy of staging (§2, plan.md)
   git -C "$d" branch customizations    # collapse floor for backflow (staging's stable base)
   echo "$d"
 }
@@ -35,5 +36,6 @@ commit_on(){
 # Run a function inside the repo with the test seam pointing at the local 'current' branch.
 in_repo(){
   local d="$1"; shift
-  ( cd "$d" && DAWN_CURRENT_REF=current bash -c "source '$DAWN_LIB_SRC'; $*" )
+  ( cd "$d" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remote \
+    bash -c "source '$DAWN_LIB_SRC'; $*" )
 }
