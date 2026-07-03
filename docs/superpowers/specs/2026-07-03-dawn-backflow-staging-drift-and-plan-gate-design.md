@@ -4,10 +4,10 @@
 **Repo:** Dawn / Zogezeept (operated from `ops`)
 **Status:** Approved design, pending spec review → implementation plan
 **Revises:** `dawn-backflow/backflow.sh`, `dawn-backflow/SKILL.md`, `_dawn-ops-lib/dawn-ops.sh`,
-`_dawn-ops-lib/conventions.md` (§2a, §4). Builds directly on
-`docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md` (the current-vs-staging
-reconcile) without changing its behavior. No change to `dawn-harvest`, `dawn-ship`,
-`dawn-promote`, or `dawn-upgrade`.
+`_dawn-ops-lib/conventions.md` (§2a, §4). Generalizes (parameterizes) the leaf-level reconciler from
+`docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md` to reuse it for a second
+comparison ref; existing call sites keep their default behavior unchanged. No change to
+`dawn-harvest`, `dawn-ship`, `dawn-promote`, or `dawn-upgrade`.
 
 > Context: on 2026-07-03, live admin edits made in the staging preview theme's editor (a padding
 > change and a `mailto:` link added to `templates/page.withdrawal.json`, plus Shopify's own
@@ -44,73 +44,82 @@ a commit.
 
 ## 2. Part A — auto-heal `origin/staging` drift
 
-### 2.1 Fetch and preview
+> **Corrected during plan research (2026-07-03).** The first cut of this section routed *all*
+> `origin/staging` drift through a raw `git merge-tree` text merge. Empirically verified against
+> this repo's actual (pretty-printed, one-key-per-line) JSON: git's default line-based 3-way merge
+> produces **false-positive conflicts** even for semantically independent edits, whenever the two
+> changed lines are adjacent with no unchanged line of context between them (reproduced with a
+> minimal fixture: two branches each editing a *different* key one line apart from each other
+> conflicted). Config-class files already have a leaf-level (parsed-JSON-value) reconciler
+> immune to exactly this failure mode (2026-07-02 design §2.3). Splitting the mechanism by file
+> class — leaf reconcile where one already exists, raw merge only where it doesn't — avoids
+> spurious manual-resolution stops on the file class that matters most (settings/templates), at
+> the cost of the raw-merge path (locale files only) still being conflict-prone. The corrected
+> design below reflects this split; the report/approval-gate shape from Part B is unaffected.
 
-Add a step at the top of `backflow.sh`, before the existing non-config partition:
+### 2.1 Two mechanisms, split by file class
 
-```
-git fetch origin staging --quiet 2>/dev/null || true
-base="$(git merge-base staging origin/staging)"   # GUARD if absent
-```
+- **Config-class files** (`dawn::config_targets`: the `config-paths.txt` set + suffix-template
+  `settings` leaves) — route `origin/staging` drift through the **same leaf-level reconciler**
+  already built for current-vs-staging (2026-07-02 design). Generalize
+  `dawn::reconcile_scan`/`dawn::reconcile_apply` to take the "other side" ref as a parameter
+  (defaulting to `dawn::current_ref` at existing call sites, so today's behavior is unchanged),
+  and call them a second time with `dawn::staging_remote_ref` (new, mirrors `dawn::current_ref`;
+  test seam `DAWN_STAGING_REMOTE_REF`) as the other side. No raw text merge is involved for these
+  files, so re-serialization noise and line-adjacency false conflicts don't apply — only genuine
+  same-setting-changed-both-places collisions stop the run, exactly like today's current-vs-staging
+  collisions.
+- **Everything else the bot might touch** — in practice, locale files, which are deliberately
+  outside the leaf reconciler's scope (`dawn::_commit_is_config_only`'s `locales/*` exclusion; no
+  per-key reconciliation exists for them today, config-class or not). No leaf reconciler exists to
+  reuse, so fold these via `git merge-tree` (real 3-way text merge, read-only preview via
+  `--write-tree --merge-base=<base>`, verified above to exit `1` with `CONFLICT` markers on
+  overlap). A conflict here is a `DAWN_GUARD` (§2.2) — accepted as a documented limitation, since
+  it's confined to a narrow, already-excluded file class rather than the config files a store edits
+  most often.
 
-This `merge-base` stays valid across repeated backflow runs even though backflow rewrites
-`staging`'s tip on every collapse: the collapse only ever `reset --soft`s down to a **floor**
-commit that both `staging` and `origin/staging` already share (conventions.md §4), it never rewrites
-history below that floor. So the shared ancestor is stable and doesn't need special-casing.
-
-Use git's three-way merge-tree preview (read-only — touches no ref, no working tree) to compute
-what folding `origin/staging` into `staging` would produce:
-
-```
-dawn::staging_drift_scan
-    # merge-tree(base, staging, origin/staging), read-only.
-    # Returns: OK  + list of files that would change (if the merge is clean and non-empty)
-    #          OK  + empty list (nothing to fold — already in sync)
-    #          CONFLICT + list of conflicting files (real textual conflicts)
-```
-
-### 2.2 Conflict handling
+### 2.2 Conflict handling (raw-merge path only)
 
 A conflict here means the bot (via a live preview-theme edit) and the operator (locally) changed
-the **same line of the same file**. This is a different, simpler kind of stop than the existing
-config-leaf **collision** (which resolves at the JSON-value level via `AskUserQuestion`): a raw
-textual merge conflict in an arbitrary file (most likely a locale file or a suffix-template
-skeleton, neither of which the JSON-leaf reconciler covers) has no automated resolution and no
-existing UI for picking a winner value-by-value. Treat it as a `DAWN_GUARD` (exit `10`), consistent
-with the script's other "cannot proceed automatically" conditions (no merge-base, dirty tree):
+overlapping or adjacent lines of the same non-config file (in practice, a locale file). There's no
+per-key UI for these (unlike config-class collisions, §2.1), so treat it as a `DAWN_GUARD` (exit
+`10`), consistent with the script's other "cannot proceed automatically" conditions:
 
 ```
 GUARD: origin/staging conflicts with local staging in <file(s)> — resolve manually
 (e.g. `git merge origin/staging` on a scratch branch, or hand-edit) and re-run.
 ```
 
-Expected to be rare: the bot only ever writes admin/editor content; it would take editing the exact
-same setting in both the admin UI and locally, between fetches, to collide.
+### 2.3 Sequencing: the origin/staging fold must land as a real commit first
 
-### 2.3 Applying the fold
+Both `dawn::reconcile_scan` and `dawn::reconcile_apply` read from `staging`'s **committed** tip
+(`git show staging:$file`), never the working tree. So the origin/staging fold must be committed to
+local `staging` *before* the existing current-vs-staging reconcile runs — otherwise that reconcile
+would compute against stale, pre-fold staging content. Step 0 is therefore:
 
-```
-dawn::staging_drift_apply
-    # For each file dawn::staging_drift_scan flagged as changed, write the merge-tree's
-    # resulting blob into the working tree if it differs from what's there now. No merge
-    # commit is created.
-```
-
-This materializes the fold the same way the existing current-vs-staging reconcile already
-materializes folds (`backflow.sh` step 3, `dawn::reconcile_apply`): a plain working-tree write. No
-merge commit is created — config folds are already just working-tree writes that the collapse step
-(§2.4 below, unchanged) absorbs into the single snapshot commit. A merge commit would be soft-reset
-away by the very next step anyway, so skip it.
+1. Fetch `origin/staging`.
+2. Run the (generalized) leaf reconciler against `dawn::staging_remote_ref` for config-class files.
+   Any collision here stops the run (exit `21`) with the *same* `AskUserQuestion` flow used for
+   current-vs-staging collisions today — resolved and re-run before continuing (see §3.1 for how
+   this composes with the existing collision tier: sequential, not merged into one decisions file,
+   to avoid ambiguity if the *same* file+path collided against both `origin/staging` and `current`
+   in the same run — an edge case rare enough not to warrant a compound decisions-file key).
+3. Apply the resolved folds to the working tree and commit them to `staging` (e.g. `git commit -m
+   "fold origin/staging (config)"`).
+4. Fold non-config files (§2.1 second bullet) via `git merge-tree`; `GUARD` on conflict; otherwise
+   write and commit (e.g. `git commit -m "fold origin/staging (other)"`).
+5. Continue into the existing non-config partition, current-vs-staging reconcile, and collapse —
+   all unchanged, now operating on a `staging` tip that already includes the `origin/staging` drift.
 
 ### 2.4 Composition with the existing collapse (no change needed)
 
-`backflow.sh`'s collapse step (reset `--soft` to the floor, `git add -A`, one commit) already
-absorbs whatever is in the working tree, regardless of what produced it. Once §2.3 has written the
-`origin/staging` fold into the tree, the collapse step needs no modification: it picks up those
-changes exactly as it already picks up the current-vs-staging reconcile's writes. The floor
-computation (`dawn::_commit_is_config_only` walk) is also unaffected — locale files are already
-excluded from the config-only test (`backflow.sh` / `dawn-ops.sh:80`) and suffix templates already
-classify as config, so a clean `origin/staging` fold never perturbs the floor.
+The intermediate commits from steps 2.3.3–2.3.4 are not special: the collapse step already squashes
+any number of commits above the floor into one snapshot (conventions.md §4; validated by
+`test_backflow.sh`'s "multiple config commits… collapse into ONE snapshot" case), so they disappear
+into the final single commit exactly like today's already-fetched bot commits do. The floor
+computation (`dawn::_commit_is_config_only` walk) is unaffected: locale-only commits are already
+excluded from the config-only test, and config-class folds already classify as config, so these new
+intermediate commits never become the floor by accident.
 
 ---
 
@@ -120,32 +129,41 @@ classify as config, so a clean `origin/staging` fold never perturbs the floor.
 
 ```
 bash backflow.sh                       # PLAN (default) — read-only, never writes or commits
-  ├─ exit 10  GUARD                    — dirty tree / no merge-base / origin/staging conflict
-  ├─ exit 21  STOP_JUDGMENT            — non-config files need classification, OR
-  │                                      config collisions need decisions (unchanged from today)
+  ├─ exit 10  GUARD                    — dirty tree / no merge-base / origin/staging raw-merge conflict
+  ├─ exit 21  STOP_JUDGMENT            — origin/staging config collisions, non-config files needing
+  │                                      classification, or current-vs-staging config collisions
+  │                                      need decisions (see ordering below)
   ├─ exit 0   nothing to do            — no drift, no folds, no collisions (unchanged fast-path)
   └─ exit 22  STOP_APPROVAL            — prints the plan report; re-run with --apply to commit
 
 bash backflow.sh --apply [--decisions <path>]   # APPLY — performs the writes and commits
 ```
 
-`--decisions <path>` is unchanged in meaning; it's still how collision resolutions are supplied.
-`--apply` is new: it re-runs the identical computation (fetch, drift scan, reconcile scan) and,
+`--decisions <path>` is unchanged in meaning; it's still how collision resolutions are supplied —
+now potentially across two collision tiers (origin/staging and current), consumed independently by
+each tier's own reconcile pass (same file, same `<file>\t<path-json>\t<verdict>` format; an operator
+resolving both in one round just writes both tiers' lines into the same TSV).
+`--apply` is new: it re-runs the identical computation (fetch, drift fold, reconcile scans) and,
 finding everything already resolved, actually writes the folds and commits. Plan and apply share
 one code path so the report can never drift from what apply actually does.
 
-**Ordering (highest-priority stop wins, unchanged precedence + one new tier appended at the end):**
+**Ordering (highest-priority stop wins — this is the script's actual execution order, per §2.3):**
 
 1. Dirty tree / branch guards (existing) → `10`
-2. `origin/staging` merge conflict (new, §2.2) → `10`
-3. Non-config current-ahead files needing classification (existing) → `21`
-4. Config collisions needing decisions (existing) → `21`
-5. **Everything above is clear → print the plan report → `22`, wait for `--apply`**
+2. `origin/staging` **config-class** collisions needing decisions (new, §2.1 first bullet) → `21`
+3. `origin/staging` **non-config** raw-merge conflict (new, §2.2) → `10` — only reached once (2) is
+   clear, since the config-class fold commits before the non-config fold is attempted (§2.3)
+4. Non-config current-ahead files needing classification (existing) → `21`
+5. Current-vs-staging config collisions needing decisions (existing) → `21`
+6. **Everything above is clear → print the plan report → `22`, wait for `--apply`**
 
-Collisions and classifications are resolved exactly as today (same `AskUserQuestion` flow, same
+All collisions and classifications are resolved exactly as today (same `AskUserQuestion` flow, same
 decisions TSV) *before* the new approval gate is reached. The approval gate shows the **final**
-picture — including how collisions were resolved — so there's one clean yes/no at the end, not a
-second collision review.
+picture — including how every collision was resolved — so there's one clean yes/no at the end, not
+a second collision review. A run can require more than one resolve-and-re-run round-trip if it hits
+more than one tier (e.g. an `origin/staging` collision *and* a current-vs-staging collision in the
+same run) — no different in kind from today, where a single collision already requires one
+round-trip.
 
 ### 3.2 Report content
 
@@ -189,8 +207,8 @@ action needed.
 
 | File | Change |
 |---|---|
-| `_dawn-ops-lib/dawn-ops.sh` | add `dawn::staging_drift_scan` (read-only merge-tree preview) and `dawn::staging_drift_apply` (materializes the clean fold into the working tree) |
-| `dawn-backflow/backflow.sh` | fetch `origin/staging`; run drift scan before the non-config partition; route conflicts to `GUARD`; add `--apply` flag gating all writes/commit; on a clean plan with nothing to write, keep today's `exit 0`; otherwise print the report and `exit $DAWN_STOP_APPROVAL` (new, `22`) instead of committing |
+| `_dawn-ops-lib/dawn-ops.sh` | add `dawn::staging_remote_ref` (mirrors `dawn::current_ref`, test seam `DAWN_STAGING_REMOTE_REF`); generalize `dawn::reconcile_scan`/`dawn::reconcile_apply` to accept an "other ref" parameter (default `dawn::current_ref`, preserving today's call sites); add `dawn::nonconfig_drift_scan`/`dawn::nonconfig_drift_apply` (raw `git merge-tree` preview/apply for the non-config-file fold, §2.1 second bullet) |
+| `dawn-backflow/backflow.sh` | fetch `origin/staging`; add Step 0 (§2.3): config-class leaf-reconcile fold against `dawn::staging_remote_ref` (commit), then non-config raw-merge fold (commit); route raw-merge conflicts to `GUARD`; add `--apply` flag gating all writes/commit; on a clean plan with nothing to write, keep today's `exit 0`; otherwise print the report and `exit $DAWN_STOP_APPROVAL` (new, `22`) instead of committing |
 | `dawn-backflow/SKILL.md` | document the `22` exit, the report format, and the approve → re-run-with-`--apply` step |
 | `_dawn-ops-lib/conventions.md` | §2a: note that backflow now fetches+folds `origin/staging` automatically every run, so no manual "pull staging first" step is needed; §4: mention the new plan/apply split |
 | `docs/superpowers/runbook/dawn-dev-and-release.md` | update the backflow step to describe the new report + approval |
@@ -208,15 +226,19 @@ set.
   this change.)
 - **`origin/staging` has no new commits**: drift scan returns an empty fold list; report omits the
   "pulling in from the live preview theme" section entirely rather than printing an empty one.
-- **Both `origin/staging` drift and a config collision exist in the same run**: the collision stop
-  (`21`) fires first (§3.1 ordering); the drift fold is still recomputed and included once the
-  collision is resolved and the run reaches the plan report.
+- **Both `origin/staging` drift and a current-vs-staging config collision exist in the same run**:
+  the `origin/staging` collision tier (if any) fires first, then the non-config classification tier,
+  then the current-vs-staging collision tier (§3.1 ordering) — each resolved and re-run in turn; the
+  drift fold is recomputed fresh each time and included once everything is resolved and the run
+  reaches the plan report.
 - **Repeated `--apply` runs with nothing new**: idempotent — second run finds no drift and no
   pending folds, falls through to the existing `exit 0` fast path, no approval prompt.
-- **Conflict in a file the JSON-leaf reconciler also targets** (e.g. a suffix template's `settings`
-  block edited both live and locally in the exact same spot): still a raw textual conflict at the
-  `origin/staging` fold stage, which runs *before* the JSON-leaf reconcile — resolved as a `GUARD`
-  per §2.2, not routed into the leaf-collision UI. Documented limitation; expected to be very rare.
+- **The exact same setting is edited both live on the preview theme and locally in staging** (e.g. a
+  suffix template's `settings` value): this is a genuine config-class collision, and — because
+  `origin/staging` drift now goes through the same leaf reconciler as current-vs-staging drift
+  (§2.1) — it's correctly routed to the leaf-collision `AskUserQuestion` UI, not a raw-merge `GUARD`.
+  The `GUARD` path is reserved for non-config files only (in practice, locale files), where no
+  per-key UI exists.
 
 ---
 
@@ -224,18 +246,24 @@ set.
 
 Extends the existing fixture-repo test seams (local refs, no network):
 
-1. **Clean drift fold** (this incident's shape: bot edits on `origin/staging` local doesn't have,
-   no other changes) → plan report lists them under "pulling in from the live preview theme"; apply
-   produces a snapshot commit containing them.
-2. **No drift** → report omits that section; a fully no-op run stays `exit 0` with no prompt.
-3. **Drift + current-ahead fold together** → both sections appear in one report.
-4. **Drift conflict** (same line changed both remotely and locally) → `GUARD` (`10`), clear message
-   naming the file(s), nothing written.
-5. **Drift + a genuine config collision** → collision stop (`21`) fires first; after decisions are
-   supplied, the plan report reflects the resolved value; `--apply` commits both.
-6. **Plan then abort** → no `--apply` run follows; repo state unchanged (working tree and `staging`
+1. **Clean config-class drift fold** (this incident's shape: bot edits a suffix-template `settings`
+   value or a `config-paths.txt` file that local staging doesn't have, no other changes) → plan
+   report lists it under "pulling in from the live preview theme"; apply produces a snapshot commit
+   containing it.
+2. **Clean non-config drift fold** (bot edits a locale file's formatting, no overlapping local
+   edits) → folded via the raw-merge path; same report section.
+3. **No drift** → report omits that section; a fully no-op run stays `exit 0` with no prompt.
+4. **Drift + current-ahead fold together** → both sections appear in one report.
+5. **Non-config drift conflict** (a locale file changed on adjacent/overlapping lines both remotely
+   and locally) → `GUARD` (`10`), clear message naming the file(s), nothing written.
+6. **Config-class drift collision** (the same setting changed both live on the preview theme and
+   locally) → `21`; after a decision is supplied, the plan report reflects the resolved value.
+7. **Drift collision + a separate current-vs-staging collision in the same run** → each tier stops
+   in turn (§3.1 ordering); after both are resolved, one plan report reflects both resolutions;
+   `--apply` commits everything in one snapshot.
+8. **Plan then abort** → no `--apply` run follows; repo state unchanged (working tree and `staging`
    ref both untouched by the plan-only run).
-7. **Plan/apply consistency** → apply's resulting commit matches exactly what the immediately
+9. **Plan/apply consistency** → apply's resulting commit matches exactly what the immediately
    preceding plan report described (no drift between the two phases sharing one code path).
 
 ---
@@ -245,8 +273,8 @@ Extends the existing fixture-repo test seams (local refs, no network):
 | Code | Constant | When |
 |---|---|---|
 | `0` | `DAWN_OK` | nothing to do, or (with `--apply`) reconcile applied and committed |
-| `10` | `DAWN_GUARD` | dirty tree, wrong branch, no merge-base, invalid JSON, **or `origin/staging` merge conflict (new)** |
-| `21` | `DAWN_STOP_JUDGMENT` | collisions need decisions, or non-config files need classification (unchanged) |
+| `10` | `DAWN_GUARD` | dirty tree, wrong branch, no merge-base, invalid JSON, **or a raw-merge conflict folding `origin/staging`'s non-config-file drift (new, §2.2)** |
+| `21` | `DAWN_STOP_JUDGMENT` | **`origin/staging` config-class collisions need decisions (new, §2.1)**, non-config files need classification, or current-vs-staging config collisions need decisions (existing) |
 | `22` | `DAWN_STOP_APPROVAL` | **(new)** plan computed and printed; re-run with `--apply` to commit |
 
 ---
