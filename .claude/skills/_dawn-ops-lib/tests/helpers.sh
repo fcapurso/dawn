@@ -37,5 +37,5 @@ commit_on(){
 in_repo(){
   local d="$1"; shift
   ( cd "$d" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remote \
-    bash -c "source '$DAWN_LIB_SRC'; $*" )
+    DAWN_SYNC_MARKER_NOPUSH=1 bash -c "source '$DAWN_LIB_SRC'; $*" )
 }

@@ -131,6 +131,37 @@ dawn::config_targets(){
   } | sort -u
 }
 
+# Map a reconcile "other" ref value to its logical sync-marker name ("current" or
+# "staging-remote"), or empty if it matches neither resolver's current output. Used so
+# dawn::reconcile_scan can look up the right persisted marker without every caller having to
+# pass a second, easy-to-get-out-of-sync parameter.
+dawn::_sync_marker_name(){
+  local other="$1"
+  [ "$other" = "$(dawn::current_ref)" ] && { echo current; return 0; }
+  [ "$other" = "$(dawn::staging_remote_ref)" ] && { echo staging-remote; return 0; }
+  echo ""
+}
+
+# Read the commit refs/dawn-sync/<name> points at, or empty if the marker doesn't exist yet.
+dawn::sync_marker_get(){
+  local name="$1"
+  git rev-parse --verify -q "refs/dawn-sync/$name" 2>/dev/null || true
+}
+
+# Point refs/dawn-sync/<name> at <sha> and push it (a plain ref, not a branch — this is what
+# keeps that specific commit's content reachable and nameable after the branch it came from has
+# moved on). A ref, not a text file, because only a ref actually protects the commit from
+# garbage collection. Test seam: DAWN_SYNC_MARKER_NOPUSH — test fixtures have no real "origin"
+# to push to; dawn::sync_marker_get reads the local ref regardless, so skipping the push is safe
+# for tests. A missing/empty <sha> is a no-op (never clobber a marker with garbage).
+dawn::sync_marker_set(){
+  local name="$1" sha="$2"
+  [ -z "$sha" ] && return 0
+  git update-ref "refs/dawn-sync/$name" "$sha"
+  [ -n "${DAWN_SYNC_MARKER_NOPUSH:-}" ] && return 0
+  git push -q origin "refs/dawn-sync/$name:refs/dawn-sync/$name" 2>/dev/null || true
+}
+
 # 3-way classify every leaf of every reconcile target against <other> (default dawn::current_ref).
 # Emits (only for non-agreeing leaves), tab-separated:
 #   <verdict>\t<file>\t<path-json>\t<base>\t<staging>\t<other>
