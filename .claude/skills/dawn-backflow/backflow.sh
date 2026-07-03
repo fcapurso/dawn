@@ -65,12 +65,14 @@ if [ "$sr_config_changed" = "1" ]; then
   git commit -q -m "fold origin/staging (config)"
 fi
 
+# Must run after Step 0a's commit — dawn::nonconfig_drift_scan assumes config-class drift is
+# already resolved, so it never spuriously sees a config-class file as an unresolved conflict.
 # --- Step 0b: fold origin/staging's remaining (non-config) drift (raw 3-way merge) ---
 nc_out="$(dawn::nonconfig_drift_scan)"; nc_rc=$?
 if [ "$nc_rc" = "1" ]; then
   echo "GUARD: origin/staging conflicts with local staging in:" >&2
   sed 's/^/  /' <<< "$nc_out" >&2
-  echo "Resolve manually (e.g. git merge $staging_remote on a scratch branch, or hand-edit) and re-run." >&2
+  echo "Resolve manually (e.g. git checkout -b scratch-fix, git merge $staging_remote, resolve, then reapply to staging — no worktrees; see conventions.md §3b) and re-run." >&2
   _dawn_bf_abort $DAWN_GUARD
 fi
 if [ -n "$nc_out" ]; then
