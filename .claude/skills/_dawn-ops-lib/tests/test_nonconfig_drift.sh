@@ -63,4 +63,19 @@ out3=$(in_repo "$d3" 'dawn::nonconfig_drift_scan'); rc3=$?
 assert_rc "$rc3" 1 "conflicting drift scan returns 1"
 assert_contains "$out3" "locales/nl.json" "conflicting file named"
 
+# Deletion: staging_remote deletes a file that both merge-base and staging still have,
+# with no conflicting edit on staging's side — clean fold should remove it from disk.
+d4=$(dawn_test_repo)
+commit_on "$d4" staging locales/nl.json <<< '{"a":"base"}'
+git -C "$d4" checkout -q staging_remote; git -C "$d4" merge -q staging -m sync
+git -C "$d4" rm -q locales/nl.json
+git -C "$d4" commit -q -m "delete nl.json"
+git -C "$d4" checkout -q staging
+out4=$(in_repo "$d4" 'dawn::nonconfig_drift_scan'); rc4=$?
+assert_rc "$rc4" 0 "deletion drift scan ok"
+assert_contains "$out4" "locales/nl.json" "deleted file reported"
+
+in_repo "$d4" 'dawn::nonconfig_drift_apply'
+[ -f "$d4/locales/nl.json" ] && _dawn_fail "deleted file still present on disk after apply"
+
 echo "  nonconfig_drift ok"

@@ -253,8 +253,13 @@ dawn::reconcile_apply(){
 # dawn::staging_remote_ref) has been committed, so config-class files no longer differ here and
 # don't spuriously surface as conflicts.
 # Real 3-way text merge (git merge-tree), since no leaf-level reconciler covers these paths.
+# Operates on the whole tree (git diff -- .), not just locales/ — it relies on the caller having
+# already folded config-class files first (see the docstring above), so in practice what's left
+# to scan here is locale files, but nothing here filters to that path prefix specifically.
 # Stdout: one changed-file path per line. Exit 0 = clean (list may be empty). Exit 1 = conflict
-# (same file list — see caller for the "resolve manually" message).
+# (same file list in both cases: this path deliberately does not attempt per-file conflict
+# granularity — multi-file drift here is rare enough that the precision isn't worth the
+# complexity; a conflict on any file just means "resolve manually", full stop).
 dawn::nonconfig_drift_scan(){
   local remote base changed
   remote="$(dawn::staging_remote_ref)"
@@ -277,17 +282,19 @@ dawn::nonconfig_drift_scan(){
 # return from dawn::nonconfig_drift_scan. No commit is created — same working-tree-write pattern
 # as dawn::reconcile_apply's callers.
 dawn::nonconfig_drift_apply(){
-  local remote base tree f blob content
+  local remote base tree f
   remote="$(dawn::staging_remote_ref)"
   base="$(git merge-base staging "$remote" 2>/dev/null)" || return 1
   tree="$(git merge-tree --write-tree --merge-base="$base" staging "$remote" 2>/dev/null | head -1)"
   [ -z "$tree" ] && return 1
   while IFS= read -r f; do
     [ -z "$f" ] && continue
-    blob="$(git rev-parse "$tree:$f" 2>/dev/null)" || continue
-    content="$(git cat-file -p "$blob" 2>/dev/null)" || continue
-    mkdir -p "$(dirname "$f")"
-    printf '%s\n' "$content" > "$f"
+    if git cat-file -e "$tree:$f" 2>/dev/null; then
+      mkdir -p "$(dirname "$f")"
+      git show "$tree:$f" > "$f" 2>/dev/null || continue
+    else
+      rm -f -- "$f"
+    fi
   done < <(git diff --name-only "$base" "$remote" -- .)
 }
 
