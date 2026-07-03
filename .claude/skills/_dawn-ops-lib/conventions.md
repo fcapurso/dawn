@@ -67,6 +67,27 @@ The two modes are complementary: `dawn-ship` ships pieces incrementally between 
 
 ---
 
+## 3b. Single working tree — no git worktrees
+
+All branch switches, including scratch/feature branches for development, happen as **ephemeral
+`git checkout`s in this one working tree** — never as a separate `git worktree add`. `dawn-ops.sh`
+formalizes this via `dawn::with_branch`: it checks out the target branch and traps the shell's
+`EXIT` to check the original branch back out, whether the script succeeds or fails.
+
+**Why this matters, not just style:** `.claude/` and `docs/` live only on `ops` (§ above). A linked
+worktree for a feature branch is a second directory that never has `.claude/` — any skill or
+agent that assumes "the repo" means one working directory (all five `dawn-*` skills do) will
+silently operate on the wrong tree, or an agent will default back to the main checkout for
+commands it forgets to scope, leaving the main tree's `HEAD` on the wrong branch. There's no
+isolation benefit here either: `current` and `staging` are guarded against destructive operations
+by `dawn::assert_not_current` / `assert_clean_tree`, not by directory separation.
+
+If you need an isolated sandbox for something orthogonal to Dawn's branch model (e.g. a spike you
+want to `rm -rf` without touching real branches), that's fine — just don't reach for a worktree as
+the mechanism for normal `ops → staging/customizations → ops` development.
+
+---
+
 ## 4. Config-snapshot invariant
 
 **`staging` always ends in exactly ONE config-snapshot commit at the tip.** That commit is

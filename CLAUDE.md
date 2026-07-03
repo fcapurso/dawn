@@ -3,6 +3,15 @@
 > Operated from the `ops` branch (skills + docs live here). Theme branches stay pure;
 > this file is intentionally only on `ops` and is never deployed.
 
+## Dev workflow
+
+- **No git worktrees for Dawn work.** Branch switches are ephemeral `git checkout`s in this one
+  working tree — check out the branch, do the work, check back out to `ops` when done (see
+  `dawn::with_branch` in `.claude/skills/_dawn-ops-lib/dawn-ops.sh`, and
+  `.claude/skills/_dawn-ops-lib/conventions.md` §3b). A linked worktree splits the `ops`-only
+  tooling (`.claude/`, `docs/`) away from whatever branch you're actually coding on, and every
+  `dawn-*` skill assumes a single working directory.
+
 ## Store / account facts
 
 - **Shopify plan: standard (NOT Shopify Plus).** Consequence: the **checkout** itself
