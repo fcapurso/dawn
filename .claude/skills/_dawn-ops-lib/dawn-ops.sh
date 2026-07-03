@@ -163,6 +163,12 @@ dawn::sync_marker_set(){
 }
 
 # 3-way classify every leaf of every reconcile target against <other> (default dawn::current_ref).
+# "base" is read from the persisted sync marker for <other> (see dawn::sync_marker_get) when one
+# exists, falling back to git merge-base only on the very first run before a marker is
+# established. The marker exists specifically because git ancestry is NOT a reliable "last
+# agreed" reference here: dawn-backflow collapses staging's own history on every run, which
+# makes a merge-base search regress further into the past each time, potentially past several
+# already-reconciled changes (see docs/superpowers/specs/2026-07-03-dawn-backflow-sync-markers-design.md).
 # Emits (only for non-agreeing leaves), tab-separated:
 #   <verdict>\t<file>\t<path-json>\t<base>\t<staging>\t<other>
 # verdict ∈ current_ahead | staging_ahead | collision.  Absent => $DAWN_ABSENT.
@@ -173,9 +179,14 @@ dawn::sync_marker_set(){
 # Safe because leaf lines are canonical jq -c: values never contain a raw TAB.
 dawn::reconcile_scan(){
   local other="${1:-$(dawn::current_ref)}"
-  local base f
-  base="$(git merge-base staging "$other" 2>/dev/null)" \
-    || { echo "GUARD: no merge-base for staging vs $other" >&2; return $DAWN_GUARD; }
+  local base f marker
+  marker="$(dawn::_sync_marker_name "$other")"
+  base=""
+  [ -n "$marker" ] && base="$(dawn::sync_marker_get "$marker")"
+  if [ -z "$base" ]; then
+    base="$(git merge-base staging "$other" 2>/dev/null)" \
+      || { echo "GUARD: no merge-base for staging vs $other" >&2; return $DAWN_GUARD; }
+  fi
   [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $other" >&2; return $DAWN_GUARD; }
   while IFS= read -r f; do
     [ -z "$f" ] && continue
