@@ -21,8 +21,12 @@ cur="$(dawn::current_ref)"
 staging_remote="$(dawn::staging_remote_ref)"
 git fetch origin current --quiet 2>/dev/null || true
 git fetch origin staging --quiet 2>/dev/null || true
+git fetch origin refs/dawn-sync/current:refs/dawn-sync/current --quiet 2>/dev/null || true
+git fetch origin refs/dawn-sync/staging-remote:refs/dawn-sync/staging-remote --quiet 2>/dev/null || true
 base="$(git merge-base staging "$cur" 2>/dev/null)" \
   || { echo "GUARD: no merge-base staging vs $cur" >&2; exit $DAWN_GUARD; }
+cur_sha="$(git rev-parse "$cur" 2>/dev/null || true)"
+staging_remote_sha="$(git rev-parse "$staging_remote" 2>/dev/null || true)"
 
 orig_sha="$(git rev-parse staging)"
 dawn::with_branch staging || exit $DAWN_GUARD
@@ -30,6 +34,15 @@ dawn::with_branch staging || exit $DAWN_GUARD
 # Every exit from here on that isn't a genuine success (apply-mode exit 0) must leave staging
 # exactly as it started — including the plan-mode "everything's fine, please approve" exit.
 _dawn_bf_abort(){ git reset -q --hard "$orig_sha" 2>/dev/null || true; exit "$1"; }
+
+# Only a completed --apply run counts as "fully reconciled" — advance both markers to the exact
+# commits fetched this run, even if nothing needed folding (a clean "nothing to do" verdict is
+# still a complete, correct pass over the remote's current state).
+_dawn_bf_sync_markers(){
+  [ "$APPLY" = "1" ] || return 0
+  dawn::sync_marker_set current "$cur_sha"
+  dawn::sync_marker_set staging-remote "$staging_remote_sha"
+}
 
 report_staging_remote=()
 report_current=()
@@ -149,6 +162,7 @@ if [ "${#report_staging_remote[@]}" = "0" ] && [ "${#report_current[@]}" = "0" ]
   else
     echo "Backflow complete: staging config collapsed into one snapshot at the tip."
   fi
+  _dawn_bf_sync_markers
   exit $DAWN_OK
 fi
 
@@ -172,4 +186,5 @@ if [ "$APPLY" != "1" ]; then
 fi
 
 echo "Backflow complete: staging config collapsed into one snapshot at the tip."
+_dawn_bf_sync_markers
 exit $DAWN_OK

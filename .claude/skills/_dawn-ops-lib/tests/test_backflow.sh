@@ -61,3 +61,35 @@ assert_eq "$(git -C "$d5" cat-file -t staging:snippets/foo.liquid)" "blob" "enri
 assert_eq "$(git -C "$d5" show staging:config/settings_data.json | jq -r .b)" "2" "staging-ahead config carried through collapse"
 
 echo "  backflow ok"
+
+# --- sync markers ---
+
+# --apply updates both markers to the fetched SHAs; plan-mode does not.
+d6=$(dawn_test_repo)
+commit_on "$d6" staging config/settings_data.json <<< '{"k":"base"}' "config snapshot"
+git -C "$d6" checkout -q current; git -C "$d6" merge -q staging -m sync
+commit_on "$d6" current config/settings_data.json <<< '{"k":"live"}'
+git -C "$d6" checkout -q staging_remote; git -C "$d6" merge -q staging -m sync
+git -C "$d6" checkout -q staging
+cur_sha_expected=$(git -C "$d6" rev-parse current)
+sr_sha_expected=$(git -C "$d6" rev-parse staging_remote)
+
+( cd "$d6" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remote \
+  DAWN_SYNC_MARKER_NOPUSH=1 bash "$BF" ) >/dev/null; plan_rc=$?
+assert_rc "$plan_rc" 22 "plan-mode stops for approval"
+marker_after_plan=$(git -C "$d6" rev-parse --verify -q refs/dawn-sync/current 2>/dev/null || echo "MISSING")
+assert_eq "$marker_after_plan" "MISSING" "plan-mode does not write the marker"
+
+( cd "$d6" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remote \
+  DAWN_SYNC_MARKER_NOPUSH=1 bash "$BF" --apply ) >/dev/null; apply_rc=$?
+assert_rc "$apply_rc" 0 "apply ok"
+assert_eq "$(git -C "$d6" rev-parse refs/dawn-sync/current)" "$cur_sha_expected" "apply writes the current marker"
+assert_eq "$(git -C "$d6" rev-parse refs/dawn-sync/staging-remote)" "$sr_sha_expected" "apply writes the staging-remote marker"
+
+# a "nothing to fold" --apply run still advances the markers
+( cd "$d6" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remote \
+  DAWN_SYNC_MARKER_NOPUSH=1 bash "$BF" --apply ) >/dev/null; noop_apply_rc=$?
+assert_rc "$noop_apply_rc" 0 "second (no-op) apply ok"
+assert_eq "$(git -C "$d6" rev-parse refs/dawn-sync/current)" "$cur_sha_expected" "marker still correct after a no-op apply"
+
+echo "  backflow sync-marker ok"
