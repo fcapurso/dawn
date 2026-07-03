@@ -1,5 +1,6 @@
 {
   "withdrawal_form": {
+    "title": "Herroepingsformulier",
     "name_label": "Naam",
     "email_label": "E-mail",
     "order_number_label": "Bestelnummer",

@@ -1,5 +1,6 @@
 {
   "withdrawal_form": {
+    "title": "Withdrawal form",
     "name_label": "Name",
     "email_label": "Email",
     "order_number_label": "Order number",

@@ -1,129 +1,6 @@
 {{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
-    {%- if section.settings.heading != blank -%}
-      <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section.settings.heading }}</h2>
-    {%- endif -%}
-
-    {%- form 'contact', id: 'WithdrawalForm', class: 'isolate' -%}
-      {%- liquid
-        assign show_success = false
-        if form.posted_successfully?
-          assign show_success = true
-        elsif request.design_mode and section.settings.preview_success
-          assign show_success = true
-        endif
-      -%}
-      {%- if show_success -%}
-        <h2 class="form-status form-status-list form__message" tabindex="-1"{% if form.posted_successfully? %} autofocus{% endif %}>
-          {{- 'icon-success.svg' | inline_asset_content -}}
-          <span>{{ section.settings.success_message }}</span>
-        </h2>
-      {%- else -%}
-        {%- if form.errors -%}
-          <div class="form__message">
-            <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
-              {{- 'icon-error.svg' | inline_asset_content -}}
-              {{ 'templates.contact.form.error_heading' | t }}
-            </h2>
-          </div>
-        {%- endif -%}
-
-        {%- if section.settings.intro != blank -%}
-          <div class="withdrawal-form__intro rte">{{ section.settings.intro }}</div>
-        {%- endif -%}
-
-      {%- comment -%} Stable, NON-localized field names so the notification email is parseable. {%- endcomment -%}
-      <div class="field">
-        <input
-          class="field__input"
-          type="text"
-          id="WithdrawalForm-name"
-          name="contact[Name]"
-          value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
-          placeholder="{{ 'withdrawal_form.name_label' | t }}"
-          autocomplete="name"
-        >
-        <label class="field__label" for="WithdrawalForm-name">{{ 'withdrawal_form.name_label' | t }}</label>
-      </div>
-
-      <div class="field">
-        <input
-          class="field__input"
-          type="email"
-          id="WithdrawalForm-email"
-          name="contact[email]"
-          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
-          spellcheck="false"
-          autocapitalize="off"
-          autocomplete="email"
-          aria-required="true"
-          required
-          placeholder="{{ 'withdrawal_form.email_label' | t }}"
-        >
-        <label class="field__label" for="WithdrawalForm-email">
-          {{- 'withdrawal_form.email_label' | t }} <span aria-hidden="true">*</span></label
-        >
-      </div>
-
-      <div class="field">
-        <input
-          class="field__input"
-          type="text"
-          id="WithdrawalForm-order"
-          name="contact[Order number]"
-          aria-required="true"
-          required
-          placeholder="{{ 'withdrawal_form.order_number_label' | t }}"
-        >
-        <label class="field__label" for="WithdrawalForm-order">
-          {{- 'withdrawal_form.order_number_label' | t }} <span aria-hidden="true">*</span></label
-        >
-        <small class="withdrawal-form__help">{{ 'withdrawal_form.order_number_help' | t }}</small>
-      </div>
-
-      <div class="field">
-        <textarea
-          rows="5"
-          class="text-area field__input"
-          id="WithdrawalForm-statement"
-          name="contact[Withdrawal statement]"
-          placeholder="{{ 'withdrawal_form.statement_label' | t }}"
-        ></textarea>
-        <label class="form__label field__label" for="WithdrawalForm-statement">
-          {{- 'withdrawal_form.statement_label' | t -}}
-        </label>
-      </div>
-
-      {%- comment -%} Hidden machine fields: marker for the Gmail filter + locale for the script. {%- endcomment -%}
-      <input type="hidden" name="contact[Request type]" value="withdrawal_request">
-      <input type="hidden" name="contact[Locale]" value="{{ request.locale.iso_code }}">
-
-      {%- comment -%} Honeypot: bots fill it; humans never see it. {%- endcomment -%}
-      <div class="withdrawal-form__hp" aria-hidden="true">
-        <label>Website<input type="text" name="contact[Website]" tabindex="-1" autocomplete="off"></label>
-      </div>
-
-      <div class="contact__button">
-        <button
-          type="button"
-          class="button"
-          data-withdrawal-submit
-          data-confirm-title="{{ 'withdrawal_form.confirm_title' | t | escape }}"
-          data-confirm-body="{{ 'withdrawal_form.confirm_body' | t | escape }}"
-          data-confirm-ok="{{ 'withdrawal_form.confirm_ok' | t | escape }}"
-          data-confirm-cancel="{{ 'withdrawal_form.confirm_cancel' | t | escape }}"
-        >
-          {{ 'withdrawal_form.submit' | t }}
-        </button>
-      </div>
-      {%- endif -%}
-    {%- endform -%}
-  </div>
-</div>
-
-<style>
+{%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -187,7 +64,166 @@
     color: rgb(var(--color-link));
     text-decoration-thickness: 0.2rem;
   }
-</style>
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="title title-wrapper--no-top-margin inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {{ section.settings.heading }}
+      </h2>
+    {%- else -%}
+      <h2 class="visually-hidden">{{ 'withdrawal_form.title' | t }}</h2>
+    {%- endif -%}
+    {%- liquid
+      assign contact_form_class = 'isolate'
+      if settings.animations_reveal_on_scroll
+        assign contact_form_class = 'isolate scroll-trigger animate--slide-in'
+      endif
+    -%}
+
+    {%- form 'contact', id: 'WithdrawalForm', class: contact_form_class -%}
+      {%- liquid
+        assign show_success = false
+        if form.posted_successfully?
+          assign show_success = true
+        elsif request.design_mode and section.settings.preview_success
+          assign show_success = true
+        endif
+      -%}
+      {%- if show_success -%}
+        <h2 class="form-status form-status-list form__message" tabindex="-1"{% if form.posted_successfully? %} autofocus{% endif %}>
+          {{- 'icon-success.svg' | inline_asset_content -}}
+          <span>{{ section.settings.success_message }}</span>
+        </h2>
+      {%- else -%}
+        {%- if form.errors -%}
+          <div class="form__message">
+            <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+              {{- 'icon-error.svg' | inline_asset_content -}}
+              {{ 'templates.contact.form.error_heading' | t }}
+            </h2>
+          </div>
+          <ul class="form-status-list caption-large" role="list">
+            <li>
+              <a href="#WithdrawalForm-email" class="link">
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}
+              </a>
+            </li>
+          </ul>
+        {%- endif -%}
+
+        {%- if section.settings.intro != blank -%}
+          <div class="withdrawal-form__intro rte">{{ section.settings.intro }}</div>
+        {%- endif -%}
+
+      {%- comment -%} Stable, NON-localized field names so the notification email is parseable. {%- endcomment -%}
+      <div class="contact__fields">
+        <div class="field">
+          <input
+            class="field__input"
+            type="text"
+            id="WithdrawalForm-name"
+            name="contact[Name]"
+            value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+            placeholder="{{ 'withdrawal_form.name_label' | t }}"
+            autocomplete="name"
+          >
+          <label class="field__label" for="WithdrawalForm-name">{{ 'withdrawal_form.name_label' | t }}</label>
+        </div>
+
+        <div class="field field--with-error">
+          <input
+            class="field__input"
+            type="email"
+            id="WithdrawalForm-email"
+            name="contact[email]"
+            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+            spellcheck="false"
+            autocapitalize="off"
+            autocomplete="email"
+            aria-required="true"
+            {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              aria-describedby="WithdrawalForm-email-error"
+            {% endif %}
+            required
+            placeholder="{{ 'withdrawal_form.email_label' | t }}"
+          >
+          <label class="field__label" for="WithdrawalForm-email">
+            {{- 'withdrawal_form.email_label' | t }} <span aria-hidden="true">*</span></label
+          >
+          {%- if form.errors contains 'email' -%}
+            <small class="contact__field-error" id="WithdrawalForm-email-error">
+              <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+              <span class="form__message">
+                <span class="svg-wrapper">
+                  {{- 'icon-error.svg' | inline_asset_content -}}
+                </span>
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </span>
+            </small>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          id="WithdrawalForm-order"
+          name="contact[Order number]"
+          aria-required="true"
+          required
+          placeholder="{{ 'withdrawal_form.order_number_label' | t }}"
+        >
+        <label class="field__label" for="WithdrawalForm-order">
+          {{- 'withdrawal_form.order_number_label' | t }} <span aria-hidden="true">*</span></label
+        >
+        <small class="withdrawal-form__help">{{ 'withdrawal_form.order_number_help' | t }}</small>
+      </div>
+
+      <div class="field">
+        <textarea
+          rows="5"
+          class="text-area field__input"
+          id="WithdrawalForm-statement"
+          name="contact[Withdrawal statement]"
+          placeholder="{{ 'withdrawal_form.statement_label' | t }}"
+        ></textarea>
+        <label class="form__label field__label" for="WithdrawalForm-statement">
+          {{- 'withdrawal_form.statement_label' | t -}}
+        </label>
+      </div>
+
+      {%- comment -%} Hidden machine fields: marker for the Gmail filter + locale for the script. {%- endcomment -%}
+      <input type="hidden" name="contact[Request type]" value="withdrawal_request">
+      <input type="hidden" name="contact[Locale]" value="{{ request.locale.iso_code }}">
+
+      {%- comment -%} Honeypot: bots fill it; humans never see it. {%- endcomment -%}
+      <div class="withdrawal-form__hp" aria-hidden="true">
+        <label>Website<input type="text" name="contact[Website]" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <div class="contact__button">
+        <button
+          type="button"
+          class="button"
+          data-withdrawal-submit
+          data-confirm-title="{{ 'withdrawal_form.confirm_title' | t | escape }}"
+          data-confirm-body="{{ 'withdrawal_form.confirm_body' | t | escape }}"
+          data-confirm-ok="{{ 'withdrawal_form.confirm_ok' | t | escape }}"
+          data-confirm-cancel="{{ 'withdrawal_form.confirm_cancel' | t | escape }}"
+        >
+          {{ 'withdrawal_form.submit' | t }}
+        </button>
+      </div>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
 
 <script src="{{ 'withdrawal-form.js' | asset_url }}" defer="defer"></script>
 
