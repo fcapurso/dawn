@@ -29,4 +29,17 @@ commit_on "$d3" current  sections/footer-group.json <<< '{"sections":{"f":{"sett
 in_repo "$d3" 'dawn::reconcile_pending'; rc=$?
 assert_rc "$rc" 1 "collision only => not pending (decided at backflow, not blocked at promote)"
 
+# Case: current-ahead-style drift on origin/staging (the "other" param) => pending against that
+# ref specifically, while the default (current) call site is unaffected by it.
+d4=$(dawn_test_repo)
+commit_on "$d4" staging sections/footer-group.json <<< '{"sections":{"f":{"settings":{"k":"base"}}}}'
+git -C "$d4" checkout -q staging_remote; git -C "$d4" merge -q staging -m sync
+commit_on "$d4" staging_remote sections/footer-group.json <<< '{"sections":{"f":{"settings":{"k":"bot-edit"}}}}'
+git -C "$d4" checkout -q staging
+other=$(in_repo "$d4" 'dawn::staging_remote_ref')
+in_repo "$d4" "dawn::reconcile_pending $other"; rc4=$?
+assert_rc "$rc4" 0 "other-ref-ahead drift => pending against that ref"
+in_repo "$d4" 'dawn::reconcile_pending'; rc4b=$?
+assert_rc "$rc4b" 1 "default call site (current) unaffected by staging_remote's drift"
+
 echo "  reconcile_pending ok"

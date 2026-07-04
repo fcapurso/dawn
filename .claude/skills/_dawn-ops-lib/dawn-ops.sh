@@ -212,7 +212,10 @@ dawn::reconcile_scan(){
   done < <(dawn::config_targets "$other")
 }
 
-# rc 0 (pending) if any current-ahead leaf exists; else rc 1.
+# rc 0 (pending) if any current-ahead leaf exists against <other> (default dawn::current_ref);
+# else rc 1. Generalized exactly like dawn::reconcile_scan itself (optional `other` ref) so the
+# existing call site (no arg) is unaffected — dawn::assert_backflow_not_pending is what actually
+# passes dawn::staging_remote_ref.
 # Collisions are NOT counted here: they are decided at backflow time (backflow stops with
 # exit 21 until every collision has a decision), and a collision resolved to staging is a
 # deliberate staging-wins outcome that promote is meant to carry. Statelessly a
@@ -220,7 +223,8 @@ dawn::reconcile_scan(){
 # staging != current), so counting collisions here would block promote forever after you
 # chose staging. A genuinely un-folded live edit shows up as current_ahead and does block.
 dawn::reconcile_pending(){
-  local scan; scan="$(dawn::reconcile_scan)" || return $DAWN_GUARD
+  local other="${1:-$(dawn::current_ref)}"
+  local scan; scan="$(dawn::reconcile_scan "$other")" || return $DAWN_GUARD
   grep -qE '^current_ahead'$'\t' <<< "$scan"
 }
 
