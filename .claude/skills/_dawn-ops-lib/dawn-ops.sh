@@ -324,8 +324,7 @@ dawn::backflow_pending(){ dawn::reconcile_pending; }
 # staging nor origin/staging may have changed since that push. The sync marker
 # refs/dawn-sync/staging-remote records staging's exact SHA at the last stage-push.
 dawn::assert_stage_push_current(){
-  local cur="${1:-$(dawn::current_ref)}"
-  local sr="${2:-$(dawn::staging_remote_ref)}"
+  local sr="${1:-$(dawn::staging_remote_ref)}"
   local marker; marker="$(dawn::sync_marker_get staging-remote 2>/dev/null || true)"
   if [ -z "$marker" ]; then
     echo "GUARD: stage-push first — staging has never been pushed to the preview theme" >&2
