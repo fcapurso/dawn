@@ -16,8 +16,11 @@ bash .claude/skills/dawn-promote/promote.sh
 ### Exit codes and required responses
 
 **Exit 10 (GUARD — backflow pending)**
-Origin/current has config edits that are not yet in staging. Tell the user:
-> "There are unsynced edits in the live theme (origin/current) that must be merged back into staging first. Run the `dawn-backflow` skill, then retry promote."
+Either `origin/current` or `origin/staging` (the preview theme) has edits not yet folded into
+staging — config-class drift on either remote, or non-config drift (e.g. locale files) on
+`origin/staging`. Report the guard message printed to stderr, which names which remote and which
+kind of drift, then tell the user:
+> "There are unsynced live edits that must be merged back into staging first. Run the `dawn-backflow` skill, then retry promote."
 
 Do NOT proceed until backflow is complete.
 
