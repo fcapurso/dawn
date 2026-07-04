@@ -236,7 +236,7 @@
   "settings": [
     { "type": "inline_richtext", "id": "heading", "default": "Withdraw from contract", "label": "Heading" },
     { "type": "richtext", "id": "intro", "label": "Intro text", "default": "<p>Use this form to withdraw from your purchase within the 14-day withdrawal period. Enter your order details below and confirm.</p>" },
-    { "type": "text", "id": "success_message", "label": "Confirmation message (after submit)", "info": "Plain text. You can add an email link with raw HTML, e.g. <a href=...>.", "default": "Thanks. We have received your withdrawal request and emailed you a confirmation of receipt. It should arrive within a few minutes. If you do not see it, check your spam folder or contact us." },
+    { "type": "html", "id": "success_message", "label": "Confirmation message (after submit)", "info": "HTML is supported — use <a href=\"mailto:...\">...</a> for links.", "default": "Thanks. We have received your withdrawal request and emailed you a confirmation of receipt. It should arrive within a few minutes. If you do not see it, check your spam folder or contact us." },
     { "type": "checkbox", "id": "preview_success", "label": "Preview confirmation message in the editor", "default": false, "info": "Preview only. Has no effect on the live page." },
     {
       "type": "select",
