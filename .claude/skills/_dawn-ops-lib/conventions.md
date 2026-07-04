@@ -159,13 +159,13 @@ requires `--apply` to actually commit. A plan-only run never leaves `staging` ch
 `refs/dawn-sync/current` and `refs/dawn-sync/staging-remote` — not from `git merge-base`. Ancestry
 alone isn't reliable here, because the config-snapshot-collapse invariant above (staging always
 ends in ONE commit) deliberately discards staging's own recent history on every run, which would
-otherwise make a merge-base search regress further into the past each time. `dawn-backflow` (on
-every successful `--apply`), `dawn-stage-push`, and `dawn-promote` (both after every successful
-push) are responsible for keeping these markers current — stage-push's and promote's responsibility
-exists because both push `staging`'s content to `origin/staging` (promote additionally to
-`current`, at the same time), which the markers must reflect or a later genuine edit can look like
-a false collision against a value staging isn't actually "ahead" on anymore. This does NOT cover
-the separate raw-text 3-way merge `backflow` uses for
+otherwise make a merge-base search regress further into the past each time. `dawn-backflow` is
+responsible for keeping these markers current on every successful `--apply`; `dawn-stage-push` and
+`dawn-promote` are responsible for the same after every successful push, since both push
+`staging`'s content to `origin/staging` (promote additionally to `current`, at the same time),
+which the markers must reflect or a later genuine edit can look like a false collision against a
+value staging isn't actually "ahead" on anymore. This does NOT cover the separate raw-text 3-way
+merge `backflow` uses for
 non-config-class files (locale files) — that path still computes its own `git merge-base` for a
 different purpose (a real git merge, not a value diff) and is intentionally out of scope here; see
 `docs/superpowers/specs/2026-07-03-dawn-backflow-sync-markers-design.md`.
