@@ -25,6 +25,7 @@ dawn-vanilla      L0 — pristine Dawn @ fixed upstream commit; ff-only, never c
 | `dawn-harvest` | Analyses staging vs customizations, groups files into proposed commits, classifies each as L1 (generic structure), L2 (store-shaped structure), or Config (content only — leave in snapshot), confirms interactively, then commits approved groups into `customizations` | After finishing features on staging |
 | `dawn-ship` | Lists shippable commits from `customizations` interactively, or ships a named commit directly — append-only cherry-pick onto `current` | To push an inert building block to the live theme early, or to ship a tested active change incrementally |
 | `dawn-backflow` | Direction-aware 3-way config reconcile between `staging` and both `current` and `origin/staging` (the preview theme's own bot-linked drift) — staging-ahead values kept, other-ahead values folded, collisions prompted. Prints a plan report and requires `--apply` to commit. | Before a promote, or when the admin UI (published theme or preview theme) has config you need in staging |
+| `dawn-stage-push` | Force-pushes `staging` → `origin/staging` (the preview theme) only. No live-confirm gate — nothing customer-facing changes. Guarded identically to promote's first two checks. | After backflow, before promote — test the reconciled staging on the preview theme before it goes live |
 | `dawn-promote` | Force-pushes `staging` → `current` (the authoritative reset; guarded) | Full release after rebuild, backflow, and testing |
 | `dawn-upgrade` | Fast-forwards `dawn-vanilla` to a new Dawn release, then rebases `customizations` and `staging` | When a new Dawn version is available |
 
@@ -102,16 +103,23 @@ When the feature is complete and tested:
 # a) Capture any live admin edits back into staging
 bash .claude/skills/dawn-backflow/backflow.sh
 
-# b) Verify staging is clean (all harvested, config snapshot at tip)
+# b) Push the reconciled staging to the preview theme and test it there
+bash .claude/skills/dawn-stage-push/stage-push.sh
+
+# c) Verify staging is clean (all harvested, config snapshot at tip)
 # dawn-promote will check this automatically; if it fails, rebase staging onto customizations
 # and recreate the config snapshot.
 
-# c) Promote
+# d) Promote
 bash .claude/skills/dawn-promote/promote.sh
 # Agent will stop at the live-confirm gate and show you the full diff.
 # After reviewing, confirm with --confirm-live.
 bash .claude/skills/dawn-promote/promote.sh --confirm-live
 ```
+
+`dawn-stage-push` and `dawn-promote` share the same drift guard: if either `origin/current` or
+`origin/staging` has a live edit dawn-backflow hasn't folded in yet, both steps refuse to run —
+re-run `dawn-backflow` first.
 
 After promote, `current == staging` exactly. Any interim `dawn-ship` cherry-picks are superseded.
 
@@ -124,7 +132,7 @@ Want to push a dormant piece to the live theme now?
   → dawn-ship (inert commit from customizations)
 
 Want to publish a full tested release?
-  → dawn-backflow → dawn-promote (promote guards staging cleanliness automatically)
+  → dawn-backflow → dawn-stage-push (test on the preview theme) → dawn-promote (promote guards staging cleanliness automatically)
 
 Captured live admin edits that aren't in staging yet?
   → dawn-backflow
@@ -140,7 +148,8 @@ Need to classify and harvest changes from staging into customizations?
 
 ## Rules (never break these)
 
-1. **Never force-push `staging` or `current`** except the guarded reset in `dawn-promote`.
+1. **Never force-push `staging` or `current`** except the guarded resets in `dawn-stage-push`
+   (`staging` → `origin/staging` only) and `dawn-promote` (`staging` → `current`).
 2. **All history surgery** (rebase, split, reword) on `customizations` only.
 3. **Classify before shipping.** `dawn-ship` does this automatically; `dawn-harvest` records the trailer.
 4. **`staging` tip = config snapshot.** Always ends in exactly one config-snapshot commit.
