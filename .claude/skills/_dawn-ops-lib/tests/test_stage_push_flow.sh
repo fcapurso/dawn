@@ -60,8 +60,10 @@ assert_not_contains "$(git -C "$d" rev-parse current)" "$staging_sha" "stage-pus
 
 # 4) A fresh drift lands on origin/current (on the untouched k2 key) — blocks dawn-promote (proving
 #    the guard is symmetric, not just checked once and forgotten). Same guard function also blocks
-#    stage-push. k stays at its post-fold value ("preview-live-edit") on all three sides here, so
-#    this is an unambiguous current_ahead on k2, not a collision.
+#    stage-push. k reverts to "base" on current here (matching the sync marker's base value for k),
+#    so k classifies as staging_ahead (staging's post-fold value differs from base, current's
+#    doesn't) — not a collision, not current_ahead — leaving k2 as the only current_ahead leaf and
+#    keeping this an unambiguous case.
 commit_on "$d" current config/settings_data.json <<< '{"k":"base","k2":"live-edit-on-current"}'
 git -C "$d" checkout -q staging
 
