@@ -250,6 +250,57 @@ dawn::backflow_scan(){
   done < <({ dawn::config_targets "$cur"; dawn::config_targets "$sr"; } | sort -u)
 }
 
+# Apply operator decisions from a decisions TSV to staging's copy of <file>.
+# Args: <file> <decisions-file> [<cur-ref> [<sr-ref>]]
+# Decisions line: <file>\t<path-json>\t<staging|current|staging_remote|value:JSON>
+# Returns empty output if no changes needed (caller skips rewriting the file).
+# Returns DAWN_STOP_JUDGMENT (rc 21) if any divergent key has no decision.
+dawn::backflow_apply(){
+  local file="$1" decisions="$2"
+  local cur="${3:-$(dawn::current_ref)}"
+  local sr="${4:-$(dawn::staging_remote_ref)}"
+
+  local raw header body
+  raw="$(git show "staging:$file" 2>/dev/null)"
+  [ -z "$raw" ] && return 0
+  header="$(printf '%s' "$raw" | perl -0ne 'print $1 if m{\A(\s*/\*.*?\*/\s*)}s')"
+  body="$(printf '%s' "$raw" | dawn::_strip_jsonc)"
+
+  local ops='[]' verdict f p sv cv rv res
+  local -a unresolved=()
+  _dawn_bfa_fold(){
+    if [ "$1" = "$DAWN_ABSENT" ]; then
+      ops="$(jq -c --argjson p "$p" '. + [{p:$p,del:true}]' <<< "$ops")"
+    else
+      ops="$(jq -c --argjson p "$p" --argjson v "$1" '. + [{p:$p,v:$v}]' <<< "$ops")"
+    fi
+  }
+
+  while IFS=$'\t' read -r verdict f p sv cv rv; do
+    [ "$f" = "$file" ] || continue
+    res="$(awk -F'\t' -v ff="$file" -v pp="$p" '$1==ff && $2==pp {print $3}' "$decisions" 2>/dev/null | head -1)"
+    case "$res" in
+      staging)        : ;;
+      current)        _dawn_bfa_fold "$cv" ;;
+      staging_remote) _dawn_bfa_fold "$rv" ;;
+      value:*)        _dawn_bfa_fold "${res#value:}" ;;
+      *)              unresolved+=("$p") ;;
+    esac
+  done < <(dawn::backflow_scan "$cur" "$sr")
+
+  if [ "${#unresolved[@]}" -gt 0 ]; then
+    echo "STOP: unresolved decisions in $file:" >&2
+    printf '  %s\n' "${unresolved[@]}" >&2
+    return $DAWN_STOP_JUDGMENT
+  fi
+
+  [ "$ops" = "[]" ] && return 0
+
+  [ -n "$header" ] && printf '%s\n' "$header"
+  printf '%s' "$body" | jq --argjson ops "$ops" '
+    reduce $ops[] as $o (.; if ($o.del // false) then delpaths([$o.p]) else setpath($o.p; $o.v) end)'
+}
+
 # rc 0 (pending) if any current-ahead leaf exists against <other> (default dawn::current_ref);
 # else rc 1. Generalized exactly like dawn::reconcile_scan itself (optional `other` ref) so the
 # existing call site (no arg) is unaffected — dawn::assert_backflow_not_pending is what actually
