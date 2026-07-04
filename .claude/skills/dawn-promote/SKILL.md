@@ -15,14 +15,18 @@ bash .claude/skills/dawn-promote/promote.sh
 
 ### Exit codes and required responses
 
-**Exit 10 (GUARD — backflow pending)**
-Either `origin/current` or `origin/staging` (the preview theme) has edits not yet folded into
-staging — config-class drift on either remote, or non-config drift (e.g. locale files) on
-`origin/staging`. Report the guard message printed to stderr, which names which remote and which
-kind of drift, then tell the user:
-> "There are unsynced live edits that must be merged back into staging first. Run the `dawn-backflow` skill, then retry promote."
+### Exit 10 — guard triggered
 
-Do NOT proceed until backflow is complete.
+Report the guard message from stderr. Two possible causes:
+
+1. **Stage-push not current.** Either staging was never pushed to the preview theme, staging has
+   changed since the last push, or the preview theme received a new bot commit since the push. In
+   all cases: run `dawn-stage-push` (after `dawn-backflow` if needed), then retry promote.
+
+2. **Backflow pending.** Either `origin/current` or `origin/staging` has config edits not yet
+   folded into staging. Tell the user:
+   > "There are unsynced live edits that must be merged back into staging first. Run the
+   > `dawn-backflow` skill, then retry `dawn-stage-push` and promote."
 
 **Exit 20 (STOP-live — awaiting human approval)**
 The script has printed a diff summary of what will change on the live shop. **STOP here.** Show the user the printed diff and ask explicitly:
