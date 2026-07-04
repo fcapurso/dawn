@@ -1,7 +1,7 @@
 # Dawn theme-ops — operating conventions
 
-Single source of truth for all five skills (`dawn-backflow`, `dawn-promote`, `dawn-upgrade`,
-`dawn-harvest`, `dawn-ship`). Full depth: runbook at
+Single source of truth for all six skills (`dawn-backflow`, `dawn-promote`, `dawn-stage-push`,
+`dawn-upgrade`, `dawn-harvest`, `dawn-ship`). Full depth: runbook at
 `docs/superpowers/runbook/dawn-dev-and-release.md`, layer design at
 `docs/superpowers/specs/2026-06-17-dawn-repo-layer-separation-design.md`, skills design at
 `docs/superpowers/specs/2026-06-18-dawn-theme-ops-skills-design.md`,
@@ -39,7 +39,7 @@ dawn-vanilla        pristine Dawn @ a fixed upstream commit/tag — ff-only, nev
 
 `staging` and `current` are linked to real Shopify themes. The Shopify GitHub integration writes "Update from Shopify…" commits to them directly. Because of this:
 
-- **Never force-push `staging` or `current`** except the one deliberate guarded reset performed by `dawn-promote`.
+- **Never force-push `staging` or `current`** except the deliberate guarded resets performed by `dawn-stage-push` (to `origin/staging` only) and `dawn-promote` (to `current`).
 - **All history surgery** (rebase, split, reword) happens on `customizations`, which is not linked to any theme and is always bot-free.
 - Force-pushing a bot-linked branch while the bot has committed to it produces repeated churn (conflicting history) that re-triggers on every editor save.
 
@@ -62,14 +62,23 @@ locale files) folds through a plain 3-way text merge, guarded on conflict.
 
 ---
 
-## 3a. Two promote modes
+## 3a. Three release modes
 
 | Mode | Skill | What it does | When to use |
 |---|---|---|---|
 | **Ship** (incremental) | `dawn-ship` | Cherry-picks a classified commit from `customizations` onto `current`. Append-only. Classifier gates: ALL_INERT → light confirm; HAS_ACTIVE → full confirm + smoke test; NEEDS_JUDGMENT → stop. | Ship dormant building blocks early (to unblock shop-global activation like a page binding), or ship tested-active changes incrementally. |
+| **Stage-push** (preview) | `dawn-stage-push` | Force-pushes `staging` onto `origin/staging` only (the preview theme). Nothing touches `current`; no live-confirm gate. Guarded identically to promote's first two checks. | After `dawn-backflow`, before `dawn-promote` — test the reconciled staging on the preview theme before it goes live. |
 | **Promote** (release) | `dawn-promote` | Force-pushes `staging` onto `current` (the authoritative reset). Yields `current == staging`. Guarded: staging must be clean. | Full release after rebuild, backflow, and testing. |
 
-The two modes are complementary: `dawn-ship` ships pieces incrementally between releases; `dawn-promote` resets `current` to the authoritative tested `staging` at each release, reconciling any divergence.
+The three modes are complementary: `dawn-ship` ships pieces incrementally between releases;
+`dawn-stage-push` lets you test a fully reconciled `staging` on the preview theme before it's live;
+`dawn-promote` resets `current` to the authoritative tested `staging` at each release, reconciling
+any divergence. Standard release order: `dawn-backflow` → `dawn-stage-push` → `dawn-promote`.
+
+**The drift guard covers both remotes.** `dawn::assert_backflow_not_pending` (used by both
+`dawn-stage-push` and `dawn-promote`) refuses to run if `origin/current` OR `origin/staging` has
+config-class or non-config drift dawn-backflow hasn't folded into staging yet — a live edit made in
+either theme's admin editor, never backflowed, must never survive a stage-push or promote run.
 
 ---
 
@@ -82,7 +91,7 @@ formalizes this via `dawn::with_branch`: it checks out the target branch and tra
 
 **Why this matters, not just style:** `.claude/` and `docs/` live only on `ops` (§ above). A linked
 worktree for a feature branch is a second directory that never has `.claude/` — any skill or
-agent that assumes "the repo" means one working directory (all five `dawn-*` skills do) will
+agent that assumes "the repo" means one working directory (all six `dawn-*` skills do) will
 silently operate on the wrong tree, or an agent will default back to the main checkout for
 commands it forgets to scope, leaving the main tree's `HEAD` on the wrong branch. There's no
 isolation benefit here either: `current` and `staging` are guarded against destructive operations
@@ -150,12 +159,13 @@ requires `--apply` to actually commit. A plan-only run never leaves `staging` ch
 `refs/dawn-sync/current` and `refs/dawn-sync/staging-remote` — not from `git merge-base`. Ancestry
 alone isn't reliable here, because the config-snapshot-collapse invariant above (staging always
 ends in ONE commit) deliberately discards staging's own recent history on every run, which would
-otherwise make a merge-base search regress further into the past each time. Both `dawn-backflow`
-(on every successful `--apply`) and `dawn-promote` (after every successful push) are responsible
-for keeping these markers current — promote's responsibility exists because promote also pushes
-`staging`'s content to both `current` and `origin/staging` at once, which the markers must reflect
-or a later genuine edit can look like a false collision against a value staging isn't actually
-"ahead" on anymore. This does NOT cover the separate raw-text 3-way merge `backflow` uses for
+otherwise make a merge-base search regress further into the past each time. `dawn-backflow` (on
+every successful `--apply`), `dawn-stage-push`, and `dawn-promote` (both after every successful
+push) are responsible for keeping these markers current — stage-push's and promote's responsibility
+exists because both push `staging`'s content to `origin/staging` (promote additionally to
+`current`, at the same time), which the markers must reflect or a later genuine edit can look like
+a false collision against a value staging isn't actually "ahead" on anymore. This does NOT cover
+the separate raw-text 3-way merge `backflow` uses for
 non-config-class files (locale files) — that path still computes its own `git merge-base` for a
 different purpose (a real git merge, not a value diff) and is intentionally out of scope here; see
 `docs/superpowers/specs/2026-07-03-dawn-backflow-sync-markers-design.md`.
