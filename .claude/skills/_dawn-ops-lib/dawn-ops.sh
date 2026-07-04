@@ -212,6 +212,44 @@ dawn::reconcile_scan(){
   done < <(dawn::config_targets "$other")
 }
 
+# 3-way value scan: compare staging vs <cur> vs <sr> for every config-class leaf.
+# Unlike dawn::reconcile_scan, uses NO base reference — emits one row per key where
+# the three values are not all identical, regardless of who changed what.
+# Emits tab-separated: <verdict>\t<file>\t<path-json>\t<staging>\t<cur>\t<sr>
+# Verdict: agree_cs (cur==sr, staging differs) | agree_sc (staging==cur, sr differs) |
+#          agree_ss (staging==sr, cur differs) | all_differ (all three different).
+# Absent keys use $DAWN_ABSENT. Files scanned = union of config_targets for both remotes.
+dawn::backflow_scan(){
+  local cur="${1:-$(dawn::current_ref)}"
+  local sr="${2:-$(dawn::staging_remote_ref)}"
+  local f
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    {
+      dawn::config_leaves staging "$f" | awk '{print "S\t"$0}'
+      dawn::config_leaves "$cur"     "$f" | awk '{print "C\t"$0}'
+      dawn::config_leaves "$sr"      "$f" | awk '{print "R\t"$0}'
+    } | awk -F'\t' -v file="$f" -v ABSENT="$DAWN_ABSENT" '
+      { side=$1; path=$2; val=$3; seen[path]=1
+        if(side=="S"){s[path]=val}
+        else if(side=="C"){c[path]=val}
+        else {r[path]=val} }
+      END{
+        for(p in seen){
+          sv=(p in s)?s[p]:ABSENT
+          cv=(p in c)?c[p]:ABSENT
+          rv=(p in r)?r[p]:ABSENT
+          if(sv==cv && sv==rv) continue
+          if(cv==rv && sv!=cv)      v="agree_cs"
+          else if(sv==cv && sv!=rv) v="agree_sc"
+          else if(sv==rv && sv!=cv) v="agree_ss"
+          else                      v="all_differ"
+          printf "%s\t%s\t%s\t%s\t%s\t%s\n", v, file, p, sv, cv, rv
+        }
+      }'
+  done < <({ dawn::config_targets "$cur"; dawn::config_targets "$sr"; } | sort -u)
+}
+
 # rc 0 (pending) if any current-ahead leaf exists against <other> (default dawn::current_ref);
 # else rc 1. Generalized exactly like dawn::reconcile_scan itself (optional `other` ref) so the
 # existing call site (no arg) is unaffected — dawn::assert_backflow_not_pending is what actually
