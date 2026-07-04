@@ -14,7 +14,7 @@ dawn-vanilla      L0 — pristine Dawn @ fixed upstream commit; ff-only, never c
 ```
 
 `customizations` is **never linked to a Shopify theme**. The Shopify GitHub bot never writes to it.
-`staging` and `current` **are linked** to real themes. Treat them as append-only; never force-push them except the deliberate guarded reset (`dawn-promote`).
+`staging` and `current` **are linked** to real themes. Treat them as append-only; never force-push them except the deliberate guarded resets (`dawn-stage-push`, `dawn-promote`).
 
 ---
 
