@@ -133,8 +133,9 @@ explicit `bash` prefix runs them under real bash regardless of the ambient shell
 
 **`staging` always ends in exactly ONE config-snapshot commit at the tip.** That commit is
 *regenerable* — its content is the deterministic output of the **3-way config reconcile** of
-`{base = git merge-base staging origin/current, staging, current}` (see
-`docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md`). You can drop and recreate
+`{base, staging, current}` (see
+`docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md`; §4 below on where `base`
+actually comes from now — no longer `git merge-base`). You can drop and recreate
 it freely **by re-running the reconcile** (never by a blind "checkout current", which would lose
 values authored on staging). `current` is the source of truth for values edited live; `staging` is
 the source of truth for values you deliberately changed there.
@@ -154,7 +155,9 @@ otherwise make a merge-base search regress further into the past each time. Both
 for keeping these markers current — promote's responsibility exists because promote also pushes
 `staging`'s content to both `current` and `origin/staging` at once, which the markers must reflect
 or a later genuine edit can look like a false collision against a value staging isn't actually
-"ahead" on anymore. See
+"ahead" on anymore. This does NOT cover the separate raw-text 3-way merge `backflow` uses for
+non-config-class files (locale files) — that path still computes its own `git merge-base` for a
+different purpose (a real git merge, not a value diff) and is intentionally out of scope here; see
 `docs/superpowers/specs/2026-07-03-dawn-backflow-sync-markers-design.md`.
 
 **How the single commit is maintained:** `dawn-backflow` `reset --soft`s `staging` to its collapse
