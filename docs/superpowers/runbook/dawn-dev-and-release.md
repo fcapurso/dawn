@@ -118,7 +118,7 @@ bash .claude/skills/dawn-promote/promote.sh --confirm-live
 ```
 
 `dawn-stage-push` and `dawn-promote` share the same drift guard: if either `origin/current` or
-`origin/staging` has a live edit dawn-backflow hasn't folded in yet, both steps refuse to run —
+`origin/staging` has a live edit `dawn-backflow` hasn't folded in yet, both steps refuse to run —
 re-run `dawn-backflow` first.
 
 After promote, `current == staging` exactly. Any interim `dawn-ship` cherry-picks are superseded.
