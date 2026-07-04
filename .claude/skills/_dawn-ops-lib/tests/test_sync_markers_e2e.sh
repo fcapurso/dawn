@@ -26,8 +26,13 @@ assert_rc "$apply_rc" 0 "staging-ahead-only: apply ok with decision"
 rm -f "$dec_e2e"
 
 # 3) Promote: pushes staging's value everywhere, and (per Task 4) refreshes both markers.
+# Set the staging-remote marker (simulating that stage-push was already run before promote).
 git -C "$d" checkout -q staging
-out=$( cd "$d" && DAWN_CURRENT_REF=current DAWN_PROMOTE_REF=refs/heads/current \
+_staging_sha_pre=$(git -C "$d" rev-parse staging)
+git -C "$d" update-ref refs/dawn-sync/staging-remote "$_staging_sha_pre"
+git -C "$d" update-ref refs/heads/staging_remote "$_staging_sha_pre"
+out=$( cd "$d" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remote \
+       DAWN_PROMOTE_REF=refs/heads/current \
        DAWN_PUSH="git update-ref" DAWN_SYNC_MARKER_NOPUSH=1 \
        bash "$PROMOTE" --confirm-live 2>&1 ); promote_rc=$?
 assert_rc "$promote_rc" 0 "promote ok"

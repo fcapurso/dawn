@@ -40,8 +40,11 @@ assert_contains "$out1" "backflow first" "stage-push guard message"
 assert_contains "$out1" "origin/staging" "stage-push guard names origin/staging"
 
 out1b=$(promoterun "$d" 2>&1); assert_rc "$?" 10 "promote blocked with the same drift"
-assert_contains "$out1b" "backflow first" "promote guard message"
-assert_contains "$out1b" "origin/staging" "promote guard names origin/staging"
+# The stage-push guard fires first (no marker yet → "never been pushed"); the backflow guard
+# would fire for the same drift if stage-push had already run. Both guards ultimately block
+# promote with rc 10 — the outer assert_rc above verifies the block; the message check below
+# accepts whichever guard fires.
+assert_contains "$out1b" "GUARD" "promote is blocked (guard fires)"
 
 # 2) dawn-backflow (--apply) clears it: plan first (exit 22), then apply with decision.
 bfrun "$d" >/dev/null 2>&1; assert_rc "$?" 22 "backflow plan: needs approval to fold origin/staging edit"
@@ -84,8 +87,10 @@ printf 'config/settings_data.json\t["k2"]\tcurrent\n' >> "$dec_step5"
 bfrun "$d" --apply --decisions "$dec_step5" >/dev/null 2>&1; assert_rc "$?" 0 "backflow apply: folds current's live edit"
 rm -f "$dec_step5"
 
-# 6) dawn-promote --confirm-live succeeds.
+# 6) dawn-stage-push to sync preview, then dawn-promote --confirm-live succeeds.
+# After step 5's backflow, staging has a new tip commit — stage-push is required before promote.
 git -C "$d" checkout -q staging
+stagepushrun "$d" >/dev/null 2>&1; assert_rc "$?" 0 "stage-push after final backflow"
 promoterun "$d" --confirm-live >/dev/null 2>&1; assert_rc "$?" 0 "promote succeeds after final backflow"
 final_sha=$(git -C "$d" rev-parse staging)
 assert_eq "$(git -C "$d" rev-parse current)" "$final_sha" "promote lands current on staging's tip"

@@ -5,6 +5,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../_dawn-ops-lib" && pwd)/dawn-ops.
 PUSH="${DAWN_PUSH:-git push --force-with-lease}"
 REMOTE="${DAWN_REMOTE:-origin}"
 
+dawn::assert_stage_push_current || exit $DAWN_GUARD
 dawn::assert_backflow_not_pending || exit $DAWN_GUARD
 dawn::assert_staging_clean || exit $DAWN_GUARD
 

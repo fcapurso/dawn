@@ -320,6 +320,31 @@ dawn::reconcile_pending(){
 # Deprecated name — kept so callers migrate incrementally. Prefer dawn::reconcile_pending.
 dawn::backflow_pending(){ dawn::reconcile_pending; }
 
+# Guard: staging must have been pushed to origin/staging via dawn-stage-push and neither
+# staging nor origin/staging may have changed since that push. The sync marker
+# refs/dawn-sync/staging-remote records staging's exact SHA at the last stage-push.
+dawn::assert_stage_push_current(){
+  local cur="${1:-$(dawn::current_ref)}"
+  local sr="${2:-$(dawn::staging_remote_ref)}"
+  local marker; marker="$(dawn::sync_marker_get staging-remote 2>/dev/null || true)"
+  if [ -z "$marker" ]; then
+    echo "GUARD: stage-push first — staging has never been pushed to the preview theme" >&2
+    return $DAWN_GUARD
+  fi
+  local staging_sha; staging_sha="$(git rev-parse staging 2>/dev/null || true)"
+  if [ "$staging_sha" != "$marker" ]; then
+    echo "GUARD: stage-push first — staging has changed since the last preview push" >&2
+    return $DAWN_GUARD
+  fi
+  git fetch origin staging --quiet 2>/dev/null || true
+  local remote_sha; remote_sha="$(git rev-parse "$sr" 2>/dev/null || true)"
+  if [ "$remote_sha" != "$marker" ]; then
+    echo "GUARD: stage-push first — the preview theme has changed since the last push (run backflow then stage-push again)" >&2
+    return $DAWN_GUARD
+  fi
+  return 0
+}
+
 # Combined guard: is there ANY unfolded drift — config-class or non-config — against `current` OR
 # `staging_remote` that dawn-backflow would need to fold first? Both dawn-promote and
 # dawn-stage-push require staging to already reflect everything live before pushing further.
