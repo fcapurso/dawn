@@ -49,9 +49,12 @@ _dawn_bf_sync_markers(){
 
 report_staging_remote=()
 report_current=()
+sr_key_detail=""
+cur_key_detail=""
 
 # --- Step 0a: fold origin/staging's config-class drift (same leaf reconciler as current) ---
 sr_scan="$(dawn::reconcile_scan "$staging_remote")" || _dawn_bf_abort $DAWN_GUARD
+sr_key_detail="$(grep -E '^current_ahead\t' <<< "$sr_scan" || true)"
 sr_collisions="$(grep -E '^collision'$'\t' <<< "$sr_scan" || true)"
 if [ -n "$sr_collisions" ]; then
   missing=""
@@ -116,6 +119,7 @@ fi
 
 # --- Step 2: current-vs-staging collisions without decisions -> stop and list (unchanged) ---
 scan="$(dawn::reconcile_scan)" || _dawn_bf_abort $DAWN_GUARD
+cur_key_detail="$(grep -E '^current_ahead\t' <<< "$scan" || true)"
 collisions="$(grep -E '^collision'$'\t' <<< "$scan" || true)"
 if [ -n "$collisions" ]; then
   missing=""
@@ -174,15 +178,28 @@ fi
 if [ "$APPLY" != "1" ]; then
   echo "Backflow plan:"
   echo
+
+  _print_key_detail(){   # $1 = TSV string of current_ahead rows, $2 = remote label
+    local rows="$1" label="$2"
+    [ -z "$rows" ] && return
+    echo "  Keys to be folded (add '<file>\\t<path>\\tstaging' to a decisions file to pin any key):"
+    while IFS=$'\t' read -r verdict f p b s c; do
+      printf '    %s  %s  staging=%s → %s=%s\n' "$f" "$p" "$s" "$label" "$c"
+    done <<< "$rows"
+    echo
+  }
+
   if [ "${#report_staging_remote[@]}" -gt 0 ]; then
     echo "Pulling in from the live preview theme ($staging_remote) — your local copy didn't have these:"
     printf '  - %s\n' "${report_staging_remote[@]}"
     echo
+    _print_key_detail "$sr_key_detail" "origin/staging"
   fi
   if [ "${#report_current[@]}" -gt 0 ]; then
     echo "Folding in from the live published theme ($cur):"
     printf '  - %s\n' "${report_current[@]}"
     echo
+    _print_key_detail "$cur_key_detail" "origin/current"
   fi
   rerun="bash .claude/skills/dawn-backflow/backflow.sh --apply"
   [ "$DECISIONS" != "/dev/null" ] && rerun="$rerun --decisions $DECISIONS"

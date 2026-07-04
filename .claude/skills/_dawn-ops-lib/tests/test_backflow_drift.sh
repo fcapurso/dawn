@@ -78,4 +78,30 @@ apply_out=$(run "$d4" --apply); assert_rc "$?" 0 "plan/apply consistency: apply 
 assert_eq "$(git -C "$d4" show staging:config/settings_data.json | jq -r .k)" "live" "apply matches what plan reported"
 assert_contains "$plan_out" "config/settings_data.json" "plan report named the folded file"
 
+# 5) Plan report includes per-key detail for other-ahead folds.
+d5=$(dawn_test_repo)
+commit_on "$d5" staging config/settings_data.json <<< '{"col":"base","img":"base"}' "config snapshot"
+git -C "$d5" checkout -q current; git -C "$d5" merge -q staging -m sync
+git -C "$d5" checkout -q staging_remote; git -C "$d5" merge -q staging -m sync
+commit_on "$d5" staging_remote config/settings_data.json <<< '{"col":"red","img":"abc"}' "preview live edits"
+git -C "$d5" checkout -q staging
+plan5=$(run "$d5" 2>&1); assert_rc "$?" 22 "per-key report: plan stops for approval"
+assert_contains "$plan5" '"col"' "plan report includes key path col"
+assert_contains "$plan5" '"img"' "plan report includes key path img"
+assert_contains "$plan5" 'staging' "plan report mentions staging verdict hint"
+
+# 6) Decisions-pinned other-ahead key is NOT folded on --apply.
+d6=$(dawn_test_repo)
+commit_on "$d6" staging config/settings_data.json <<< '{"col":"base","img":"base"}' "config snapshot"
+git -C "$d6" checkout -q current; git -C "$d6" merge -q staging -m sync
+git -C "$d6" checkout -q staging_remote; git -C "$d6" merge -q staging -m sync
+commit_on "$d6" staging_remote config/settings_data.json <<< '{"col":"red","img":"abc"}' "preview live edits"
+git -C "$d6" checkout -q staging
+dec6=$(mktemp)
+printf 'config/settings_data.json\t["col"]\tstaging\n' > "$dec6"
+run "$d6" --apply --decisions "$dec6"; assert_rc "$?" 0 "pinned apply ok"
+assert_eq "$(git -C "$d6" show staging:config/settings_data.json | jq -r .col)" "base" "pinned key not folded"
+assert_eq "$(git -C "$d6" show staging:config/settings_data.json | jq -r .img)" "abc"  "unpinned key folded"
+rm -f "$dec6"
+
 echo "  backflow_drift ok"
