@@ -94,25 +94,46 @@ also applies:
 
 ### Exit 22 — plan ready, needs approval
 
-Every collision and classification above is resolved; nothing more needs a decision. The script
-printed a plan report to stdout listing exactly what it will fold from `origin/staging` and from
-`current`. **Relay the report to the user verbatim** and ask one `AskUserQuestion`
-(approve/abort). On approval, re-run with `--apply` (carry forward the same `--decisions` path if
-one was used):
+Every collision and classification above is resolved. The script printed a plan report to stdout
+listing what it will fold from `origin/staging` and from `current`, including **per-key detail
+lines** in the form:
 
-The plan report also lists each individual key being folded — file, JSON path, staging value, and
-live value — for both `origin/staging` and `origin/current`. To **reject** a specific live edit
-(keep staging's value instead of folding the live one), add a `staging` verdict for that key to a
-decisions TSV before running `--apply`:
-
-    <file>\t<path-json>\tstaging
-
-Any key not listed in the decisions file folds normally. The existing `current` (explicit fold) and
-`value:<json>` (custom value) verdicts are also valid for other-ahead keys, though they are rarely
-needed.
-
-```bash
-bash .claude/skills/dawn-backflow/backflow.sh --apply [--decisions /tmp/decisions.tsv]
+```
+    <file>  <path>  staging=<val> → <remote>=<val>
 ```
 
+Handle exit 22 in two steps:
+
+**Step 1 — Per-key rejection (only if other-ahead keys exist in the plan output)**
+
+Scan the plan output for per-key detail lines. If any are present, ask a single `AskUserQuestion`
+with `multiSelect: true`:
+
+- **Question:** "Which of these live edits do you want to REJECT (keep staging's value instead of folding)?"
+- **Options:** one per key — label = the path (e.g. `["col"]`), description = `<file>  staging=<val> → <val>`
+- Unchecked = fold normally (default). Checked = pin that key to staging's value.
+
+For each checked key, write one TSV line to `/tmp/backflow-decisions.tsv`:
+
+```
+<file>\t<path-json>\tstaging
+```
+
+If a `--decisions` file was already in use (from a prior collision-resolution run), append to it
+rather than creating a new file. If no keys are checked, skip this step entirely.
+
+If the plan output contains no per-key detail lines (all changes were already handled as
+collisions), skip this step entirely.
+
+**Step 2 — Approval gate**
+
+Relay the plan report to the user and ask one `AskUserQuestion` (Approve / Abort).
+
+On approval, re-run with `--apply`:
+
+```bash
+bash .claude/skills/dawn-backflow/backflow.sh --apply [--decisions /tmp/backflow-decisions.tsv]
+```
+
+Include `--decisions` only if rejection choices were written (or a prior `--decisions` was in use).
 On abort, stop — nothing was written; `staging` is exactly as it was before you ran the command.
