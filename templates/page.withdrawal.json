@@ -20,8 +20,11 @@
       "type": "withdrawal-form",
       "name": "Withdrawal form",
       "settings": {
+        "heading": "Herroepingsformulier",
+        "intro": "<p>Gebruik dit formulier om je aankoop binnen de herroepingstermijn van 14 dagen te herroepen. Vul hieronder je bestelgegevens in en bevestig.</p>",
+        "success_message": "Bedankt. We hebben je herroepingsverzoek ontvangen en je een ontvangstbevestiging gemaild. Ze zou binnen enkele minuten moeten aankomen. Zie je ze niet, kijk dan in je spam of neem contact op via <a rel=\"noreferrer\" href=\"mailto:info@zogezeept.com\" target=\"_blank\">info@zogezeept.com</a>.",
         "preview_success": false,
-        "heading_size": "h1",
+        "heading_size": "h2",
         "color_scheme": "scheme-1",
         "padding_top": 36,
         "padding_bottom": 36
