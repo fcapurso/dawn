@@ -144,6 +144,19 @@ theme's own bot-linked drift) before the `current` reconcile — see the drift d
 `dawn-backflow` defaults to a **plan mode**: it computes and prints what it would fold, then
 requires `--apply` to actually commit. A plan-only run never leaves `staging` changed.
 
+**How "did anything change" is actually decided:** the reconcile's "base" (the reference point for
+"has staging or the remote changed since we last agreed?") comes from two persisted git refs —
+`refs/dawn-sync/current` and `refs/dawn-sync/staging-remote` — not from `git merge-base`. Ancestry
+alone isn't reliable here, because the config-snapshot-collapse invariant above (staging always
+ends in ONE commit) deliberately discards staging's own recent history on every run, which would
+otherwise make a merge-base search regress further into the past each time. Both `dawn-backflow`
+(on every successful `--apply`) and `dawn-promote` (after every successful push) are responsible
+for keeping these markers current — promote's responsibility exists because promote also pushes
+`staging`'s content to both `current` and `origin/staging` at once, which the markers must reflect
+or a later genuine edit can look like a false collision against a value staging isn't actually
+"ahead" on anymore. See
+`docs/superpowers/specs/2026-07-03-dawn-backflow-sync-markers-design.md`.
+
 **How the single commit is maintained:** `dawn-backflow` `reset --soft`s `staging` to its collapse
 floor — the first non-config (enrichment/code) commit from the tip, else the `customizations`
 merge-base — and re-commits the reconciled config as one snapshot. This **collapses** the loose
