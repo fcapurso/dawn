@@ -231,6 +231,18 @@ dawn::reconcile_pending(){
 # Deprecated name — kept so callers migrate incrementally. Prefer dawn::reconcile_pending.
 dawn::backflow_pending(){ dawn::reconcile_pending; }
 
+# Combined guard: is there ANY unfolded drift — config-class or non-config — against `current` OR
+# `staging_remote` that dawn-backflow would need to fold first? Both dawn-promote and
+# dawn-stage-push require staging to already reflect everything live before pushing further.
+dawn::assert_backflow_not_pending(){
+  dawn::reconcile_pending && { echo "GUARD: backflow first — origin/current has current-ahead edits not yet folded into staging" >&2; return $DAWN_GUARD; }
+  dawn::reconcile_pending "$(dawn::staging_remote_ref)" && { echo "GUARD: backflow first — origin/staging has current-ahead edits not yet folded into staging" >&2; return $DAWN_GUARD; }
+  local nc; nc="$(dawn::nonconfig_drift_scan)"; local rc=$?
+  [ "$rc" = "1" ] && { echo "GUARD: origin/staging conflicts with local staging (non-config file) — resolve manually and re-run dawn-backflow first" >&2; return $DAWN_GUARD; }
+  [ -n "$nc" ] && { echo "GUARD: backflow first — origin/staging has non-config drift (e.g. locale files) not yet folded into staging" >&2; return $DAWN_GUARD; }
+  return 0
+}
+
 # Print the merged content for ONE file to stdout, or nothing if the file needs no change.
 # Args: <file> <decisions-file> [<other-ref>, default dawn::current_ref]. Decisions lines: <file>\t<path-json>\t<staging|current|value:JSON>
 # Returns $DAWN_STOP_JUDGMENT (and lists paths) if a collision has no decision.
