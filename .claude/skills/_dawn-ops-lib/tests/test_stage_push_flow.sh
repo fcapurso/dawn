@@ -43,9 +43,12 @@ out1b=$(promoterun "$d" 2>&1); assert_rc "$?" 10 "promote blocked with the same 
 assert_contains "$out1b" "backflow first" "promote guard message"
 assert_contains "$out1b" "origin/staging" "promote guard names origin/staging"
 
-# 2) dawn-backflow (--apply) clears it.
+# 2) dawn-backflow (--apply) clears it: plan first (exit 22), then apply with decision.
 bfrun "$d" >/dev/null 2>&1; assert_rc "$?" 22 "backflow plan: needs approval to fold origin/staging edit"
-bfrun "$d" --apply >/dev/null 2>&1; assert_rc "$?" 0 "backflow apply: folds origin/staging edit"
+dec_step2=$(mktemp)
+printf 'config/settings_data.json\t["k"]\tstaging_remote\n' > "$dec_step2"
+bfrun "$d" --apply --decisions "$dec_step2" >/dev/null 2>&1; assert_rc "$?" 0 "backflow apply: folds origin/staging edit"
+rm -f "$dec_step2"
 
 # 3) dawn-stage-push now succeeds; origin/staging (test double: staging_remote) and the
 #    staging-remote marker both land on staging's tip.
@@ -75,7 +78,11 @@ assert_contains "$out4b" "origin/current" "stage-push guard names origin/current
 
 # 5) dawn-backflow clears it again.
 bfrun "$d" >/dev/null 2>&1; assert_rc "$?" 22 "backflow plan: needs approval to fold current's live edit"
-bfrun "$d" --apply >/dev/null 2>&1; assert_rc "$?" 0 "backflow apply: folds current's live edit"
+dec_step5=$(mktemp)
+printf 'config/settings_data.json\t["k"]\tstaging\n' > "$dec_step5"
+printf 'config/settings_data.json\t["k2"]\tcurrent\n' >> "$dec_step5"
+bfrun "$d" --apply --decisions "$dec_step5" >/dev/null 2>&1; assert_rc "$?" 0 "backflow apply: folds current's live edit"
+rm -f "$dec_step5"
 
 # 6) dawn-promote --confirm-live succeeds.
 git -C "$d" checkout -q staging

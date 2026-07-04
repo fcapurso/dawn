@@ -15,12 +15,15 @@ git -C "$d" checkout -q staging_remote; git -C "$d" merge -q staging -m sync
 git -C "$d" checkout -q staging
 commit_on "$d" staging config/settings_data.json <<< '{"k":"staging-ahead-value"}' "config snapshot"
 
-# 2) Backflow --apply: nothing to fold from either remote (staging is simply ahead), but this
-#    still establishes both markers.
-bfrun "$d"; plan_rc=$?
-assert_rc "$plan_rc" 0 "staging-ahead-only: plan is a no-op fast path"
-bfrun "$d" --apply; apply_rc=$?
-assert_rc "$apply_rc" 0 "staging-ahead-only: apply ok"
+# 2) Backflow: staging-ahead key (staging intentionally differs from both remotes) → requires
+#    an explicit decision even when keeping staging's value. Plan exits 22, apply needs decision.
+bfrun "$d" >/dev/null 2>&1; plan_rc=$?
+assert_rc "$plan_rc" 22 "staging-ahead-only: plan exits 22 (needs decision)"
+dec_e2e=$(mktemp)
+printf 'config/settings_data.json\t["k"]\tstaging\n' > "$dec_e2e"
+bfrun "$d" --apply --decisions "$dec_e2e"; apply_rc=$?
+assert_rc "$apply_rc" 0 "staging-ahead-only: apply ok with decision"
+rm -f "$dec_e2e"
 
 # 3) Promote: pushes staging's value everywhere, and (per Task 4) refreshes both markers.
 git -C "$d" checkout -q staging
@@ -48,8 +51,11 @@ git -C "$d" checkout -q staging
 out2=$(bfrun "$d"); rc2=$?
 assert_rc "$rc2" 22 "post-promote live edit: clean fold, not a collision (rc 22 = plan/approve, not 21 = STOP)"
 assert_contains "$out2" "config/settings_data.json" "plan report names the folded file"
-bfrun "$d" --apply; apply2_rc=$?
+dec_e2e2=$(mktemp)
+printf 'config/settings_data.json\t["k"]\tcurrent\n' > "$dec_e2e2"
+bfrun "$d" --apply --decisions "$dec_e2e2"; apply2_rc=$?
 assert_rc "$apply2_rc" 0 "post-promote live edit: apply ok"
 assert_eq "$(git -C "$d" show staging:config/settings_data.json | jq -r .k)" "fresh-live-edit" "fresh live edit folded correctly, no false collision"
+rm -f "$dec_e2e2"
 
 echo "  sync_markers_e2e ok"
