@@ -92,4 +92,28 @@ assert_eq "$(git -C "$d6" rev-parse refs/dawn-sync/staging-remote)" "$sr_sha_exp
 assert_rc "$noop_apply_rc" 0 "second (no-op) apply ok"
 assert_eq "$(git -C "$d6" rev-parse refs/dawn-sync/current)" "$cur_sha_expected" "marker still correct after a no-op apply"
 
+# The "nothing to report" fast path (staging-ahead only — nothing to fold from either remote, so
+# there's nothing to review/approve) always collapses and commits regardless of --apply, matching
+# the original pre-plan/apply backflow behavior for this one case. Because that persists
+# regardless of the flag, the markers must ALSO update regardless of the flag here — otherwise a
+# bare (no --apply) call that happens to hit this path would advance staging's ancestry (via the
+# unconditional collapse) without the markers reflecting it, and the next call's merge-base
+# fallback would compute against a now-stale reference point. (Found via the sync-markers
+# end-to-end test: a plan-mode call followed by --apply, both landing on this exact fast path,
+# produced a spurious collision before this was fixed.)
+d7=$(dawn_test_repo)
+commit_on "$d7" staging config/settings_data.json <<< '{"k":"base"}' "config snapshot"
+git -C "$d7" checkout -q current; git -C "$d7" merge -q staging -m sync
+git -C "$d7" checkout -q staging_remote; git -C "$d7" merge -q staging -m sync
+git -C "$d7" checkout -q staging
+commit_on "$d7" staging config/settings_data.json <<< '{"k":"staging-ahead-value"}' "config snapshot"
+cur_sha7=$(git -C "$d7" rev-parse current)
+sr_sha7=$(git -C "$d7" rev-parse staging_remote)
+
+( cd "$d7" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remote \
+  DAWN_SYNC_MARKER_NOPUSH=1 bash "$BF" ) >/dev/null; fastpath_rc=$?
+assert_rc "$fastpath_rc" 0 "staging-ahead-only (nothing to report) is rc 0 even without --apply"
+assert_eq "$(git -C "$d7" rev-parse refs/dawn-sync/current)" "$cur_sha7" "fast path writes the current marker even without --apply"
+assert_eq "$(git -C "$d7" rev-parse refs/dawn-sync/staging-remote)" "$sr_sha7" "fast path writes the staging-remote marker even without --apply"
+
 echo "  backflow sync-marker ok"

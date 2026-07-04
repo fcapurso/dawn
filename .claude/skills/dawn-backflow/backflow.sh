@@ -162,7 +162,18 @@ if [ "${#report_staging_remote[@]}" = "0" ] && [ "${#report_current[@]}" = "0" ]
   else
     echo "Backflow complete: staging config collapsed into one snapshot at the tip."
   fi
-  _dawn_bf_sync_markers
+  # Unlike the plan/apply-gated path below, this fast path ALWAYS collapses and commits,
+  # regardless of --apply (nothing external was folded, so there's nothing to review/approve —
+  # matches the original pre-plan/apply backflow behavior for this one case). The markers must
+  # be kept in step with that: write them unconditionally here too (bypassing
+  # _dawn_bf_sync_markers's --apply gate), or a plan-mode-only invocation that happens to hit
+  # this path would leave staging's ancestry advanced (via the unconditional collapse above)
+  # without the markers reflecting it — the next run's merge-base fallback would then compute
+  # against a regressed reference point, exactly the staleness bug this whole feature exists to
+  # fix. (Found via the sync-markers end-to-end test: a plan-mode call followed by --apply, both
+  # hitting this fast path, produced a spurious collision on the second call before this fix.)
+  dawn::sync_marker_set current "$cur_sha"
+  dawn::sync_marker_set staging-remote "$staging_remote_sha"
   exit $DAWN_OK
 fi
 
