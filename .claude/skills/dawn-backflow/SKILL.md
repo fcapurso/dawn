@@ -61,6 +61,8 @@ The plan report lists every divergent config key:
 
 **Step 1 — Per-key decisions**
 
+If the plan report lists no config-key rows (only non-config drift), skip this step entirely.
+
 For each key in the report, ask a single `AskUserQuestion` with `multiSelect: false`:
 
 - **Keep staging** `<staging-val>` — no change to staging
@@ -80,7 +82,9 @@ origin/current agree on `<val>`"). Build the decisions TSV at `/tmp/backflow-dec
 Relay the plan report to the user and ask one `AskUserQuestion` (Approve / Abort). On approval:
 
 ```bash
-bash .claude/skills/dawn-backflow/backflow.sh --apply --decisions /tmp/backflow-decisions.tsv
+bash .claude/skills/dawn-backflow/backflow.sh --apply [--decisions /tmp/backflow-decisions.tsv]
 ```
+
+Include `--decisions` only if Step 1 was not skipped (i.e., a decisions file was actually written).
 
 On abort, stop — nothing was written; `staging` is exactly as it was.
