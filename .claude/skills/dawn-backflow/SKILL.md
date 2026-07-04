@@ -87,6 +87,11 @@ also applies:
    bash .claude/skills/dawn-backflow/backflow.sh --decisions /tmp/decisions.tsv
    ```
 
+   > **Note:** `staging` is also accepted for other-ahead (`current_ahead`) keys in the decisions
+   > file — this pins the key to staging's value instead of taking the live edit. The plan report
+   > (exit 22) lists all other-ahead keys with their per-key values to make it easy to identify which
+   > paths to pin.
+
 ### Exit 22 — plan ready, needs approval
 
 Every collision and classification above is resolved; nothing more needs a decision. The script
@@ -94,6 +99,17 @@ printed a plan report to stdout listing exactly what it will fold from `origin/s
 `current`. **Relay the report to the user verbatim** and ask one `AskUserQuestion`
 (approve/abort). On approval, re-run with `--apply` (carry forward the same `--decisions` path if
 one was used):
+
+The plan report also lists each individual key being folded — file, JSON path, staging value, and
+live value — for both `origin/staging` and `origin/current`. To **reject** a specific live edit
+(keep staging's value instead of folding the live one), add a `staging` verdict for that key to a
+decisions TSV before running `--apply`:
+
+    <file>\t<path-json>\tstaging
+
+Any key not listed in the decisions file folds normally. The existing `current` (explicit fold) and
+`value:<json>` (custom value) verdicts are also valid for other-ahead keys, though they are rarely
+needed.
 
 ```bash
 bash .claude/skills/dawn-backflow/backflow.sh --apply [--decisions /tmp/decisions.tsv]
