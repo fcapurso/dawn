@@ -279,7 +279,9 @@ dawn::reconcile_apply(){
     [ "$f" = "$file" ] || continue
     case "$verdict" in
       staging_ahead) : ;;              # staging already holds the desired value
-      current_ahead) _dawn_fold "$c" ;;
+      current_ahead)
+        res="$(awk -F'\t' -v f="$file" -v pp="$p" '$1==f && $2==pp {print $3}' "$decisions" 2>/dev/null | head -1)"
+        [ "$res" = "staging" ] || _dawn_fold "$c" ;;
       collision)
         res="$(awk -F'\t' -v f="$file" -v pp="$p" '$1==f && $2==pp {print $3}' "$decisions" 2>/dev/null | head -1)"
         case "$res" in

@@ -48,4 +48,18 @@ commit_on "$ss" staging config/settings_data.json <<< '{"a":"base","new":true}' 
 noop=$(in_repo "$ss" 'dawn::reconcile_apply config/settings_data.json /dev/null')
 assert_eq "$noop" "" "staging-ahead only => empty output (no rewrite)"
 
+# staging verdict on current_ahead key => key NOT folded, stays at staging's value
+pin=$(dawn_test_repo)
+commit_on "$pin" staging config/settings_data.json <<< '{"a":"base","b":"base"}' "base"
+git -C "$pin" checkout -q current; git -C "$pin" merge -q staging -m sync
+commit_on "$pin" current config/settings_data.json <<< '{"a":"live-a","b":"live-b"}' "live edits"
+git -C "$pin" checkout -q staging
+pin_dec="$pin/pin.tsv"
+# Pin key "a" to staging (reject the live edit); let key "b" fold normally
+printf 'config/settings_data.json\t["a"]\tstaging\n' > "$pin_dec"
+pin_merged=$(in_repo "$pin" "dawn::reconcile_apply config/settings_data.json '$pin_dec'"); rc=$?
+assert_rc "$rc" 0 "staging-verdict-on-other-ahead exits 0"
+assert_eq "$(jq -r '.a' <<< "$pin_merged")" "base" "pinned key stays at staging value"
+assert_eq "$(jq -r '.b' <<< "$pin_merged")" "live-b" "unpinned key still folded"
+
 echo "  reconcile_apply ok"
