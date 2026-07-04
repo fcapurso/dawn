@@ -24,9 +24,9 @@ dawn-vanilla      L0 — pristine Dawn @ fixed upstream commit; ff-only, never c
 |---|---|---|
 | `dawn-harvest` | Analyses staging vs customizations, groups files into proposed commits, classifies each as L1 (generic structure), L2 (store-shaped structure), or Config (content only — leave in snapshot), confirms interactively, then commits approved groups into `customizations` | After finishing features on staging |
 | `dawn-ship` | Lists shippable commits from `customizations` interactively, or ships a named commit directly — append-only cherry-pick onto `current` | To push an inert building block to the live theme early, or to ship a tested active change incrementally |
-| `dawn-backflow` | Direction-aware 3-way config reconcile between `staging` and both `current` and `origin/staging` (the preview theme's own bot-linked drift) — staging-ahead values kept, other-ahead values folded, collisions prompted. Prints a plan report and requires `--apply` to commit. | Before a promote, or when the admin UI (published theme or preview theme) has config you need in staging |
-| `dawn-stage-push` | Force-pushes `staging` → `origin/staging` (the preview theme) only. No live-confirm gate — nothing customer-facing changes. Guarded identically to promote's first two checks. | After backflow, before promote — test the reconciled staging on the preview theme before it goes live |
-| `dawn-promote` | Force-pushes `staging` → `current` (the authoritative reset; guarded) | Full release after rebuild, backflow, and testing |
+| `dawn-backflow` | Compares config settings across three sources (`staging`, `origin/current`, `origin/staging`) and asks the operator to choose the target value for every key where the three sources don't all agree. Nothing folds automatically. Prints a per-key plan report and requires `--apply --decisions` to commit. | Before a promote, or whenever the admin UI (published theme or preview theme) has config edits you need in staging |
+| `dawn-stage-push` | Force-pushes `staging` → `origin/staging` (the preview theme) only. No live-confirm gate — nothing customer-facing changes. Records the staging SHA so promote can verify nothing changed since. | After backflow, before promote — test the reconciled staging on the preview theme before it goes live |
+| `dawn-promote` | Force-pushes `staging` → `current` (the authoritative reset; guarded). Blocked unless staging was pushed to the preview theme via `dawn-stage-push` and neither staging nor `origin/staging` has changed since. | Full release after rebuild, backflow, and stage-push testing |
 | `dawn-upgrade` | Fast-forwards `dawn-vanilla` to a new Dawn release, then rebases `customizations` and `staging` | When a new Dawn version is available |
 
 ---
@@ -117,9 +117,11 @@ bash .claude/skills/dawn-promote/promote.sh
 bash .claude/skills/dawn-promote/promote.sh --confirm-live
 ```
 
-`dawn-stage-push` and `dawn-promote` share the same drift guard: if either `origin/current` or
-`origin/staging` has a live edit `dawn-backflow` hasn't folded in yet, both steps refuse to run —
-re-run `dawn-backflow` first.
+`dawn-stage-push` and `dawn-promote` both guard against unfolded live edits — if either `origin/current`
+or `origin/staging` has a config edit `dawn-backflow` hasn't reconciled yet, both refuse to run.
+`dawn-promote` adds a second guard: it checks that `dawn-stage-push` was run and that neither `staging`
+nor `origin/staging` has changed since — ensuring the exact commit being promoted was tested on the
+preview theme.
 
 After promote, `current == staging` exactly. Any interim `dawn-ship` cherry-picks are superseded.
 

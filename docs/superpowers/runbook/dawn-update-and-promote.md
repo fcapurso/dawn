@@ -47,13 +47,15 @@ Route each backflowed change by type:
 - **locale / cosmetic churn** → ignore; it's Shopify re-serialization (see `drops.md`).
 - **config churn** (settings/layout edits, app blocks) and **new enrichments** → two cases below.
 
-**Case A — config churn only** (no new feature; config is already the tip → reconcile & amend):
+**Case A — config churn only** (no new feature; config is already the tip → reconcile & re-snapshot):
 ```bash
 bash .claude/skills/dawn-backflow/backflow.sh
 ```
-The script performs the direction-aware 3-way reconcile and amends the snapshot in place. Never
-copy `origin/current` config files verbatim — that would overwrite values deliberately authored
-on staging. See `docs/superpowers/specs/2026-07-02-dawn-config-3way-reconcile-design.md`.
+The script compares config settings across three sources (`staging`, `origin/current`, `origin/staging`)
+and asks you to choose the target value for every key where the three sources don't all agree. Nothing
+folds automatically — you decide each key. It then collapses all config commits into one snapshot at the
+tip. Never copy `origin/current` config files verbatim — that would overwrite values authored on staging.
+See `docs/superpowers/specs/2026-07-04-backflow-full-reconcile-and-promote-guard-design.md`.
 > A **custom** suffix template's `settings` **values** are config too — the reconcile handles them
 > leaf-by-leaf, while the template's *structure* stays as its `L2:` commit in `customizations`.
 > See `conventions.md §5` (`dawn::classify_template_json`) for the skeleton-vs-`settings` split.
@@ -82,8 +84,9 @@ upgrades, so its history is a working artifact (unlike `customizations`, which i
 ## 2. Promote — publish `staging` to the live theme
 
 **Pre-flight (all must be true):**
-- [ ] Backflow done (section 1) — no current-ahead config edits or unresolved collisions remain (the reconcile guard, `dawn::reconcile_pending`); staging-ahead values are expected and will promote.
-- [ ] `staging` tested on the preview theme.
+- [ ] Backflow done (section 1) — no unreconciled config edits in `origin/current` or `origin/staging` (`dawn::assert_backflow_not_pending` checks this automatically).
+- [ ] `dawn-stage-push` run after backflow, and neither `staging` nor `origin/staging` has changed since (`dawn::assert_stage_push_current` checks this automatically — promote is blocked if not).
+- [ ] `staging` tested and verified on the preview theme.
 - [ ] `config-archive/<date>` tag pushed (preserves pre-promote settings history — below).
 - [ ] You accept the first-promote consequence (locale reformat + 6 unused regional locales removed —
       see `drops.md`; harmless for NL/EN).
@@ -173,7 +176,7 @@ the **`staging`** branch. It installs as an **unpublished** theme. Preview it; n
 | Goal | Command summary |
 |---|---|
 | Capture live edits | `git fetch origin current` → amend config tip / drop-recreate for new work (§1) |
-| Go live | backflow → tag `config-archive/<date>` → `git push --force-with-lease origin staging:current` (§2) |
+| Go live | backflow → stage-push → tag `config-archive/<date>` → `dawn-promote` / `git push --force-with-lease origin staging:current` (§2) |
 | Recover a past settings state | `git show config-archive/<date>:config/settings_data.json` |
 | New Dawn version | ff `dawn-vanilla` → rebase `customizations` → rebase `staging` → test → promote (§3) |
 | Promote rollback | `git push --force-with-lease origin pre-cleanup-backup:current` |
