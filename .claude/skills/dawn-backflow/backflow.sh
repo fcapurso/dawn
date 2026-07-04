@@ -35,11 +35,14 @@ dawn::with_branch staging || exit $DAWN_GUARD
 # exactly as it started — including the plan-mode "everything's fine, please approve" exit.
 _dawn_bf_abort(){ git reset -q --hard "$orig_sha" 2>/dev/null || true; exit "$1"; }
 
-# Only a completed --apply run counts as "fully reconciled" — advance both markers to the exact
-# commits fetched this run, even if nothing needed folding (a clean "nothing to do" verdict is
-# still a complete, correct pass over the remote's current state).
+# Advance both markers to the exact commits fetched this run. Gated on --apply by default — only
+# a completed --apply run counts as "fully reconciled" for the plan/report path below. Pass
+# "force" to write unconditionally: the "nothing to report" fast path collapses and commits
+# staging regardless of --apply (nothing external was folded, so there's nothing to approve —
+# matches pre-plan/apply backflow behavior for that one case), so its marker write must be
+# equally unconditional or the markers fall out of step with staging's actual ancestry.
 _dawn_bf_sync_markers(){
-  [ "$APPLY" = "1" ] || return 0
+  [ "${1:-}" = "force" ] || [ "$APPLY" = "1" ] || return 0
   dawn::sync_marker_set current "$cur_sha"
   dawn::sync_marker_set staging-remote "$staging_remote_sha"
 }
@@ -162,18 +165,9 @@ if [ "${#report_staging_remote[@]}" = "0" ] && [ "${#report_current[@]}" = "0" ]
   else
     echo "Backflow complete: staging config collapsed into one snapshot at the tip."
   fi
-  # Unlike the plan/apply-gated path below, this fast path ALWAYS collapses and commits,
-  # regardless of --apply (nothing external was folded, so there's nothing to review/approve —
-  # matches the original pre-plan/apply backflow behavior for this one case). The markers must
-  # be kept in step with that: write them unconditionally here too (bypassing
-  # _dawn_bf_sync_markers's --apply gate), or a plan-mode-only invocation that happens to hit
-  # this path would leave staging's ancestry advanced (via the unconditional collapse above)
-  # without the markers reflecting it — the next run's merge-base fallback would then compute
-  # against a regressed reference point, exactly the staleness bug this whole feature exists to
-  # fix. (Found via the sync-markers end-to-end test: a plan-mode call followed by --apply, both
-  # hitting this fast path, produced a spurious collision on the second call before this fix.)
-  dawn::sync_marker_set current "$cur_sha"
-  dawn::sync_marker_set staging-remote "$staging_remote_sha"
+  # This fast path ALWAYS collapses and commits, regardless of --apply — force the marker write
+  # to match (see _dawn_bf_sync_markers's comment for why "nothing to report" still needs it).
+  _dawn_bf_sync_markers force
   exit $DAWN_OK
 fi
 
