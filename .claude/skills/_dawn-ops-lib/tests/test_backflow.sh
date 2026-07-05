@@ -13,6 +13,7 @@ git -C "$d" checkout -q staging_remote; git -C "$d" merge -q staging -m sync
 git -C "$d" checkout -q staging
 run "$d"; assert_rc "$?" 0 "all agree → exit 0"
 assert_eq "$(git -C "$d" rev-list --count customizations..staging)" "1" "collapsed to one snapshot"
+assert_eq "$(git -C "$d" log -1 --format=%s staging | grep -c 'store config snapshot')" "1" "tip subject is the snapshot"
 
 # 2) Any divergence without decisions → exit 22 (plan mode), staging unchanged
 d2=$(dawn_test_repo)
@@ -37,6 +38,7 @@ printf 'config/settings_data.json\t["k"]\tstaging\n' > "$dec3"
 run "$d3" --apply --decisions "$dec3"; assert_rc "$?" 0 "staging verdict → exit 0"
 assert_eq "$(git -C "$d3" show staging:config/settings_data.json | jq -r .k)" "s-val" "k stays at staging value"
 assert_eq "$(git -C "$d3" rev-list --count customizations..staging)" "1" "collapsed to one snapshot"
+assert_eq "$(git -C "$d3" log -1 --format=%s staging | grep -c 'store config snapshot')" "1" "tip subject is the snapshot"
 rm -f "$dec3"
 
 # 4) Divergence + decision 'current' → apply takes current's value
@@ -51,6 +53,7 @@ printf 'config/settings_data.json\t["k"]\tcurrent\n' > "$dec4"
 run "$d4" --apply --decisions "$dec4"; assert_rc "$?" 0 "current verdict → exit 0"
 assert_eq "$(git -C "$d4" show staging:config/settings_data.json | jq -r .k)" "live" "k takes current value"
 assert_eq "$(git -C "$d4" rev-list --count customizations..staging)" "1" "collapsed to one snapshot"
+assert_eq "$(git -C "$d4" log -1 --format=%s staging | grep -c 'store config snapshot')" "1" "tip subject is the snapshot"
 rm -f "$dec4"
 
 # 5) --apply without decisions when divergence exists → GUARD (exit 10)

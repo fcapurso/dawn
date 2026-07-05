@@ -38,7 +38,7 @@ out=$( cd "$d" && DAWN_CURRENT_REF=current DAWN_STAGING_REMOTE_REF=staging_remot
 assert_rc "$promote_rc" 0 "promote ok"
 assert_eq "$(git -C "$d" show current:config/settings_data.json | jq -r .k)" "staging-ahead-value" "promote pushed the staging-ahead value to current"
 # The DAWN_PROMOTE_REF test seam only stands in for the real push to `current` — real promote
-# also force-pushes staging onto origin/staging (conventions.md §4), which the seam has no
+# also force-pushes staging onto origin/staging (see conventions.md §3b), which the seam has no
 # equivalent for. Simulate that second push directly so staging_remote (this fixture's stand-in
 # for origin/staging) reflects reality; otherwise Step 0a's fold-from-staging_remote would see
 # staging_remote's untouched pre-promote content as "changed" relative to the marker (which Task
