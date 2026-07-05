@@ -39,3 +39,21 @@ assert_eq "$(git -C "$d2" rev-parse refs/dawn-sync/current)" "$staging_sha" "pro
 assert_eq "$(git -C "$d2" rev-parse refs/dawn-sync/staging-remote)" "$staging_sha" "promote writes the staging-remote marker to staging's tip"
 
 echo "  promote sync-marker ok"
+
+# assert_staging_clean failure path: customizations has commits staging doesn't → GUARD (rc 10)
+d3=$(dawn_test_repo)
+commit_on "$d3" staging config/settings_data.json <<< '{"k":"base"}' "config snapshot"
+git -C "$d3" checkout -q current; git -C "$d3" merge -q staging -m sync
+# Add a commit to customizations that staging doesn't have (staging is behind customizations)
+commit_on "$d3" customizations config/settings_data.json <<< '{"k":"cust"}' "cust-only commit"
+git -C "$d3" checkout -q staging
+# Set stage-push markers so the stage-push guard passes
+_d3_staging_sha=$(git -C "$d3" rev-parse staging)
+git -C "$d3" update-ref refs/dawn-sync/staging-remote "$_d3_staging_sha"
+git -C "$d3" update-ref refs/heads/staging_remote "$_d3_staging_sha"
+out3=$( cd "$d3" && DAWN_CURRENT_REF=current DAWN_PROMOTE_REF=refs/heads/current \
+        DAWN_STAGING_REMOTE_REF=staging_remote DAWN_PUSH="git update-ref" bash "$PROMOTE" 2>&1 ); rc3=$?
+assert_rc "$rc3" 10 "staging behind customizations → assert_staging_clean GUARD"
+assert_contains "$out3" "staging" "GUARD message mentions staging"
+
+echo "  promote assert_staging_clean failure ok"

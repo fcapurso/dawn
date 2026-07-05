@@ -63,4 +63,16 @@ plan5=$(run "$d5" 2>&1); assert_rc "$?" 22 "plan stops for approval"
 assert_contains "$plan5" '"col"' "plan shows col key"
 assert_contains "$plan5" '"img"' "plan shows img key"
 
+# 6) Non-config file changed on origin/current (e.g. a liquid snippet) → STOP_JUDGMENT (Step 0)
+d6=$(dawn_test_repo)
+commit_on "$d6" staging config/settings_data.json <<< '{"k":"base"}' "config snapshot"
+git -C "$d6" checkout -q current; git -C "$d6" merge -q staging -m sync
+git -C "$d6" checkout -q staging_remote; git -C "$d6" merge -q staging -m sync
+# Add a liquid snippet commit only to current (not staging) — triggers Step 0 guard
+commit_on "$d6" current snippets/new.liquid <<< '{{ "hello" }}' "liquid on current"
+git -C "$d6" checkout -q staging
+out6=$(run "$d6" 2>&1); rc6=$?
+assert_rc "$rc6" 21 "non-config file on current → Step 0 STOP_JUDGMENT"
+assert_contains "$out6" "classification" "Step 0 message mentions classification"
+
 echo "  backflow_drift ok"
