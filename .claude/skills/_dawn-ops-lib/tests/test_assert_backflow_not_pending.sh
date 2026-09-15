@@ -87,4 +87,16 @@ out5=$(in_repo "$d5" 'dawn::assert_backflow_not_pending' 2>&1); rc5=$?
 assert_rc "$rc5" 10 "clean-but-unfolded non-config drift: still GUARD"
 assert_contains "$out5" "non-config drift" "message calls out the unfolded non-config drift"
 
+# F) origin/staging changed a locale since merge-base, but staging already holds the same
+#    bytes (history rewrite). Must pass — otherwise stage-push deadlocks after harvest.
+d6=$(dawn_test_repo)
+commit_on "$d6" staging locales/nl.json <<< '{"a":"base"}' "config snapshot"
+git -C "$d6" checkout -q current; git -C "$d6" merge -q staging -m sync
+git -C "$d6" checkout -q staging_remote; git -C "$d6" merge -q staging -m sync
+commit_on "$d6" staging_remote locales/nl.json <<< '{"a":"same"}'
+commit_on "$d6" staging locales/nl.json <<< '{"a":"same"}' "config snapshot"
+git -C "$d6" checkout -q staging
+in_repo "$d6" 'dawn::assert_backflow_not_pending'; rc6=$?
+assert_rc "$rc6" 0 "identical non-config after rewrite: guard passes"
+
 echo "  assert_backflow_not_pending ok"

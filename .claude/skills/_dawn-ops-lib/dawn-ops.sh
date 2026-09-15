@@ -447,8 +447,15 @@ dawn::nonconfig_drift_scan(){
     || { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
   [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
 
+  # Files origin/staging changed since merge-base, excluding config-class paths AND files
+  # whose bytes already match staging. After a local history rewrite (harvest/collapse),
+  # merge-base is stale: the remote still "changed" locales/snippets that staging already
+  # holds. Reporting those as pending drift deadlocks dawn-stage-push.
   changed="$(git diff --name-only "$base" "$remote" -- . | while IFS= read -r f; do
-    [ -n "$f" ] && [ -z "$(dawn::config_class "$f")" ] && printf '%s\n' "$f"
+    [ -z "$f" ] && continue
+    [ -n "$(dawn::config_class "$f")" ] && continue
+    git diff --quiet staging "$remote" -- "$f" && continue
+    printf '%s\n' "$f"
   done)"
   [ -z "$changed" ] && return 0
 

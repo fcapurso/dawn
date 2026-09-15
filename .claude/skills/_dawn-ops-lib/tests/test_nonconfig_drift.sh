@@ -104,4 +104,16 @@ out6=$(in_repo "$d6" 'dawn::nonconfig_drift_scan'); rc6=$?
 assert_rc "$rc6" 0 "config-class same-line conflict is out of scope, scan still returns 0"
 assert_eq "$out6" "" "config-class file not reported even though it would raw-text-conflict"
 
+# Already equal after diverged history: origin/staging changed a locale since merge-base,
+# but staging already has the same bytes (rewrite/harvest). Must report nothing.
+d7=$(dawn_test_repo)
+commit_on "$d7" staging locales/nl.json <<< '{"a":"base"}'
+git -C "$d7" checkout -q staging_remote; git -C "$d7" merge -q staging -m sync
+commit_on "$d7" staging_remote locales/nl.json <<< '{"a":"same"}'
+commit_on "$d7" staging locales/nl.json <<< '{"a":"same"}'
+git -C "$d7" checkout -q staging
+out7=$(in_repo "$d7" 'dawn::nonconfig_drift_scan'); rc7=$?
+assert_rc "$rc7" 0 "identical-bytes diverged history scan ok"
+assert_eq "$out7" "" "identical files not reported as pending drift"
+
 echo "  nonconfig_drift ok"
