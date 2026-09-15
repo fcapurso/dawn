@@ -1,0 +1,89 @@
+{% comment %}
+  Shopify Forms paints inside Shadow DOM, so theme CSS cannot reach inputs or
+  headings. The Forms loader adopts window.formStyles into that shadow root.
+  This must run before content_for_header (where the loader is injected).
+{% endcomment %}
+
+<style>
+  form-embed {
+    display: block;
+    width: 100%;
+    max-width: 72.6rem;
+    margin-inline: auto;
+    color: rgb(var(--color-foreground));
+    --inline-container-max-width: 72.6rem;
+  }
+</style>
+
+<script>
+  window.formStyles = window.formStyles || new Map();
+  window.formStyles.set(
+    'zogezeept-theme',
+    `
+      :host {
+        --inline-container-max-width: 72.6rem;
+        --forms-heading-font: "Special Elite", cursive;
+        color: rgb(var(--color-foreground));
+      }
+      h1, h2, h3, legend {
+        font-family: "Special Elite", cursive !important;
+        font-size: 2.2rem !important;
+        font-weight: 400 !important;
+      }
+      p, label {
+        font-size: 1.6rem !important;
+        line-height: 1.5 !important;
+        color: inherit !important;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="number"],
+      input[type="tel"] {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        min-height: 4.5rem !important;
+        height: 4.5rem !important;
+        padding: 1.5rem !important;
+        margin: 0 0 1.5rem !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background-color: rgb(var(--color-background)) !important;
+        color: inherit !important;
+        font-family: "Josefin Sans", sans-serif !important;
+        font-size: 1.6rem !important;
+        letter-spacing: 0.1rem !important;
+        box-shadow: 0 0 0 1px rgba(var(--color-foreground), 0.55) !important;
+      }
+      input[type="text"]::placeholder,
+      input[type="email"]::placeholder,
+      input[type="number"]::placeholder,
+      input[type="tel"]::placeholder {
+        color: inherit !important;
+        opacity: 0.75;
+      }
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="number"]:focus,
+      input[type="tel"]:focus {
+        outline: 0 !important;
+        box-shadow: 0 0 0 0.2rem rgb(var(--color-foreground)) !important;
+      }
+      button[type="submit"] {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: auto !important;
+        min-width: 12rem !important;
+        min-height: 4.5rem !important;
+        padding: 0 3rem !important;
+        margin: 1rem 0 0 !important;
+        border-radius: 0 !important;
+        font-family: "Josefin Sans", sans-serif !important;
+        font-size: 1.5rem !important;
+        letter-spacing: 0.1rem !important;
+      }
+    `
+  );
+</script>

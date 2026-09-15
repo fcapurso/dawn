@@ -47,6 +47,8 @@
       <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
+    {% render 'shopify-forms-theme' %}
+
     {{ content_for_header }}
 
     {{ shop.metafields.UnlimitedFonts.stylesheet }}
