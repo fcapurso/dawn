@@ -1,0 +1,103 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_banner_7HrJkA": {
+      "type": "image-banner",
+      "name": "t:sections.image-banner.presets.name",
+      "settings": {
+        "image": "shopify://shop_images/WhatsApp_Image_2026-09-15_at_16.00.16_4.jpg",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "image_behavior": "none",
+        "desktop_content_position": "top-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": false,
+        "color_scheme": "scheme-5",
+        "stack_images_on_mobile": true,
+        "mobile_content_alignment": "center",
+        "show_text_below": true
+      }
+    },
+    "rich_text_b4VH6D": {
+      "type": "rich-text",
+      "blocks": {
+        "caption_LQkDkN": {
+          "type": "caption",
+          "settings": {
+            "caption": "MARKTWEDSTRIJD",
+            "text_style": "caption-with-letter-spacing",
+            "text_size": "large"
+          }
+        },
+        "heading_Tn3EhJ": {
+          "type": "heading",
+          "settings": {
+            "heading": "Raad het gewicht en win deze reuzezeep",
+            "heading_size": "h1"
+          }
+        },
+        "text_iLEKLf": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Kan jij raden hoe zwaar deze reuzezeep is? Doe mee en win!</p><p>Laat je gegevens achter en vul jouw antwoord in. Je raadt het gewicht in grammen.</p><p>Om 15u30 maak ik bekend wie er het dichtste bij zat. De winnaar krijgt deze reuzezeep.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "caption_LQkDkN",
+        "heading_Tn3EhJ",
+        "text_iLEKLf"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "1789490243df964ddf": {
+      "type": "apps",
+      "blocks": {
+        "forms_inline_Ppn3F6": {
+          "type": "shopify://apps/forms/blocks/inline/8744a304-fcb1-4347-b211-bb6b4759a76a",
+          "settings": {
+            "form_id": "1154281",
+            "text_color": "#207567",
+            "button_background_color": "#b4d6c1",
+            "button_label_color": "#207567",
+            "links_color": "#6baf92",
+            "errors_color": "#e02229",
+            "text_alignment": "center",
+            "form_alignment": "center",
+            "padding_top": 0,
+            "padding_bottom": 24,
+            "padding_right": 0,
+            "padding_left": 0
+          }
+        }
+      },
+      "block_order": [
+        "forms_inline_Ppn3F6"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    }
+  },
+  "order": [
+    "image_banner_7HrJkA",
+    "rich_text_b4VH6D",
+    "1789490243df964ddf"
+  ]
+}
