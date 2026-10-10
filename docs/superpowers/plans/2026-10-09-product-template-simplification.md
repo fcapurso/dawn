@@ -16,7 +16,9 @@ template.
    templates, theme code behaviour, metafields, pages, product options and tags. Everything new
    is added alongside. Old things are removed only once nothing uses them anymore.
 2. **All code, metafields, metaobjects and template names are in English.** Customer-facing copy
-   (tab headings, texts, filter tags) stays Dutch, with English via Translate & Adapt as today.
+   (tab headings, texts, filter tags) is Dutch. The storefront is published in Dutch only
+   (checked 2026-10-10). If English is published later, the new shared texts, the shop shipping
+   text and the new template's headings need translating like any other content.
 3. **Every product is tested on the new template before it is switched**, and can be switched
    back at any moment until cleanup.
 
@@ -187,8 +189,8 @@ on.
    doesn't change.
    *Checkpoint:* live product pages unchanged.
 
-4. **Theme on staging.** Add the two code changes and `product.standard`. Translate the new
-   template's headings to English.
+4. **Theme on staging.** Add the two code changes and `product.standard`. Make sure staging
+   contains nothing else waiting to go live: promote publishes everything on staging.
 
 5. **Preview theme.** Push staging to the preview theme. Open every product with
    `?view=standard` (for example `/products/zozacht?view=standard`) and compare with its
@@ -196,8 +198,11 @@ on.
    *Checkpoint:* all products correct on `standard`; old templates unchanged.
 
 6. **Go live.** Promote. `product.standard` is live but no product is assigned to it, so
-   customers see no difference.
-   *Checkpoint:* live pages unchanged; `?view=standard` works on live.
+   customers see no difference. This is the one step that changes code every product page
+   uses (`sections/main-product.liquid`), so it is not covered by the per-product rollback.
+   *Checkpoint:* live pages unchanged, on every old template; `?view=standard` works on live.
+   *Rollback:* revert the code-change commits on staging and promote again. Products are still
+   on their old templates at this point, so nothing else needs undoing.
 
 7. **Switch products, one at a time.** For each product: add its logo tags (and
    `custom.hide_reviews` for geurblokje), check it once more with `?view=standard` on live,
@@ -207,10 +212,12 @@ on.
 8. **New products.** Create the lip balm and Soapi directly on `product.standard`. New
    products must be assigned `standard` by hand; the default template is Dawn's.
 
-9. **Cleanup, only when every product is on `standard`:**
+9. **Cleanup, only when every product is on `standard` and you are fully happy with it.**
+   This is the point of no return: after it, products can no longer be switched back.
    - Confirm in the admin that no product uses the old templates.
    - Delete `product.soap`, `product.facialmask`, `product.badzout`, `product.geurblokje`,
-     `product.3rd-party-product`.
+     `product.3rd-party-product`, both on the live theme and in the git branches (staging,
+     customizations), so they don't come back with the next promote.
    - Delete the pages that only fed tabs, with a redirect for each (they are in the sitemap):
      `gebruik-gezichtmaskers`, `gebruik-badzout`, `goed-om-te-weten-over-zeep`,
      `marokkanse-amberblokjes`, `over-foekje-fleur`, `over-yume-ceramics`. Check
