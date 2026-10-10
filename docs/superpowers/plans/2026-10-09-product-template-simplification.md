@@ -1,7 +1,7 @@
 # Product template simplification
 
 **Date:** 2026-10-09
-**Status:** Plan, not started
+**Status:** In progress: steps 1 and 2 done, step 3 started
 
 ## Goal
 
@@ -191,18 +191,16 @@ on.
    `product.3rd-party-product`. Archived products are not visible to customers. Before cleanup
    they are either switched to `standard` like any other product or deleted (decision open).
 
-2. **Editor test.** Partly done 2026-10-10: a tab's text can be connected to product
-   metafields and directly to a metaobject entry. Still to check, on a duplicate of the live
-   theme, once the first definitions from step 3 exist:
-   - the tab text can reach a field inside a linked metaobject (Product > `usage_shared` >
-     `body`);
-   - one tab text can hold two sources (own text and shared text).
-   *If not:* extend the tab code change so the block reads the linked text directly. Still
-   additive.
+2. **Editor test.** Done 2026-10-10, on a duplicate of the live theme. Confirmed:
+   - a tab's text can be connected to product metafields and directly to a metaobject entry;
+   - it can reach a field inside a linked metaobject (Product > `usage_shared` > `body`);
+   - one tab text can hold several sources (own text and shared text).
+   No extra tab code needed.
 
-3. **Admin, additions only.** Create the `info_text` definition and its entries, the new
-   product metafield definitions. Fill in the
-   new metafields on every product. Old templates don't read any of these, so the live site
+3. **Admin, additions only.** Started 2026-10-10: `info_text` definition, entry
+   `usage-facial-masks` and product metafield `custom.usage_shared` exist; ZoMild links to
+   the entry. Remaining: the other `info_text` entries, the other new product metafield
+   definitions, and filling in the new metafields on every product. Old templates don't read any of these, so the live site
    doesn't change.
    *Checkpoint:* live product pages unchanged.
 
