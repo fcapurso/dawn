@@ -17,8 +17,8 @@ template.
    is added alongside. Old things are removed only once nothing uses them anymore.
 2. **All code, metafields, metaobjects and template names are in English.** Customer-facing copy
    (tab headings, texts, filter tags) is Dutch. The storefront is published in Dutch only
-   (checked 2026-10-10). If English is published later, the new shared texts, the shop shipping
-   text and the new template's headings need translating like any other content.
+   (checked 2026-10-10). If English is published later, the new shared texts (including
+   the shipping text) and the new template's headings need translating like any other content.
 3. **Every product is tested on the new template before it is switched**, and can be switched
    back at any moment until cleanup.
 
@@ -31,8 +31,8 @@ template.
 | `product.badzout` | 2 bath milks (product type "Badmelk") | Gebruik (page), Wat zit er in, Verzendkosten |
 | `product.geurblokje` | 1 (Marokkanse Amberblokjes) | Wat zit er in, Waarom {merk} (page), Verzendkosten |
 | `product.workshop` | 1 (Zelf zeep maken) | Wat gaan we doen, Praktische info |
-| `product.3rd-party-product` | none found among published products | |
-| `product` (Dawn default) | none found among published products | |
+| `product.3rd-party-product` | 2 archived products (checked in admin 2026-10-10) | |
+| `product` (Dawn default) | none (checked in admin 2026-10-10) | |
 
 Other differences today:
 
@@ -42,7 +42,6 @@ Other differences today:
 - **Reviews (Judge.me):** on every template except `geurblokje` and `3rd-party-product`.
 - **Shipping text:** the same text typed into five templates.
 - **Variant picker:** dropdown on every template whose products have variants.
-- Unpublished products could not be checked from the storefront.
 
 ## End state
 
@@ -100,6 +99,7 @@ Entries (handles in English, content in Dutch, copied from today's pages):
 | `good-to-know-soap` | `goed-om-te-weten-over-zeep` |
 | `brand-marokkanse-amberblokjes` | `marokkanse-amberblokjes` |
 | `brand-soapi` | new |
+| `shipping` | today's shipping tab text |
 
 ### New product metafields
 
@@ -116,13 +116,10 @@ Existing metafields are read as they are, never changed: `descriptors.subtitle`,
 `my_fields.advice_for_use`, `my_fields.ingredients`, `my_fields.discounts`. The old
 `my_fields.brand_info` (page link) stays in place for the old templates until cleanup.
 
-### New shop metafield
-
-| Metafield | Type | Feeds |
-|---|---|---|
-| `custom.shipping_info` | rich text | Verzendkosten tab |
-
-Edited once under Settings > Custom data > Shop. Content copied from today's shipping text.
+The `shipping` entry is not linked from products: the Verzendkosten tab in the template is
+connected straight to it (theme editor: dynamic source > Metaobjects). Edited once under
+Content > Metaobjects. This keeps the shipping text out of the template without a separate
+shop metafield.
 
 ### New product tags (logos)
 
@@ -154,7 +151,7 @@ order:
    | Wat zit er allemaal in? | `my_fields.ingredients` |
    | Goed om te weten | `custom.good_to_know` + `custom.good_to_know_shared` |
    | Waarom {{ product.vendor }} | `custom.brand` |
-   | Verzendkosten | shop `custom.shipping_info` |
+   | Verzendkosten | `info_text` entry `shipping` |
 
 10. Share
 11. Judge.me review widget (hidden when `custom.hide_reviews` is true)
@@ -190,23 +187,26 @@ The empty `apps` section in `product.soap` has no blocks and is not carried over
 Each step has a checkpoint. Nothing before step 9 removes or changes anything customers rely
 on.
 
-1. **Admin check.** Confirm no draft or hidden product is assigned `product.3rd-party-product`
-   or `product`.
-   *Checkpoint:* list of products per template matches the current state table.
+1. **Admin check.** Done 2026-10-10: no product uses `product`; 2 archived products use
+   `product.3rd-party-product`. Archived products are not visible to customers. Before cleanup
+   they are either switched to `standard` like any other product or deleted (decision open).
 
-2. **Editor test.** On a duplicate of the live theme, check that a tab's text can be connected
-   to a field inside a linked metaobject (`custom.usage_shared` > `body`) and to a shop
-   metafield.
+2. **Editor test.** Partly done 2026-10-10: a tab's text can be connected to product
+   metafields and directly to a metaobject entry. Still to check, on a duplicate of the live
+   theme, once the first definitions from step 3 exist:
+   - the tab text can reach a field inside a linked metaobject (Product > `usage_shared` >
+     `body`);
+   - one tab text can hold two sources (own text and shared text).
    *If not:* extend the tab code change so the block reads the linked text directly. Still
    additive.
 
 3. **Admin, additions only.** Create the `info_text` definition and its entries, the new
-   product metafield definitions, and the shop metafield `custom.shipping_info`. Fill in the
+   product metafield definitions. Fill in the
    new metafields on every product. Old templates don't read any of these, so the live site
    doesn't change.
    *Checkpoint:* live product pages unchanged.
 
-4. **Theme on staging.** Add the two code changes and `product.standard`. Make sure staging
+4. **Theme on staging.** Add the four code changes and `product.standard`. Make sure staging
    contains nothing else waiting to go live: promote publishes everything on staging.
 
 5. **Preview theme.** Push staging to the preview theme. Open every product with
@@ -234,7 +234,7 @@ on.
    This is the point of no return: after it, products can no longer be switched back.
    - Confirm in the admin that no product uses the old templates.
    - Delete `product.soap`, `product.facialmask`, `product.badzout`, `product.geurblokje`,
-     `product.3rd-party-product`, both on the live theme and in the git branches (staging,
+     `product.3rd-party-product`, once the 2 archived products are dealt with (step 1), both on the live theme and in the git branches (staging,
      customizations), so they don't come back with the next promote.
    - Delete the pages that only fed tabs, with a redirect for each (they are in the sitemap):
      `gebruik-gezichtmaskers`, `gebruik-badzout`, `goed-om-te-weten-over-zeep`,
