@@ -55,16 +55,32 @@ Other differences today:
 
 ## What gets added
 
-### Theme code (two additive changes to `sections/main-product.liquid`)
+### Theme code (four changes to `sections/main-product.liquid`)
+
+Rule for all four: anything a product doesn't use renders no markup at all, so it leaves no
+empty band or gap on the page. None of them changes what any page shows today.
 
 1. **"Hide when empty" setting on the collapsible tab block.** A new checkbox, off by default.
    When on, the tab is not rendered if its text and linked page are empty after stripping HTML
    (dynamic sources render an empty `<p></p>` when the metafield is blank). Existing templates
-   don't have the setting, so they behave exactly as today. Layer: L1 (generic).
+   don't have the setting, so they behave exactly as today. Opt-in because old templates can
+   have empty tabs today (a soap without usage text), and those must not change. Touches
+   standard Dawn code. Layer: L1 (generic).
 2. **Hide Judge.me blocks per product.** In the app block branch, skip Judge.me blocks when the
    product metafield `custom.hide_reviews` is true. No product has that metafield today, so
    nothing changes until it is set. A metafield, not a tag, because tags show up in the
-   storefront's tag filter. Layer: L2 (store-specific).
+   storefront's tag filter. Touches standard Dawn code. Layer: L2 (store-specific).
+3. **Hide the stock count per product.** In the inventory block, render nothing when the
+   product metafield `custom.hide_stock` is true. No product has it today, so nothing changes
+   until it is set. Dawn's variant-switch script already skips the stock line when it isn't on
+   the page (checked in `assets/product-info.js`), so this causes no script errors. Touches
+   the inventory block, which is Dawn code you already customized. Layer: L2 (store-specific).
+4. **No empty logo band.** Today the logo block always outputs its container, which has a
+   20px margin above and below (`assets/component-product-logos.css`), so a product with no
+   matching logos would get an empty 40px band. Change: output the container only when at
+   least one logo applies to the product. Not opt-in, because no product shows an empty logo
+   area today: every template with the logo block has logos that are always on. Touches your
+   own logo block code. Layer: L1 (generic).
 
 ### Metaobject definition `info_text`
 
@@ -94,6 +110,7 @@ Entries (handles in English, content in Dutch, copied from today's pages):
 | `custom.good_to_know_shared` | metaobject reference (`info_text`) | Goed om te weten tab |
 | `custom.brand` | metaobject reference (`info_text`) | Waarom {merk} tab |
 | `custom.hide_reviews` | true or false | Judge.me stars and widget |
+| `custom.hide_stock` | true or false | Stock count |
 
 Existing metafields are read as they are, never changed: `descriptors.subtitle`,
 `my_fields.advice_for_use`, `my_fields.ingredients`, `my_fields.discounts`. The old
@@ -123,12 +140,12 @@ order:
 2. Judge.me stars (hidden when `custom.hide_reviews` is true)
 3. Price, discount line (`my_fields.discounts`, shown only when filled in)
 4. Variant picker (dropdown)
-5. Stock count (items, thresholds 5 / 5, as today)
+5. Stock count (items, thresholds 5 / 5, as today; hidden when `custom.hide_stock` is true)
 6. Quantity, buy buttons
 7. "Over {product}", description
 8. Logos: vegan (tag `vegan`), vegetarian (`vegetarian`), palm oil free (`palmolievrij`),
    cruelty free (`dierproefvrij`), handmade (`handgemaakt`). The block holds 5 logos; all 5
-   are used.
+   are used. No logos for a product means no logo area at all.
 9. Tabs, all with "Hide when empty" on:
 
    | Tab heading | Shows |
@@ -146,14 +163,14 @@ The empty `apps` section in `product.soap` has no blocks and is not carried over
 
 ## Content per product type
 
-| Type | Gebruik | Wat zit er in | Goed om te weten | Waarom {merk} | Logos | Reviews |
-|---|---|---|---|---|---|---|
-| Zeep | own text | ✓ | `good-to-know-soap` | | as today | ✓ |
-| Gezichtsmasker | `usage-facial-masks` | ✓ | optional: shelf life, keep dry | | as today | ✓ |
-| Badmelk | `usage-bath-milk` | ✓ | | | as today | ✓ |
-| Lipbalm (new) | own text | ✓ | own: shelf life after opening, keep away from heat | | per product | ✓ |
-| Geurblokje | | ✓ | | `brand-marokkanse-amberblokjes` | none | hidden |
-| Soapi (new) | own: fitting it | | own: material, size, care | `brand-soapi` | none | your choice |
+| Type | Gebruik | Wat zit er in | Goed om te weten | Waarom {merk} | Logos | Reviews | Stock |
+|---|---|---|---|---|---|---|---|
+| Zeep | own text | ✓ | `good-to-know-soap` | | as today | ✓ | ✓ |
+| Gezichtsmasker | `usage-facial-masks` | ✓ | optional: shelf life, keep dry | | as today | ✓ | ✓ |
+| Badmelk | `usage-bath-milk` | ✓ | | | as today | ✓ | ✓ |
+| Lipbalm (new) | own text | ✓ | own: shelf life after opening, keep away from heat | | per product | ✓ | ✓ |
+| Geurblokje | | ✓ | | `brand-marokkanse-amberblokjes` | none | hidden | hidden |
+| Soapi (new) | own: fitting it | | own: material, size, care | `brand-soapi` | none | your choice | your choice |
 
 ## Variants
 
@@ -204,9 +221,10 @@ on.
    *Rollback:* revert the code-change commits on staging and promote again. Products are still
    on their old templates at this point, so nothing else needs undoing.
 
-7. **Switch products, one at a time.** For each product: add its logo tags (and
-   `custom.hide_reviews` for geurblokje), check it once more with `?view=standard` on live,
-   then assign `product.standard` in the admin.
+7. **Switch products, one at a time.** For each product: add its logo tags (and set
+   `custom.hide_reviews` and `custom.hide_stock` for geurblokje, so it looks as it does today),
+   check it once more with `?view=standard` on live, then assign `product.standard` in the
+   admin.
    *Rollback:* assign the old template again.
 
 8. **New products.** Create the lip balm and Soapi directly on `product.standard`. New
