@@ -135,8 +135,8 @@ Fields `title` (single line text) and `body` (rich text).
 | `category` | `facial-mask` | "Gezichtsmasker" | usage: from page `gebruik-gezichtmaskers` |
 | `category` | `bath-milk` | "Badmelk" | usage: from page `gebruik-badzout` |
 | `category` | `fragrance-block` | "Geurblokje" | empty for now |
-| `category` | `lip-balm` | "Lippenbalsem" | as needed |
-| `category` | `soap-dish` | "Keramisch zeepschaaltje", "Zeepbakje", and Soapi's type | as needed |
+| `category` | `lip-balm` | "Lippenbalsem" | good to know: storage and texture of shea butter |
+| `category` | `soap-holder` | "Keramisch zeepschaaltje", "Zeepbakje", "Magnetische zeephouder" (Soapi) | as needed |
 | `brand` | `marokkanse-amberblokjes` | vendor "Marokkanse Amberblokjes" | from page `marokkanse-amberblokjes` |
 | `brand` | `yume-ceramics` | vendor "Yume Ceramics" | from page `over-yume-ceramics` |
 | `brand` | `foekje-fleur` | vendor "Foekje Fleur" | from page `over-foekje-fleur` |
