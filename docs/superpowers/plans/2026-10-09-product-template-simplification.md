@@ -1,7 +1,7 @@
 # Product template simplification
 
 **Date:** 2026-10-09 (content model revised 2026-10-11)
-**Status:** In progress: steps 1 to 4 done, step 5 (preview testing) under way (2026-10-11)
+**Status:** In progress: steps 1 to 6 done (live 2026-10-11); next is step 7, switching products
 
 ## Goal
 
@@ -290,7 +290,10 @@ on.
    *Checkpoint:* all products correct on `standard`, including category and brand texts; old
    templates unchanged.
 
-6. **Go live.** Promote. `product.standard` is live but no product is assigned to it, so
+6. **Go live.** Done 2026-10-11: harvested into `customizations` (`05231927` to `320dc949`),
+   stage-pushed, promoted (`current` = `81e08c5f`). Rollback tag
+   `config-archive/2026-10-11-173940`. Live pages unchanged; `?view=standard` works on live.
+   Promote. `product.standard` is live but no product is assigned to it, so
    customers see no difference. This is the one step that changes code every product page
    uses (`sections/main-product.liquid`), so it is not covered by the per-product rollback.
    *Checkpoint:* live pages unchanged, on every old template; `?view=standard` works on live.
