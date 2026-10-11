@@ -41,7 +41,7 @@ sentence, ingredients) and for per-product switches (hide reviews, hide stock co
 | `product.badzout` | 2 bath milks (product type "Badmelk") | Gebruik (page), Wat zit er in, Verzendkosten |
 | `product.geurblokje` | 1 (Marokkanse Amberblokjes) | Wat zit er in, Waarom {merk} (page), Verzendkosten |
 | `product.workshop` | 1 (Zelf zeep maken) | Wat gaan we doen, Praktische info |
-| `product.3rd-party-product` | 2 archived products (checked in admin 2026-10-10) | Description, Waarom {merk} (page), Verzendkosten; no reviews, stock or logos |
+| `product.3rd-party-product` | 2 of the archived products (checked in admin 2026-10-10) | Description, Waarom {merk} (page), Verzendkosten; no reviews, stock or logos |
 | `product` (Dawn default) | none (checked in admin 2026-10-10) | |
 
 Other differences today:
@@ -134,13 +134,14 @@ Fields `title` (single line text) and `body` (rich text).
 | `category` | `soap` | "Hand & body zeep", "Handzeep" | good to know: from page `goed-om-te-weten-over-zeep`; usage: empty (soaps have their own) |
 | `category` | `facial-mask` | "Gezichtsmasker" | usage: from page `gebruik-gezichtmaskers` |
 | `category` | `bath-milk` | "Badmelk" | usage: from page `gebruik-badzout` |
-| `category` | `scent-block` | "Geurblokje" | empty for now |
-| `category` | `lip-balm` | the lip balm's type, when created | as needed |
-| `category` | `soap-holder` | Soapi's type, when created | as needed |
+| `category` | `fragrance-block` | "Geurblokje" | empty for now |
+| `category` | `lip-balm` | "Lippenbalsem" | as needed |
+| `category` | `soap-dish` | "Keramisch zeepschaaltje", "Zeepbakje", and Soapi's type | as needed |
 | `brand` | `marokkanse-amberblokjes` | vendor "Marokkanse Amberblokjes" | from page `marokkanse-amberblokjes` |
-| `brand` | one per archived product's vendor | that vendor, spelled exactly as on the product | from the page its `my_fields.brand_info` links to (probably `over-foekje-fleur`, `over-yume-ceramics`) |
+| `brand` | `yume-ceramics` | vendor "Yume Ceramics" | from page `over-yume-ceramics` |
+| `brand` | `foekje-fleur` | vendor "Foekje Fleur" | from page `over-foekje-fleur` |
 | `brand` | `soapi` | vendor "Soapi" | new |
-| `info_text` | `shipping` | (linked from the template) | today's shipping tab text |
+| `info_text` | `shipping-info` | (linked from the template) | today's shipping tab text |
 
 Type and vendor names in `product_types` and `vendor` must be spelled exactly as on the
 products, because there's no autocomplete there. If a product type or vendor is ever renamed,
@@ -164,7 +165,7 @@ Existing metafields are read as they are, never changed: `descriptors.subtitle`,
 `my_fields.advice_for_use`, `my_fields.ingredients`, `my_fields.discounts`. The old
 `my_fields.brand_info` (page link) stays in place for the old templates until cleanup.
 
-The `shipping` entry is not linked from products: the Verzendkosten tab in the template is
+The `shipping-info` entry is not linked from products: the Verzendkosten tab in the template is
 connected straight to it (theme editor: dynamic source > Metaobjects). Edited once under
 Content > Metaobjects.
 
@@ -198,7 +199,7 @@ order:
    | Wat zit er allemaal in? | `my_fields.ingredients` | |
    | Goed om te weten | `custom.good_to_know` | category good to know |
    | Waarom {{ product.vendor }} | | brand text |
-   | Verzendkosten | `info_text` entry `shipping` | |
+   | Verzendkosten | `info_text` entry `shipping-info` | |
 
 10. Share
 11. Judge.me review widget (hidden when `custom.hide_reviews` is true)
@@ -215,11 +216,23 @@ The empty `apps` section in `product.soap` has no blocks and is not carried over
 | Lipbalm (new) | own text | ✓ | own: shelf life after opening, keep away from heat | | per product | ✓ | ✓ |
 | Geurblokje | | ✓ | | brand `marokkanse-amberblokjes` | none | hidden | hidden |
 | Soapi (new) | own: fitting it | | own: material, size, care | brand `soapi` | none | your choice | your choice |
-| Archived third-party (2) | | | | their brand entries | none | hidden | hidden |
+| Archived third-party (3) | | | | brand `yume-ceramics` / `foekje-fleur` | none | hidden | hidden |
+| Archived soap sets (2) | as their current template shows | | | | as today | as today | as today |
+
+Archived and draft products (admin, 2026-10-11):
+
+| Product | Status | Product type | Vendor |
+|---|---|---|---|
+| Heather (the new lip balm) | Draft | Lippenbalsem | Zogezeept |
+| Liefdevolle set | Archived | Hand & body zeep | Zogezeept |
+| Liefdevol setje | Archived | Hand & body zeep | Zogezeept |
+| Keramisch zeepschaaltje mini | Archived | Keramisch zeepschaaltje | Yume Ceramics |
+| Keramisch zeepschaaltje | Archived | Keramisch zeepschaaltje | Yume Ceramics |
+| Bubble Buddy | Archived | Zeepbakje | Foekje Fleur |
 
 Archived products are migrated like the others, so that if they are ever made active again
-they show everything they show today: description, brand tab and shipping, without reviews
-or stock count.
+they show everything they show today. Which template each archived product uses today is
+checked in the admin before switching it.
 
 Adding a new product: pick the right product type and vendor (or duplicate a product of the
 same kind), assign `product.standard`, fill in its own texts and tags. The shared texts appear
@@ -278,8 +291,8 @@ on.
    on their old templates at this point, so nothing else needs undoing.
 
 7. **Switch products, one at a time.** For each product: add its logo tags (and set
-   `custom.hide_reviews` and `custom.hide_stock` for geurblokje and the 2 archived products,
-   so they look as they do today), check it once more with `?view=standard` on live, then
+   `custom.hide_reviews` and `custom.hide_stock` for geurblokje and the archived third-party
+   products, so they look as they do today), check it once more with `?view=standard` on live, then
    assign `product.standard` in the admin.
    *Archived products* can't be opened on the storefront, so `?view=standard` doesn't work for
    them. Check them in the theme editor by picking the product in the preview. If the editor
@@ -312,13 +325,13 @@ new `category` and `brand` entries before deleting the entries that hold them.
 
 - `info_text` entries `usage-facial-masks`, `usage-bath-milk`, `good-to-know-soap`,
   `brand-marokkanse-amberblokjes`, and any brand entries made for the archived products.
-  Keep the `info_text` definition and its `shipping` entry.
+  Keep the `info_text` definition and its `shipping-info` entry.
 - Product metafield definitions `custom.usage_shared`, `custom.good_to_know_shared`,
   `custom.brand_info`, if created. When deleting, choose to delete their values too.
 - The duplicate theme used for the editor test.
 
 Keep: `custom.good_to_know`, `custom.hide_reviews`, `custom.hide_stock` if already created
-(and their values on geurblokje and the archived products). Renaming the old
+(and their values on geurblokje and the archived third-party products). Renaming the old
 `my_fields.brand_info` to "Brand info (old)" in the admin is harmless and can stay.
 
 ## Left out on purpose
