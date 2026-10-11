@@ -1,7 +1,7 @@
 # Product template simplification
 
 **Date:** 2026-10-09 (content model revised 2026-10-11)
-**Status:** In progress: steps 1 to 6 done (live 2026-10-11); next is step 7, switching products
+**Status:** In progress: steps 1 to 7 done (all products switched 2026-10-11), step 8 partly done (Heather live, Soapi to come); step 9 cleanup waits until you are fully happy
 
 ## Goal
 
