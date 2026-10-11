@@ -730,63 +730,78 @@
               {%- when 'icon-with-text' -%}
                 {% render 'icon-with-text', block: block %}
               {%- when 'custom-product-logos' -%}
-                <div class="product-logo-container">
-                  {% if block.settings.selected_image_1 == null %}
-                    <!-- No image selected -->
-                  {% elsif block.settings.product_tag_1 == '' or product.tags contains block.settings.product_tag_1 %}
-                    <div class="product-logo">
-                      <img
-                        src="{{ block.settings.selected_image_1 | image_url: width: 100 }}"
-                        alt="{{ block.settings.selected_image_1.alt }}"
-                      >
-                      <span class="tooltip-text">{{ block.settings.selected_image_1.alt }}</span>
-                    </div>
-                  {% endif %}
-                  {% if block.settings.selected_image_2 == null %}
-                    <!-- No image selected -->
-                  {% elsif block.settings.product_tag_2 == '' or product.tags contains block.settings.product_tag_2 %}
-                    <div class="product-logo">
-                      <img
-                        src="{{ block.settings.selected_image_2 | image_url: width: 100 }}"
-                        alt="{{ block.settings.selected_image_2.alt }}"
-                      >
-                      <span class="tooltip-text">{{ block.settings.selected_image_2.alt }}</span>
-                    </div>
-                  {% endif %}
-                  {% if block.settings.selected_image_3 == null %}
-                    <!-- No image selected -->
-                  {% elsif block.settings.product_tag_3 == '' or product.tags contains block.settings.product_tag_3 %}
-                    <div class="product-logo">
-                      <img
-                        src="{{ block.settings.selected_image_3 | image_url: width: 100 }}"
-                        alt="{{ block.settings.selected_image_3.alt }}"
-                      >
-                      <span class="tooltip-text">{{ block.settings.selected_image_3.alt }}</span>
-                    </div>
-                  {% endif %}
-                  {% if block.settings.selected_image_4 == null %}
-                    <!-- No image selected -->
-                  {% elsif block.settings.product_tag_4 == '' or product.tags contains block.settings.product_tag_4 %}
-                    <div class="product-logo">
-                      <img
-                        src="{{ block.settings.selected_image_4 | image_url: width: 100 }}"
-                        alt="{{ block.settings.selected_image_4.alt }}"
-                      >
-                      <span class="tooltip-text">{{ block.settings.selected_image_4.alt }}</span>
-                    </div>
-                  {% endif %}
-                  {% if block.settings.selected_image_5 == null %}
-                    <!-- No image selected -->
-                  {% elsif block.settings.product_tag_5 == '' or product.tags contains block.settings.product_tag_5 %}
-                    <div class="product-logo">
-                      <img
-                        src="{{ block.settings.selected_image_5 | image_url: width: 100 }}"
-                        alt="{{ block.settings.selected_image_5.alt }}"
-                      >
-                      <span class="tooltip-text">{{ block.settings.selected_image_5.alt }}</span>
-                    </div>
-                  {% endif %}
-                </div>
+                {%- liquid
+                  # Only output the container (which has its own margins) when a logo applies.
+                  assign has_logo = false
+                  for i in (1..5)
+                    assign image_key = 'selected_image_' | append: i
+                    assign tag_key = 'product_tag_' | append: i
+                    if block.settings[image_key] != null
+                      if block.settings[tag_key] == '' or product.tags contains block.settings[tag_key]
+                        assign has_logo = true
+                      endif
+                    endif
+                  endfor
+                -%}
+                {%- if has_logo -%}
+                  <div class="product-logo-container">
+                    {% if block.settings.selected_image_1 == null %}
+                      <!-- No image selected -->
+                    {% elsif block.settings.product_tag_1 == '' or product.tags contains block.settings.product_tag_1 %}
+                      <div class="product-logo">
+                        <img
+                          src="{{ block.settings.selected_image_1 | image_url: width: 100 }}"
+                          alt="{{ block.settings.selected_image_1.alt }}"
+                        >
+                        <span class="tooltip-text">{{ block.settings.selected_image_1.alt }}</span>
+                      </div>
+                    {% endif %}
+                    {% if block.settings.selected_image_2 == null %}
+                      <!-- No image selected -->
+                    {% elsif block.settings.product_tag_2 == '' or product.tags contains block.settings.product_tag_2 %}
+                      <div class="product-logo">
+                        <img
+                          src="{{ block.settings.selected_image_2 | image_url: width: 100 }}"
+                          alt="{{ block.settings.selected_image_2.alt }}"
+                        >
+                        <span class="tooltip-text">{{ block.settings.selected_image_2.alt }}</span>
+                      </div>
+                    {% endif %}
+                    {% if block.settings.selected_image_3 == null %}
+                      <!-- No image selected -->
+                    {% elsif block.settings.product_tag_3 == '' or product.tags contains block.settings.product_tag_3 %}
+                      <div class="product-logo">
+                        <img
+                          src="{{ block.settings.selected_image_3 | image_url: width: 100 }}"
+                          alt="{{ block.settings.selected_image_3.alt }}"
+                        >
+                        <span class="tooltip-text">{{ block.settings.selected_image_3.alt }}</span>
+                      </div>
+                    {% endif %}
+                    {% if block.settings.selected_image_4 == null %}
+                      <!-- No image selected -->
+                    {% elsif block.settings.product_tag_4 == '' or product.tags contains block.settings.product_tag_4 %}
+                      <div class="product-logo">
+                        <img
+                          src="{{ block.settings.selected_image_4 | image_url: width: 100 }}"
+                          alt="{{ block.settings.selected_image_4.alt }}"
+                        >
+                        <span class="tooltip-text">{{ block.settings.selected_image_4.alt }}</span>
+                      </div>
+                    {% endif %}
+                    {% if block.settings.selected_image_5 == null %}
+                      <!-- No image selected -->
+                    {% elsif block.settings.product_tag_5 == '' or product.tags contains block.settings.product_tag_5 %}
+                      <div class="product-logo">
+                        <img
+                          src="{{ block.settings.selected_image_5 | image_url: width: 100 }}"
+                          alt="{{ block.settings.selected_image_5.alt }}"
+                        >
+                        <span class="tooltip-text">{{ block.settings.selected_image_5.alt }}</span>
+                      </div>
+                    {% endif %}
+                  </div>
+                {%- endif -%}
             {%- endcase -%}
           {%- endfor -%}
           <a href="{{ product.url }}" class="link product__view-details animate-arrow">
