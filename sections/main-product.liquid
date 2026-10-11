@@ -89,7 +89,16 @@
           {%- for block in section.blocks -%}
             {%- case block.type -%}
               {%- when '@app' -%}
-                {% render block %}
+                {%- liquid
+                  # App block ids contain their template key, e.g. "…__judge_me_reviews_review_widget".
+                  assign hide_app_block = false
+                  if product.metafields.custom.hide_reviews.value == true and block.id contains 'judge_me'
+                    assign hide_app_block = true
+                  endif
+                -%}
+                {%- unless hide_app_block -%}
+                  {% render block %}
+                {%- endunless -%}
               {%- when 'text' -%}
                 <p
                   class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
