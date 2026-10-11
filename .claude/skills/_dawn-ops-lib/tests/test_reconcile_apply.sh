@@ -62,4 +62,19 @@ assert_rc "$rc" 0 "staging-verdict-on-other-ahead exits 0"
 assert_eq "$(jq -r '.a' <<< "$pin_merged")" "base" "pinned key stays at staging value"
 assert_eq "$(jq -r '.b' <<< "$pin_merged")" "live-b" "unpinned key still folded"
 
+# Whole section deleted on current (current-ahead) → the section object is removed whole,
+# not left as a type-less shell.
+ds=$(dawn_test_repo)
+commit_on "$ds" staging templates/index.json <<'JSON' "base"
+{"sections":{"gone":{"type":"rich-text","settings":{"heading":"x"}},"kept":{"type":"main","settings":{}}},"order":["gone","kept"]}
+JSON
+git -C "$ds" checkout -q current; git -C "$ds" merge -q staging -m sync
+commit_on "$ds" current templates/index.json <<'JSON' "current deletes section"
+{"sections":{"kept":{"type":"main","settings":{}}},"order":["kept"]}
+JSON
+git -C "$ds" checkout -q staging
+sec_merged=$(in_repo "$ds" "dawn::reconcile_apply templates/index.json /dev/null"); rc=$?
+assert_rc "$rc" 0 "section deletion applies"
+assert_eq "$(jq -c '.sections | keys' <<< "$sec_merged")" '["kept"]' "deleted section key is gone"
+
 echo "  reconcile_apply ok"

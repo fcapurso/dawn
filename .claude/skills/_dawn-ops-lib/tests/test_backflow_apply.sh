@@ -60,4 +60,24 @@ out5=$(in_repo "$d" "dawn::backflow_apply config/settings_data.json '$dec' curre
 assert_rc "$rc5" 21 "missing decisions → rc 21"
 assert_contains "$out5" "unresolved" "error mentions unresolved"
 
+# 6) Block deleted on current, every row decided 'current' → the whole block object is removed,
+#    not left behind as a type-less {"settings":{}} shell (which Shopify rejects on push).
+d6=$(dawn_test_repo)
+commit_on "$d6" staging templates/index.json <<'JSON' "base"
+{"sections":{"s1":{"type":"main","blocks":{"b1":{"type":"featured_collection","settings":{"collection":"badmelk"}},"b2":{"type":"text","settings":{}}},"block_order":["b1","b2"]}},"order":["s1"]}
+JSON
+git -C "$d6" checkout -q current; git -C "$d6" merge -q staging -m sync
+git -C "$d6" checkout -q staging_remote; git -C "$d6" merge -q staging -m sync
+commit_on "$d6" current templates/index.json <<'JSON' "current deletes b1"
+{"sections":{"s1":{"type":"main","blocks":{"b2":{"type":"text","settings":{}}},"block_order":["b2"]}},"order":["s1"]}
+JSON
+git -C "$d6" checkout -q staging
+dec6="$d6/dec.tsv"
+in_repo "$d6" "dawn::backflow_scan current staging_remote" \
+  | awk -F'\t' '$2=="templates/index.json" {print $2"\t"$3"\tcurrent"}' > "$dec6"
+m6=$(in_repo "$d6" "dawn::backflow_apply templates/index.json '$dec6' current staging_remote"); rc6=$?
+assert_rc "$rc6" 0 "block deletion applies"
+assert_eq "$(jq -c '.sections.s1.blocks | keys' <<< "$m6")" '["b2"]' "deleted block key is gone, sibling kept"
+assert_eq "$(jq -c '.sections.s1.block_order' <<< "$m6")" '["b2"]' "block_order follows current"
+
 echo "  backflow_apply ok"

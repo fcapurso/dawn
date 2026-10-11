@@ -250,6 +250,20 @@ dawn::backflow_scan(){
   done < <({ dawn::config_targets "$cur"; dawn::config_targets "$sr"; } | sort -u)
 }
 
+# jq program applying fold ops ($ops: [{p,v}|{p,del:true}]) to a config file.
+# Decisions are per leaf, so deleting every leaf of a block/section leaves its parent object
+# behind as a type-less shell (e.g. {"settings":{}}), which Shopify rejects on push. After the
+# ops, any object directly under a `blocks`/`sections` map that a delete op passed through and
+# that is left with no `type` and no values (only empty objects) is removed whole: the chosen
+# side does not have it.
+DAWN_JQ_APPLY_OPS='
+  reduce $ops[] as $o (.; if ($o.del // false) then delpaths([$o.p]) else setpath($o.p; $o.v) end)
+  | reduce ($ops[] | select(.del // false) | .p as $p
+            | range(1; $p|length) | select($p[. - 1] == "blocks" or $p[. - 1] == "sections")
+            | $p[:. + 1]) as $q
+      (.; if (getpath($q) | type == "object" and (has("type") | not)
+             and ([paths(type != "object")] | length == 0)) then delpaths([$q]) else . end)'
+
 # Apply operator decisions from a decisions TSV to staging's copy of <file>.
 # Args: <file> <decisions-file> [<cur-ref> [<sr-ref>]]
 # Decisions line: <file>\t<path-json>\t<staging|current|staging_remote|value:JSON>
@@ -297,8 +311,7 @@ dawn::backflow_apply(){
   [ "$ops" = "[]" ] && return 0
 
   [ -n "$header" ] && printf '%s\n' "$header"
-  printf '%s' "$body" | jq --argjson ops "$ops" '
-    reduce $ops[] as $o (.; if ($o.del // false) then delpaths([$o.p]) else setpath($o.p; $o.v) end)'
+  printf '%s' "$body" | jq --argjson ops "$ops" "$DAWN_JQ_APPLY_OPS"
 }
 
 # rc 0 (pending) if any current-ahead leaf exists against <other> (default dawn::current_ref);
@@ -416,8 +429,7 @@ dawn::reconcile_apply(){
   [ "$ops" = "[]" ] && return 0
 
   [ -n "$header" ] && printf '%s\n' "$header"
-  printf '%s' "$body" | jq --argjson ops "$ops" '
-    reduce $ops[] as $o (.; if ($o.del // false) then delpaths([$o.p]) else setpath($o.p; $o.v) end)'
+  printf '%s' "$body" | jq --argjson ops "$ops" "$DAWN_JQ_APPLY_OPS"
 }
 
 # Read-only-in-effect preview of folding dawn::staging_remote_ref's remaining (non-leaf-reconciled)
