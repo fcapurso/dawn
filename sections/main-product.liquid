@@ -151,6 +151,9 @@
                   {%- endform -%}
                 </div>
               {%- when 'inventory' -%}
+                {%- if product.metafields.custom.hide_stock.value == true -%}
+                  {%- continue -%}
+                {%- endif -%}
                 {%- if block.settings.availability_type == 'items' -%}
                   {%- assign inventory_status_prefix = 'products.product.inventory.items.' -%}
                 {%- elsif block.settings.availability_type == 'places' -%}
