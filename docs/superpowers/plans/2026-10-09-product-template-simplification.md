@@ -1,7 +1,7 @@
 # Product template simplification
 
 **Date:** 2026-10-09 (content model revised 2026-10-11)
-**Status:** In progress: steps 1 and 2 done, step 3 nearly done (2026-10-11); next is step 4
+**Status:** In progress: steps 1 to 4 done, step 5 (preview testing) under way (2026-10-11)
 
 ## Goal
 
@@ -277,7 +277,11 @@ on.
    Old templates don't read any of these, so the live site doesn't change.
    *Checkpoint:* live product pages unchanged.
 
-4. **Theme on staging.** Add the five code changes and `product.standard`. Make sure staging
+4. **Theme on staging.** Done 2026-10-11: five code commits on `staging` (`ea74114c`,
+   `6fc00d0f`, `cc81ba86`, `846da8e3`, `c6469d29`); the template was folded into the config
+   snapshot `85b0b846` by backflow; stage-pushed to the preview theme. The shipping tab still
+   holds typed text until it is connected to the `shipping-info` entry in the editor.
+   Add the five code changes and `product.standard`. Make sure staging
    contains nothing else waiting to go live: promote publishes everything on staging.
 
 5. **Preview theme.** Push staging to the preview theme. Open every product with
