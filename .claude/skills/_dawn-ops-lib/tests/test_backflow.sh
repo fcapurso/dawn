@@ -11,9 +11,9 @@ commit_on "$d" staging config/settings_data.json <<< '{"k":"v"}' "base"
 git -C "$d" checkout -q current; git -C "$d" merge -q staging -m sync
 git -C "$d" checkout -q staging_remote; git -C "$d" merge -q staging -m sync
 git -C "$d" checkout -q staging
+before1=$(git -C "$d" rev-parse staging)
 run "$d"; assert_rc "$?" 0 "all agree → exit 0"
-assert_eq "$(git -C "$d" rev-list --count customizations..staging)" "1" "collapsed to one snapshot"
-assert_eq "$(git -C "$d" log -1 --format=%s staging | grep -c 'store config snapshot')" "1" "tip subject is the snapshot"
+assert_eq "$(git -C "$d" rev-parse staging)" "$before1" "nothing to reconcile → no commit, staging unchanged"
 
 # 2) Any divergence without decisions → exit 22 (plan mode), staging unchanged
 d2=$(dawn_test_repo)
