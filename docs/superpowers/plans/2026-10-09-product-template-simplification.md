@@ -1,7 +1,7 @@
 # Product template simplification
 
 **Date:** 2026-10-09 (content model revised 2026-10-11)
-**Status:** In progress: steps 1 and 2 done, step 3 to be redone for the revised content model
+**Status:** In progress: steps 1 and 2 done, step 3 nearly done (2026-10-11); next is step 4
 
 ## Goal
 
@@ -265,7 +265,10 @@ on.
    several sources. The category and brand texts are looked up by theme code (change 5), so
    they are checked on the preview theme in step 5.
 
-3. **Admin, additions only.**
+3. **Admin, additions only.** Done 2026-10-11, apart from setting the hide switches and the
+   live check. Definitions and entries exist as listed above; the old setup is removed. The
+   editor test had changed `product.facialmask.json` on the staging theme; staging was reset
+   to `current` (force-pushed 2026-10-11).
    - Remove the setup made for the earlier content model (see "Admin setup to remove"
      below). None of it is read by the live site.
    - Create the `category` and `brand` definitions with storefront access, and their entries.
