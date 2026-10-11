@@ -31,7 +31,7 @@ template.
 | `product.badzout` | 2 bath milks (product type "Badmelk") | Gebruik (page), Wat zit er in, Verzendkosten |
 | `product.geurblokje` | 1 (Marokkanse Amberblokjes) | Wat zit er in, Waarom {merk} (page), Verzendkosten |
 | `product.workshop` | 1 (Zelf zeep maken) | Wat gaan we doen, Praktische info |
-| `product.3rd-party-product` | 2 archived products (checked in admin 2026-10-10) | |
+| `product.3rd-party-product` | 2 archived products (checked in admin 2026-10-10) | Description, Waarom {merk} (page), Verzendkosten; no reviews, stock or logos |
 | `product` (Dawn default) | none (checked in admin 2026-10-10) | |
 
 Other differences today:
@@ -99,6 +99,7 @@ Entries (handles in English, content in Dutch, copied from today's pages):
 | `good-to-know-soap` | `goed-om-te-weten-over-zeep` |
 | `brand-marokkanse-amberblokjes` | `marokkanse-amberblokjes` |
 | `brand-soapi` | new |
+| one entry per archived product's brand | the page each archived product's `my_fields.brand_info` links to (probably `over-foekje-fleur`, `over-yume-ceramics`) |
 | `shipping` | today's shipping tab text |
 
 ### New product metafields
@@ -108,13 +109,15 @@ Entries (handles in English, content in Dutch, copied from today's pages):
 | `custom.usage_shared` | metaobject reference (`info_text`) | Gebruik tab |
 | `custom.good_to_know` | rich text | Goed om te weten tab |
 | `custom.good_to_know_shared` | metaobject reference (`info_text`) | Goed om te weten tab |
-| `custom.brand` | metaobject reference (`info_text`) | Waarom {merk} tab |
+| `custom.brand_info` | metaobject reference (`info_text`) | Waarom {merk} tab |
 | `custom.hide_reviews` | true or false | Judge.me stars and widget |
 | `custom.hide_stock` | true or false | Stock count |
 
 Existing metafields are read as they are, never changed: `descriptors.subtitle`,
 `my_fields.advice_for_use`, `my_fields.ingredients`, `my_fields.discounts`. The old
-`my_fields.brand_info` (page link) stays in place for the old templates until cleanup.
+`my_fields.brand_info` (page link) stays in place for the old templates until cleanup. The new
+field reuses the name `brand_info` in the `custom` group, so both exist side by side without
+conflict.
 
 The `shipping` entry is not linked from products: the Verzendkosten tab in the template is
 connected straight to it (theme editor: dynamic source > Metaobjects). Edited once under
@@ -150,7 +153,7 @@ order:
    | Gebruik | `my_fields.advice_for_use` + `custom.usage_shared` |
    | Wat zit er allemaal in? | `my_fields.ingredients` |
    | Goed om te weten | `custom.good_to_know` + `custom.good_to_know_shared` |
-   | Waarom {{ product.vendor }} | `custom.brand` |
+   | Waarom {{ product.vendor }} | `custom.brand_info` |
    | Verzendkosten | `info_text` entry `shipping` |
 
 10. Share
@@ -168,6 +171,11 @@ The empty `apps` section in `product.soap` has no blocks and is not carried over
 | Lipbalm (new) | own text | ✓ | own: shelf life after opening, keep away from heat | | per product | ✓ | ✓ |
 | Geurblokje | | ✓ | | `brand-marokkanse-amberblokjes` | none | hidden | hidden |
 | Soapi (new) | own: fitting it | | own: material, size, care | `brand-soapi` | none | your choice | your choice |
+| Archived third-party (2) | | | | its brand entry | none | hidden | hidden |
+
+Archived products are migrated like the others, so that if they are ever made active again
+they show everything they show today: description, brand tab and shipping, without reviews
+or stock count.
 
 ## Variants
 
@@ -188,8 +196,8 @@ Each step has a checkpoint. Nothing before step 9 removes or changes anything cu
 on.
 
 1. **Admin check.** Done 2026-10-10: no product uses `product`; 2 archived products use
-   `product.3rd-party-product`. Archived products are not visible to customers. Before cleanup
-   they are either switched to `standard` like any other product or deleted (decision open).
+   `product.3rd-party-product`. Decision 2026-10-11: they are migrated like the others (see
+   content per product type).
 
 2. **Editor test.** Done 2026-10-10, on a duplicate of the live theme. Confirmed:
    - a tab's text can be connected to product metafields and directly to a metaobject entry;
@@ -220,9 +228,14 @@ on.
    on their old templates at this point, so nothing else needs undoing.
 
 7. **Switch products, one at a time.** For each product: add its logo tags (and set
-   `custom.hide_reviews` and `custom.hide_stock` for geurblokje, so it looks as it does today),
-   check it once more with `?view=standard` on live, then assign `product.standard` in the
-   admin.
+   `custom.hide_reviews` and `custom.hide_stock` for geurblokje and the 2 archived products,
+   so they look as they do today), check it once more with `?view=standard` on live, then
+   assign `product.standard` in the admin.
+   *Archived products* can't be opened on the storefront, so `?view=standard` doesn't work for
+   them. Check them in the theme editor by picking the product in the preview. If the editor
+   doesn't offer archived products, set the product to Draft (still hidden from customers),
+   use the product's Preview in the admin, then set it back to Archived. Compare against the
+   old template the same way, before switching.
    *Rollback:* assign the old template again.
 
 8. **New products.** Create the lip balm and Soapi directly on `product.standard`. New
@@ -232,7 +245,7 @@ on.
    This is the point of no return: after it, products can no longer be switched back.
    - Confirm in the admin that no product uses the old templates.
    - Delete `product.soap`, `product.facialmask`, `product.badzout`, `product.geurblokje`,
-     `product.3rd-party-product`, once the 2 archived products are dealt with (step 1), both on the live theme and in the git branches (staging,
+     `product.3rd-party-product`, both on the live theme and in the git branches (staging,
      customizations), so they don't come back with the next promote.
    - Delete the pages that only fed tabs, with a redirect for each (they are in the sitemap):
      `gebruik-gezichtmaskers`, `gebruik-badzout`, `goed-om-te-weten-over-zeep`,
