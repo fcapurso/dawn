@@ -221,8 +221,34 @@
               {%- when 'custom_liquid' -%}
                 {{ block.settings.custom_liquid }}
               {%- when 'collapsible_tab' -%}
+                {%- liquid
+                  # Shared text comes from the category entry listing this product's type,
+                  # or the brand entry matching its vendor. The mapping lives in the entries.
+                  assign shared_text = ''
+                  case block.settings.shared_text
+                    when 'category_usage', 'category_good_to_know'
+                      for entry in metaobjects.category.values
+                        if entry.product_types.value contains product.type
+                          if block.settings.shared_text == 'category_usage'
+                            assign shared_text = entry.usage | metafield_tag
+                          else
+                            assign shared_text = entry.good_to_know | metafield_tag
+                          endif
+                          break
+                        endif
+                      endfor
+                    when 'brand_about'
+                      for entry in metaobjects.brand.values
+                        if entry.vendor.value == product.vendor
+                          assign shared_text = entry.about | metafield_tag
+                          break
+                        endif
+                      endfor
+                  endcase
+                -%}
                 {%- capture tab_content -%}
                   {{ block.settings.content }}
+                  {{ shared_text }}
                   {{ block.settings.page.content }}
                 {%- endcapture -%}
                 {%- assign tab_text = tab_content | strip_html | strip -%}
@@ -1263,6 +1289,19 @@
           "type": "page",
           "id": "page",
           "label": "t:sections.main-product.blocks.collapsible_tab.settings.page.label"
+        },
+        {
+          "type": "select",
+          "id": "shared_text",
+          "label": "Shared text",
+          "info": "Adds the text of the category entry listing this product's type, or of the brand entry matching its vendor.",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "category_usage", "label": "Category: usage" },
+            { "value": "category_good_to_know", "label": "Category: good to know" },
+            { "value": "brand_about", "label": "Brand: about" }
+          ],
+          "default": "none"
         },
         {
           "type": "checkbox",
