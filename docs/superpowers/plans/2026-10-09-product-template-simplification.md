@@ -1,7 +1,7 @@
 # Product template simplification
 
 **Date:** 2026-10-09 (content model revised 2026-10-11)
-**Status:** Steps 1 to 8 done; step 9 under way: old templates removed from live 2026-10-12, pages and the old brand_info field still to go
+**Status:** Done 2026-10-12. All steps complete.
 
 ## Goal
 
@@ -329,6 +329,8 @@ on.
      `marokkanse-amberblokjes`, `over-foekje-fleur`, `over-yume-ceramics`. Check
      `praktische-info` is unused first.
    - Delete the `my_fields.brand_info` metafield definition.
+   Pages and field deleted 2026-10-12; the 7 pages return 404, are gone from the sitemap, and
+   no product page links to them.
 
 ## Admin setup to remove (from the earlier content model)
 
