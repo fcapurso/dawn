@@ -323,7 +323,8 @@ on.
      customizations), so they don't come back with the next promote. Done 2026-10-12:
      `c11fbc4c` on `customizations`, promoted (`current` = `fbe60860`), rollback tag
      `config-archive/2026-10-12-193505`.
-   - Delete the pages that only fed tabs, with a redirect for each (they are in the sitemap):
+   - Delete the pages that only fed tabs. No redirects (decided 2026-10-12): the pages were
+     never meant to be reached directly, so letting them drop out of search results is fine:
      `gebruik-gezichtmaskers`, `gebruik-badzout`, `goed-om-te-weten-over-zeep`,
      `marokkanse-amberblokjes`, `over-foekje-fleur`, `over-yume-ceramics`. Check
      `praktische-info` is unused first.
