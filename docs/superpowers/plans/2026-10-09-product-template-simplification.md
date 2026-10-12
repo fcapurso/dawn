@@ -1,7 +1,7 @@
 # Product template simplification
 
 **Date:** 2026-10-09 (content model revised 2026-10-11)
-**Status:** Steps 1 to 8 done (Soapi live 2026-10-11); only step 9, the cleanup, is left, once you are fully happy
+**Status:** Steps 1 to 8 done; step 9 under way: old templates removed from live 2026-10-12, pages and the old brand_info field still to go
 
 ## Goal
 
@@ -317,10 +317,12 @@ on.
 
 9. **Cleanup, only when every product is on `standard` and you are fully happy with it.**
    This is the point of no return: after it, products can no longer be switched back.
-   - Confirm in the admin that no product uses the old templates.
+   - Confirm in the admin that no product uses the old templates. Done 2026-10-12.
    - Delete `product.soap`, `product.facialmask`, `product.badzout`, `product.geurblokje`,
      `product.3rd-party-product`, both on the live theme and in the git branches (staging,
-     customizations), so they don't come back with the next promote.
+     customizations), so they don't come back with the next promote. Done 2026-10-12:
+     `c11fbc4c` on `customizations`, promoted (`current` = `fbe60860`), rollback tag
+     `config-archive/2026-10-12-193505`.
    - Delete the pages that only fed tabs, with a redirect for each (they are in the sitemap):
      `gebruik-gezichtmaskers`, `gebruik-badzout`, `goed-om-te-weten-over-zeep`,
      `marokkanse-amberblokjes`, `over-foekje-fleur`, `over-yume-ceramics`. Check
