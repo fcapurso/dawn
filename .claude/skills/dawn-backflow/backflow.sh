@@ -20,8 +20,7 @@ sr="$(dawn::staging_remote_ref)"
 
 git fetch origin current --quiet 2>/dev/null || true
 git fetch origin staging --quiet 2>/dev/null || true
-git fetch origin refs/dawn-sync/current:refs/dawn-sync/current --quiet 2>/dev/null || true
-git fetch origin refs/dawn-sync/staging-remote:refs/dawn-sync/staging-remote --quiet 2>/dev/null || true
+dawn::sync_markers_fetch
 
 cur_sha="$(git rev-parse "$cur" 2>/dev/null || true)"
 sr_sha="$(git rev-parse "$sr" 2>/dev/null || true)"

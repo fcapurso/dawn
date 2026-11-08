@@ -154,12 +154,27 @@ dawn::sync_marker_get(){
 # garbage collection. Test seam: DAWN_SYNC_MARKER_NOPUSH — test fixtures have no real "origin"
 # to push to; dawn::sync_marker_get reads the local ref regardless, so skipping the push is safe
 # for tests. A missing/empty <sha> is a no-op (never clobber a marker with garbage).
+# The push is forced ('+'): a marker jumps between unrelated histories (promote force-resets
+# current, backflow rewrites staging's snapshot), so a plain push is always rejected as
+# non-fast-forward. A failed push warns but never fails the caller; the local marker is set.
 dawn::sync_marker_set(){
   local name="$1" sha="$2"
   [ -z "$sha" ] && return 0
   git update-ref "refs/dawn-sync/$name" "$sha"
   [ -n "${DAWN_SYNC_MARKER_NOPUSH:-}" ] && return 0
-  git push -q origin "refs/dawn-sync/$name:refs/dawn-sync/$name" 2>/dev/null || true
+  git push -q origin "+refs/dawn-sync/$name:refs/dawn-sync/$name" 2>/dev/null \
+    || echo "WARN: could not push sync marker refs/dawn-sync/$name to origin (local marker is set)" >&2
+  return 0
+}
+
+# Pull both markers from origin, overwriting local copies ('+', same reason as the push above):
+# origin is the shared record, so a second checkout with stale markers picks up the latest sync.
+# A missing remote marker (fresh setup) is not an error.
+dawn::sync_markers_fetch(){
+  local name
+  for name in current staging-remote; do
+    git fetch -q origin "+refs/dawn-sync/$name:refs/dawn-sync/$name" 2>/dev/null || true
+  done
 }
 
 # 3-way classify every leaf of every reconcile target against <other> (default dawn::current_ref).
