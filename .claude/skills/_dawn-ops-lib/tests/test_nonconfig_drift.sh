@@ -116,4 +116,30 @@ out7=$(in_repo "$d7" 'dawn::nonconfig_drift_scan'); rc7=$?
 assert_rc "$rc7" 0 "identical-bytes diverged history scan ok"
 assert_eq "$out7" "" "identical files not reported as pending drift"
 
+# 8) staging rebased onto new customizations work that adds lines to a locale file the old
+#    snapshot also edited. origin/staging hasn't changed since the last sync (marker), so there
+#    is no drift, even though merge-base regressed and staging's bytes now differ from the remote.
+d8=$(dawn_test_repo)
+commit_on "$d8" customizations locales/nl.json <<< $'one\ntwo\nthree\nfour\nfive' "L1: locale base"
+git -C "$d8" checkout -q staging; git -C "$d8" reset -q --hard customizations
+commit_on "$d8" staging locales/nl.json <<< $'ONE-snapshot\ntwo\nthree\nfour\nfive' "config snapshot"
+git -C "$d8" checkout -q staging_remote; git -C "$d8" reset -q --hard staging
+git -C "$d8" update-ref refs/dawn-sync/staging-remote "$(git -C "$d8" rev-parse staging_remote)"
+commit_on "$d8" customizations locales/nl.json <<< $'one\ntwo\nthree\nfour\nfive-feature' "L2: feature strings"
+git -C "$d8" checkout -q staging
+git -C "$d8" rebase -q --onto customizations "$(git -C "$d8" rev-parse staging~1)" staging
+out8=$(in_repo "$d8" 'dawn::nonconfig_drift_scan'); rc8=$?
+assert_rc "$rc8" 0 "rebased staging scan ok"
+assert_eq "$out8" "" "no remote change since the sync marker → no drift reported"
+
+# 9) Same setup, then the bot really edits the locale file on origin/staging → drift reported
+#    and the fold keeps both staging's feature line and the bot's edit.
+commit_on "$d8" staging_remote locales/nl.json <<< $'ONE-snapshot\ntwo\nTHREE-bot\nfour\nfive' "Update from Shopify"
+git -C "$d8" checkout -q staging
+out9=$(in_repo "$d8" 'dawn::nonconfig_drift_scan'); rc9=$?
+assert_rc "$rc9" 0 "real remote edit scans clean"
+assert_eq "$out9" "locales/nl.json" "real remote edit reported"
+in_repo "$d8" 'dawn::nonconfig_drift_apply'
+assert_eq "$(cat "$d8/locales/nl.json")" $'ONE-snapshot\ntwo\nTHREE-bot\nfour\nfive-feature' "fold keeps feature line and bot edit"
+
 echo "  nonconfig_drift ok"

@@ -451,12 +451,23 @@ dawn::reconcile_apply(){
 # actually conflicted, and only fail if that set overlaps the non-config-class changed-file set.
 # Stdout: one changed-file path per line, config-class files excluded. Exit 0 = clean (list may be
 # empty). Exit 1 = conflict (same file list — see caller for the "resolve manually" message).
+# Base for the non-config 3-way merge against origin/staging: the staging-remote sync marker
+# (what origin/staging looked like at the last sync), falling back to merge-base only before a
+# marker exists. After staging is rebased onto new customizations work, merge-base regresses to
+# before the old snapshot, so the snapshot's own locale edits would look like fresh remote drift
+# and block dawn-stage-push forever. Same reasoning as dawn::reconcile_scan's base.
+dawn::_nonconfig_drift_base(){
+  local remote="$1" base
+  base="$(dawn::sync_marker_get staging-remote)"
+  [ -z "$base" ] && base="$(git merge-base staging "$remote" 2>/dev/null || true)"
+  printf '%s' "$base"
+}
+
 dawn::nonconfig_drift_scan(){
   local remote base changed out conflicted overlap
   remote="$(dawn::staging_remote_ref)"
   git rev-parse --verify -q "$remote" >/dev/null 2>&1 || return 0
-  base="$(git merge-base staging "$remote" 2>/dev/null)" \
-    || { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
+  base="$(dawn::_nonconfig_drift_base "$remote")"
   [ -z "$base" ] && { echo "GUARD: no merge-base for staging vs $remote" >&2; return 1; }
 
   # Files origin/staging changed since merge-base, excluding config-class paths AND files
@@ -487,7 +498,8 @@ dawn::nonconfig_drift_scan(){
 dawn::nonconfig_drift_apply(){
   local remote base tree f
   remote="$(dawn::staging_remote_ref)"
-  base="$(git merge-base staging "$remote" 2>/dev/null)" || return 1
+  base="$(dawn::_nonconfig_drift_base "$remote")"
+  [ -z "$base" ] && return 1
   tree="$(git merge-tree --write-tree --merge-base="$base" staging "$remote" 2>/dev/null | head -1)"
   [ -z "$tree" ] && return 1
   while IFS= read -r f; do
