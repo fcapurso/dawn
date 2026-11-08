@@ -220,3 +220,25 @@ cart-items {
     gap: 1rem;
   }
 }
+
+.free-shipping-bar {
+  margin-bottom: 1.5rem;
+}
+
+.free-shipping-bar__text {
+  margin: 0 0 0.6rem;
+  font-size: 1.4rem;
+}
+
+.free-shipping-bar__track {
+  height: 0.6rem;
+  border-radius: 0.3rem;
+  background-color: rgba(var(--color-foreground), 0.1);
+  overflow: hidden;
+}
+
+.free-shipping-bar__fill {
+  display: block;
+  height: 100%;
+  background-color: rgb(var(--color-button));
+}

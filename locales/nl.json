@@ -323,6 +323,10 @@
         "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Log in</a> om sneller af te rekenen."
       },
       "estimated_total": "Geschat totaal",
+      "free_shipping": {
+        "remaining": "Nog {{ amount }} tot gratis verzending",
+        "reached": "Je hebt gratis verzending!"
+      },
       "new_estimated_total": "Nieuw geschat totaal",
       "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Douanerechten en belastingen inbegrepen. Kortingen en <a href=\"{{ link }}\">verzending</a> worden bij de checkout berekend.",
       "duties_and_taxes_included_shipping_at_checkout_without_policy": "Douanerechten en belastingen inbegrepen. Kortingen en verzending worden bij de checkout berekend.",

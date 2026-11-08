@@ -314,6 +314,10 @@
       "caption": "Cart items",
       "remove_title": "Remove {{ title }}",
       "estimated_total": "Estimated total",
+      "free_shipping": {
+        "remaining": "{{ amount }} away from free shipping",
+        "reached": "You've got free shipping!"
+      },
       "new_estimated_total": "New estimated total",
       "note": "Order special instructions",
       "checkout": "Check out",

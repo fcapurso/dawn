@@ -1435,6 +1435,13 @@
         "default": false
       },
       {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "info": "Shows a progress bar in the cart drawer and cart page. Must match the free shipping rate in Settings > Shipping and delivery. Set to 0 to hide the bar.",
+        "default": 50
+      },
+      {
         "type": "header",
         "content": "t:settings_schema.cart.settings.cart_drawer.header"
       },
