@@ -315,8 +315,8 @@
       "remove_title": "Remove {{ title }}",
       "estimated_total": "Estimated total",
       "free_shipping": {
-        "remaining": "{{ amount }} away from free shipping",
-        "reached": "You've got free shipping!"
+        "remaining": "{{ amount }} away from free shipping in Belgium",
+        "reached": "You've got free shipping in Belgium!"
       },
       "new_estimated_total": "New estimated total",
       "note": "Order special instructions",

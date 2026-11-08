@@ -324,8 +324,8 @@
       },
       "estimated_total": "Geschat totaal",
       "free_shipping": {
-        "remaining": "Nog {{ amount }} tot gratis verzending",
-        "reached": "Je hebt gratis verzending!"
+        "remaining": "Nog {{ amount }} tot gratis verzending in België",
+        "reached": "Je hebt gratis verzending in België!"
       },
       "new_estimated_total": "Nieuw geschat totaal",
       "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Douanerechten en belastingen inbegrepen. Kortingen en <a href=\"{{ link }}\">verzending</a> worden bij de checkout berekend.",
