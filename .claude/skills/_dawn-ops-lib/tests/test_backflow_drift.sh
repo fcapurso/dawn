@@ -75,4 +75,34 @@ out6=$(run "$d6" 2>&1); rc6=$?
 assert_rc "$rc6" 21 "non-config file on current → Step 0 STOP_JUDGMENT"
 assert_contains "$out6" "classification" "Step 0 message mentions classification"
 
+# 7) staging rebased onto new customizations work after a sync: the old snapshot's non-config
+#    edits (locales) must NOT look like live changes. Step 0 has to compare against the sync
+#    marker, not the merge-base (which regresses to before the old snapshot after the rebase).
+d7=$(dawn_test_repo)
+commit_on "$d7" customizations locales/nl.json <<< $'one\ntwo\nthree\nfour\nfive' "L1: locale base"
+git -C "$d7" checkout -q staging; git -C "$d7" reset -q --hard customizations
+commit_on "$d7" staging config/settings_data.json <<< '{"k":"base"}' "config snapshot"
+printf 'ONE-snapshot\ntwo\nthree\nfour\nfive\n' > "$d7/locales/nl.json"
+git -C "$d7" add -A; git -C "$d7" commit -q --amend -m "config snapshot"
+git -C "$d7" checkout -q current; git -C "$d7" reset -q --hard staging
+git -C "$d7" checkout -q staging_remote; git -C "$d7" reset -q --hard staging
+git -C "$d7" update-ref refs/dawn-sync/current "$(git -C "$d7" rev-parse current)"
+git -C "$d7" update-ref refs/dawn-sync/staging-remote "$(git -C "$d7" rev-parse staging_remote)"
+commit_on "$d7" customizations locales/nl.json <<< $'one\ntwo\nthree\nfour\nfive-feature' "L2: new feature strings"
+git -C "$d7" checkout -q staging
+git -C "$d7" rebase -q --onto customizations "$(git -C "$d7" rev-parse staging~1)" staging
+commit_on "$d7" current config/settings_data.json <<< '{"k":"live"}' "Update from Shopify"
+git -C "$d7" checkout -q staging
+out7=$(run "$d7" 2>&1); rc7=$?
+assert_not_contains "$out7" "non-config changes" "rebased snapshot locales not flagged as live edits"
+assert_rc "$rc7" 22 "only the real live config edit is surfaced"
+
+# 8) Same rebase, but current really changed a non-config file after the sync → still STOP
+commit_on "$d7" current snippets/live.liquid <<< 'live' "liquid on current"
+git -C "$d7" checkout -q staging
+out8=$(run "$d7" 2>&1); rc8=$?
+assert_rc "$rc8" 21 "real non-config live edit after sync → STOP_JUDGMENT"
+assert_contains "$out8" "snippets/live.liquid" "flags the real live file"
+assert_not_contains "$out8" "locales/nl.json" "does not flag the rebased snapshot file"
+
 echo "  backflow_drift ok"

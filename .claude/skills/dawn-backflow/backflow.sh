@@ -40,7 +40,12 @@ _dawn_bf_sync_markers(){
 # --- Step 0: detect non-config files on origin/current (need human classification) ---
 # Only flag files that changed on $cur relative to staging (current-side changes), not files
 # changed on staging relative to $cur — those are staging-local changes and handled elsewhere.
-base_cur="$(git merge-base staging "$cur" 2>/dev/null || true)"
+# "Changed on $cur" is measured from the sync marker (what current looked like at the last
+# backflow/stage-push/promote), falling back to merge-base only before a marker exists. After
+# staging is rebased onto new customizations work, merge-base regresses to before the old
+# snapshot, so the snapshot's own locale edits would otherwise look like fresh live edits.
+base_cur="$(dawn::sync_marker_get current)"
+[ -z "$base_cur" ] && base_cur="$(git merge-base staging "$cur" 2>/dev/null || true)"
 noncfg=()
 if [ -n "$base_cur" ]; then
   while IFS= read -r f; do
